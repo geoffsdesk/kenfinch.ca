@@ -19,10 +19,33 @@ export function Footer() {
           <Link href="#" className="text-muted-foreground hover:text-foreground">
             <LinkedinIcon className="h-5 w-5" />
           </Link>
+           <Link href="https://www.realtor.ca/agent/1520965/kenneth-finch-8-sampson-mews-suite-201-the-shops-at-don-mills-toronto-ontario-m3c0h5" className="text-muted-foreground hover:text-foreground">
+            <RealtorIcon className="h-5 w-5" />
+          </Link>
         </div>
       </div>
     </footer>
   );
+}
+
+function RealtorIcon(props: React.SVGProps<SVGSVGElement>) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+    );
 }
 
 function TwitterIcon(props: React.SVGProps<SVGSVGElement>) {
