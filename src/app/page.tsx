@@ -41,6 +41,38 @@ export default function Home() {
           </div>
         </section>
 
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-10 md:grid-cols-2 md:gap-16">
+              <div>
+                <img
+                  src="https://placehold.co/600x700.png"
+                  width="600"
+                  height="700"
+                  alt="Ken Finch"
+                  data-ai-hint="realtor portrait"
+                  className="mx-auto aspect-[3/4] overflow-hidden rounded-xl object-cover"
+                />
+              </div>
+              <div className="flex flex-col justify-center">
+                <div className="space-y-4">
+                  <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Why Sellers Choose Ken Finch</h2>
+                  <p className="text-lg font-semibold text-primary">Your Westoak Trails Expert for Fast, Confident Home Sales</p>
+                  <p className="text-muted-foreground">
+                    Sell Smarter. Sell Faster. Sell with Ken Finch. As a local Oakville real estate expert focused on Westoak Trails, I know what it takes to get your home sold quickly—and for top value. With strong ties in the community and a deep understanding of what buyers want in this high-demand neighbourhood, I do more than list homes—I generate interest and create demand.
+                  </p>
+                  <p className="text-muted-foreground">
+                    Every listing is positioned with care: from professional photography and cinematic drone videos to targeted digital marketing campaigns that put your home in front of serious buyers. With over 95% of buyers starting online, my digital-first approach ensures maximum exposure from day one.
+                  </p>
+                  <p className="text-muted-foreground">
+                    Why list with me? Because I bring more than experience—I bring results. My clients benefit from tailored pricing strategies, strategic negotiations, and personal service every step of the way. Backed by the trusted team at Royal LePage Signature Realty, I combine classic marketing with cutting-edge tools to deliver fast, high-impact sales. Whether you're upsizing, downsizing, or ready for your next chapter, I’ll help you move forward with confidence—and without delay.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="features" className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
