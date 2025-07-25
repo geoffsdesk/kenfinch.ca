@@ -34,7 +34,8 @@ import { Separator } from './ui/separator';
 
 const formSchema = z.object({
   address: z.string().min(10, { message: 'Please enter a valid street address.' }),
-  bedrooms: z.coerce.number().int().min(1, { message: 'Must have at least 1 bedroom.' }),
+  bedroomsAboveGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
+  bedroomsBelowGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
   bathrooms: z.coerce.number().min(1, { message: 'Must have at least 1 bathroom.' }),
   squareFootage: z.coerce.number().int().min(500, { message: 'Must be at least 500 sq ft.' }),
   lotSize: z.coerce.number().int().min(1000, { message: 'Must be at least 1000 sq ft.' }),
@@ -42,6 +43,9 @@ const formSchema = z.object({
   renovated: z.boolean().default(false),
   nearbySchools: z.string().min(10, { message: 'Please describe nearby schools.' }),
   recentSales: z.string().min(10, { message: 'Please describe recent comparable sales.' }),
+}).refine(data => data.bedroomsAboveGrade + data.bedroomsBelowGrade > 0, {
+    message: "Total number of bedrooms must be at least 1.",
+    path: ["bedroomsAboveGrade"],
 });
 
 const contactSchema = z.object({
@@ -62,7 +66,8 @@ export function HomeValuation() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       address: '',
-      bedrooms: 3,
+      bedroomsAboveGrade: 3,
+      bedroomsBelowGrade: 1,
       bathrooms: 2,
       squareFootage: 2000,
       lotSize: 5000,
@@ -287,13 +292,13 @@ export function HomeValuation() {
               )}
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FormField
                 control={form.control}
-                name="bedrooms"
+                name="bedroomsAboveGrade"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Bedrooms</FormLabel>
+                    <FormLabel>Bedrooms (Above Grade)</FormLabel>
                     <FormControl>
                         <Input type="number" {...field} />
                     </FormControl>
@@ -301,6 +306,22 @@ export function HomeValuation() {
                     </FormItem>
                 )}
                 />
+                <FormField
+                control={form.control}
+                name="bedroomsBelowGrade"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Bedrooms (Below Grade)</FormLabel>
+                    <FormControl>
+                        <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <FormField
                 control={form.control}
                 name="bathrooms"
@@ -327,10 +348,7 @@ export function HomeValuation() {
                     </FormItem>
                 )}
                 />
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <FormField
+                 <FormField
                 control={form.control}
                 name="lotSize"
                 render={({ field }) => (
@@ -343,20 +361,21 @@ export function HomeValuation() {
                     </FormItem>
                 )}
                 />
-                <FormField
-                control={form.control}
-                name="yearBuilt"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Year Built</FormLabel>
-                    <FormControl>
-                        <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
             </div>
+            
+            <FormField
+            control={form.control}
+            name="yearBuilt"
+            render={({ field }) => (
+                <FormItem>
+                <FormLabel>Year Built</FormLabel>
+                <FormControl>
+                    <Input type="number" {...field} />
+                </FormControl>
+                <FormMessage />
+                </FormItem>
+            )}
+            />
 
             <FormField
               control={form.control}
