@@ -1,3 +1,4 @@
+
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { HomeValuation } from '@/components/home-valuation';
@@ -154,11 +155,11 @@ export default function Home() {
                       <Star className="h-5 w-5 fill-current" />
                   </div>
                   <blockquote className="text-lg text-muted-foreground">
-                    "Ken had professional photos and drone videos that really made our home stand out and get a lot of interest. We had several buyers interested, and Ken worked several offers to get a sale price much more than we expected. This was done within a week, which was essential because we had already bought our next home with his help. The new place is perfect for us and my home business. We couldn’t be happier."
+                    "Ken had professional photos and drone videos that really made our home stand out and get a lot of interest. We had several buyers interested, and Ken worked several offers to get a sale price much more than we expected. This was done within a week, which was essential because we had already bought our next home with his help. The new place is perfect for us and my home business. We couldn’t be happier in our forever home and would absolutely recommend Ken to anyone looking to buy and sell."
                   </blockquote>
                 </CardContent>
                 <CardFooter>
-                    <p className="font-semibold text-right w-full">- Satisfied Client</p>
+                    <p className="font-semibold text-right w-full">- Trisha & Ben</p>
                 </CardFooter>
               </Card>
             </div>
@@ -185,3 +186,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
