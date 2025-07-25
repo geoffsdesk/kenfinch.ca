@@ -1,8 +1,9 @@
+
 "use client";
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, FileText, User, LogOut } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, FileText, Users, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,14 +12,34 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { auth } from '@/lib/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { signOut } from 'firebase/auth';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [user, loading] = useAuthState(auth);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+    router.push('/login');
+  };
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Dashboard' },
     { href: '/dashboard/documents', icon: FileText, label: 'Documents' },
+    { href: '/dashboard/contacts', icon: Users, label: 'Contacts' },
   ];
+
+  if(loading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+  }
+
+  if(!user && !loading) {
+      router.push('/login');
+      return null;
+  }
 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
@@ -55,13 +76,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link
-                  href="#"
+                <Button
+                  variant="ghost"
+                  size="icon"
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                  onClick={handleLogout}
                 >
                   <LogOut className="h-5 w-5" />
                   <span className="sr-only">Logout</span>
-                </Link>
+                </Button>
               </TooltipTrigger>
               <TooltipContent side="right">Logout</TooltipContent>
             </Tooltip>

@@ -1,10 +1,14 @@
 
+
 "use client";
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 
@@ -52,6 +56,7 @@ export function HomeValuation() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [contactSubmitted, setContactSubmitted] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,9 +98,20 @@ export function HomeValuation() {
   }
 
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
-    console.log('Contact info submitted:', values);
-    // Here you would typically send the data to a server or CRM
-    setContactSubmitted(true);
+    try {
+        await addDoc(collection(db, "contacts"), {
+            ...values,
+            submittedAt: serverTimestamp(),
+        });
+        setContactSubmitted(true);
+    } catch (e) {
+        console.error("Error adding document: ", e);
+        toast({
+            variant: "destructive",
+            title: "Submission Failed",
+            description: "There was a problem submitting your information. Please try again.",
+        });
+    }
   }
 
 
@@ -229,7 +245,8 @@ export function HomeValuation() {
                                     </FormItem>
                                 )}
                                 />
-                            <Button type="submit" size="lg" className="w-full">
+                            <Button type="submit" size="lg" className="w-full" disabled={contactForm.formState.isSubmitting}>
+                                {contactForm.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                                 Contact Ken Finch for an Expert Opinion
                             </Button>
                         </form>
