@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from 'react';
@@ -23,8 +24,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, AlertCircle, Sparkles, TrendingUp, ShieldCheck } from 'lucide-react';
+import { Loader2, AlertCircle, Sparkles, TrendingUp, ShieldCheck, User, Mail, Phone } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Separator } from './ui/separator';
 
 const formSchema = z.object({
   address: z.string().min(10, { message: 'Please enter a valid street address.' }),
@@ -38,10 +40,18 @@ const formSchema = z.object({
   recentSales: z.string().min(10, { message: 'Please describe recent comparable sales.' }),
 });
 
+const contactSchema = z.object({
+    name: z.string().min(2, { message: 'Please enter your name.' }),
+    email: z.string().email({ message: 'Please enter a valid email address.' }),
+    phone: z.string().optional(),
+});
+
+
 export function HomeValuation() {
   const [result, setResult] = useState<HomeValuationOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [contactSubmitted, setContactSubmitted] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,6 +65,15 @@ export function HomeValuation() {
       renovated: false,
       nearbySchools: '',
       recentSales: '',
+    },
+  });
+
+  const contactForm = useForm<z.infer<typeof contactSchema>>({
+    resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
     },
   });
 
@@ -72,6 +91,13 @@ export function HomeValuation() {
       setIsLoading(false);
     }
   }
+
+  async function onContactSubmit(values: z.infer<typeof contactSchema>) {
+    console.log('Contact info submitted:', values);
+    // Here you would typically send the data to a server or CRM
+    setContactSubmitted(true);
+  }
+
 
   if (isLoading) {
     return (
@@ -137,9 +163,84 @@ export function HomeValuation() {
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+            <Separator />
+
+            {contactSubmitted ? (
+                 <div className="text-center p-6 bg-green-50 rounded-lg">
+                    <h3 className="text-xl font-semibold text-green-800">Thank You!</h3>
+                    <p className="text-green-700 mt-2">Ken Finch will be in touch shortly to discuss your expert valuation.</p>
+                 </div>
+            ) : (
+                <div className="grid gap-4">
+                    <div className="text-center">
+                        <h3 className="font-headline text-2xl">Ready for an Expert Opinion?</h3>
+                        <p className="text-muted-foreground">This is an estimate. For a precise valuation, contact Ken Finch directly.</p>
+                    </div>
+                    <Form {...contactForm}>
+                        <form onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                control={contactForm.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Full Name</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Input placeholder="John Doe" {...field} className="pl-10" />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                                <FormField
+                                control={contactForm.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Email Address</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Input type="email" placeholder="you@example.com" {...field} className="pl-10" />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                            </div>
+                             <FormField
+                                control={contactForm.control}
+                                name="phone"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Phone Number (Optional)</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Input placeholder="(123) 456-7890" {...field} className="pl-10" />
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                                />
+                            <Button type="submit" size="lg" className="w-full">
+                                Contact Ken Finch for an Expert Opinion
+                            </Button>
+                        </form>
+                    </Form>
+                </div>
+            )}
+
+
         </CardContent>
         <CardFooter className="flex-col gap-4">
-           <Button onClick={() => { setResult(null); form.reset(); }} className="w-full md:w-auto">Start a New Valuation</Button>
+           <Button variant="outline" onClick={() => { setResult(null); form.reset(); setContactSubmitted(false); }} className="w-full md:w-auto">Start a New Valuation</Button>
            <p className="text-xs text-muted-foreground">This is an estimate, not a formal appraisal. Consult with Ken Finch for an expert opinion.</p>
         </CardFooter>
       </Card>
