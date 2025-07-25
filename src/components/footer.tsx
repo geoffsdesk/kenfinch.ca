@@ -13,7 +13,7 @@ export function Footer() {
           <Link href="#" className="text-muted-foreground hover:text-foreground">
             <TwitterIcon className="h-5 w-5" />
           </Link>
-          <Link href="#" className="text-muted-foreground hover:text-foreground">
+          <Link href="https://www.facebook.com/KenFinchRealEstate/" className="text-muted-foreground hover:text-foreground">
             <FacebookIcon className="h-5 w-5" />
           </Link>
           <Link href="#" className="text-muted-foreground hover:text-foreground">
