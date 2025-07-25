@@ -99,28 +99,28 @@ export function HomeValuation() {
       setResult(valuationResult);
 
       if (user) {
-        const batch = writeBatch(db);
         const valuationRef = doc(collection(db, 'users', user.uid, 'valuations'));
-        batch.set(valuationRef, {
+        await writeBatch(db).set(valuationRef, {
             ...valuationResult,
             inputs: values,
             createdAt: serverTimestamp(),
-        });
-        await batch.commit();
+        }).commit();
+
         toast({
             title: "Valuation Saved",
             description: "Your home valuation has been saved to your dashboard.",
         });
       }
-
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'An unexpected error occurred.');
+      console.error(e);
+      setError(e instanceof Error ? e.message : 'An unexpected error occurred during valuation.');
     } finally {
       setIsLoading(false);
     }
   }
 
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
+    contactForm.clearErrors();
     try {
         await addDoc(collection(db, "contacts"), {
             ...values,
@@ -153,7 +153,10 @@ export function HomeValuation() {
         <AlertCircle className="h-4 w-4" />
         <AlertTitle>Error</AlertTitle>
         <AlertDescription>{error}</AlertDescription>
-        <Button variant="link" onClick={() => setError(null)} className="p-0 mt-2 h-auto">Try Again</Button>
+        <Button variant="link" onClick={() => {
+            setError(null);
+            form.reset();
+        }} className="p-0 mt-2 h-auto">Try Again</Button>
       </Alert>
     );
   }
