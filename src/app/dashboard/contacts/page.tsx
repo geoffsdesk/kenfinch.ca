@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { auth, db } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,12 +38,13 @@ export default function ContactsPage() {
         const querySnapshot = await getDocs(q);
         const contactsData = querySnapshot.docs.map(doc => {
             const data = doc.data();
+            const submittedAt = data.submittedAt as Timestamp;
             return {
                 id: doc.id,
                 name: data.name,
                 email: data.email,
                 phone: data.phone,
-                submittedAt: data.submittedAt.toDate().toLocaleString(),
+                submittedAt: submittedAt ? submittedAt.toDate().toLocaleString() : 'N/A',
             };
         });
         setContacts(contactsData);

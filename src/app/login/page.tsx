@@ -55,7 +55,7 @@ export default function LoginPage() {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast({
         title: "Login Successful",
-        description: "Redirecting to your dashboard...",
+        description: "Redirecting to admin dashboard...",
       });
       // The useEffect will handle the redirect
     } catch (error) {
@@ -83,7 +83,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
           <CardTitle className="font-headline text-2xl">Admin Login</CardTitle>
-          <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
+          <CardDescription>Enter your credentials to access the contact list.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>

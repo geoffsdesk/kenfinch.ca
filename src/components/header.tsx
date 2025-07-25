@@ -19,7 +19,9 @@ export function Header() {
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <Button variant="ghost">Contact Us</Button>
+           <Button asChild>
+                <Link href="/dashboard/contacts">Admin Login</Link>
+            </Button>
         </div>
       </div>
     </header>
