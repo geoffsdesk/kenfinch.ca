@@ -19,9 +19,6 @@ export function Header() {
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
-           <Button asChild>
-                <Link href="/dashboard/contacts">Admin Login</Link>
-            </Button>
         </div>
       </div>
     </header>
