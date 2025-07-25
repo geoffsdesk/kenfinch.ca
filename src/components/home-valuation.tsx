@@ -6,8 +6,9 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { collection, addDoc, serverTimestamp, doc, writeBatch } from 'firebase/firestore';
+import { db, auth } from '@/lib/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useToast } from '@/hooks/use-toast';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
@@ -61,6 +62,7 @@ export function HomeValuation() {
   const [error, setError] = useState<string | null>(null);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const { toast } = useToast();
+  const [user] = useAuthState(auth);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -95,6 +97,22 @@ export function HomeValuation() {
     try {
       const valuationResult = await getHomeValuation(values);
       setResult(valuationResult);
+
+      if (user) {
+        const batch = writeBatch(db);
+        const valuationRef = doc(collection(db, 'users', user.uid, 'valuations'));
+        batch.set(valuationRef, {
+            ...valuationResult,
+            inputs: values,
+            createdAt: serverTimestamp(),
+        });
+        await batch.commit();
+        toast({
+            title: "Valuation Saved",
+            description: "Your home valuation has been saved to your dashboard.",
+        });
+      }
+
     } catch (e) {
       setError(e instanceof Error ? e.message : 'An unexpected error occurred.');
     } finally {
