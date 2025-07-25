@@ -31,7 +31,7 @@ export default function Home() {
                 </div>
               </div>
               <img
-                src="/hero-house.jpg"
+                src="/hero_house.png"
                 width="600"
                 height="400"
                 alt="Hero"
