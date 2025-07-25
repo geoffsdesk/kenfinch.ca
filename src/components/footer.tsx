@@ -16,7 +16,7 @@ export function Footer() {
           <Link href="https://www.facebook.com/KenFinchRealEstate/" className="text-muted-foreground hover:text-foreground">
             <FacebookIcon className="h-5 w-5" />
           </Link>
-          <Link href="#" className="text-muted-foreground hover:text-foreground">
+          <Link href="https://www.linkedin.com/in/kenfinchrealtor/?originalSubdomain=ca" className="text-muted-foreground hover:text-foreground">
             <LinkedinIcon className="h-5 w-5" />
           </Link>
            <Link href="https://www.realtor.ca/agent/1520965/kenneth-finch-8-sampson-mews-suite-201-the-shops-at-don-mills-toronto-ontario-m3c0h5" className="text-muted-foreground hover:text-foreground">
