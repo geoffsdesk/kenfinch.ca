@@ -1,9 +1,9 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { HomeValuation } from '@/components/home-valuation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, BarChart, FileText } from 'lucide-react';
+import { CheckCircle, BarChart, FileText, Star } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Home() {
@@ -111,6 +111,55 @@ export default function Home() {
                 <CardContent>
                   <p className="text-muted-foreground">Access all your important files, from staging guides to closing documents, in one secure, centralized location.</p>
                 </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">What Our Clients Say</h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Hear from satisfied sellers who have partnered with Ken Finch.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-1 md:gap-12 lg:grid-cols-2 lg:max-w-none mt-12">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-1 text-primary mb-2">
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                  </div>
+                  <blockquote className="text-lg text-muted-foreground">
+                    "Mr. Finch demonstrated proactive involvement in conducting thorough research to provide us with a comprehensive understanding of the current market conditions in our neighbourhood. His instrumental role in orchestrating all stages of our marketing plan...was crucial in achieving our success. His meticulous planning and execution...resulted in the receipt of offers within a few days...His prudent advice against accepting the initial offer proved highly insightful, helping us secure the maximum sales price for our home. This outcome left us with a profound sense of satisfaction...Throughout the transaction, he consistently maintained a professional demeanour and collaborated effectively with us to expedite the sale within record time."
+                  </blockquote>
+                </CardContent>
+                <CardFooter>
+                    <p className="font-semibold text-right w-full">- Peter & Elizabeth</p>
+                </CardFooter>
+              </Card>
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-1 text-primary mb-2">
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                      <Star className="h-5 w-5 fill-current" />
+                  </div>
+                  <blockquote className="text-lg text-muted-foreground">
+                    "Ken had professional photos and drone videos that really made our home stand out and get a lot of interest. We had several buyers interested, and Ken worked several offers to get a sale price much more than we expected. This was done within a week, which was essential because we had already bought our next home with his help. The new place is perfect for us and my home business. We couldn’t be happier."
+                  </blockquote>
+                </CardContent>
+                <CardFooter>
+                    <p className="font-semibold text-right w-full">- Satisfied Client</p>
+                </CardFooter>
               </Card>
             </div>
           </div>
