@@ -1,13 +1,14 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -31,6 +32,14 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const [user, loading] = useAuthState(auth);
+
+  useEffect(() => {
+    if (user && !loading) {
+      router.push('/dashboard/contacts');
+    }
+  }, [user, loading, router]);
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -44,7 +53,11 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
-      router.push('/dashboard/contacts');
+      toast({
+        title: "Login Successful",
+        description: "Redirecting to your dashboard...",
+      });
+      // The useEffect will handle the redirect
     } catch (error) {
       console.error('Login failed:', error);
       toast({
@@ -52,8 +65,17 @@ export default function LoginPage() {
         title: "Login Failed",
         description: "Please check your email and password and try again.",
       });
-      setIsLoading(false);
+    } finally {
+        setIsLoading(false);
     }
+  }
+  
+  if (loading || user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
   }
 
   return (
