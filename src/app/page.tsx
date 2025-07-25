@@ -35,7 +35,7 @@ export default function Home() {
                 width="600"
                 height="400"
                 alt="Hero"
-                data-ai-hint="modern house exterior"
+                data-ai-hint="large house suburb"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
               />
             </div>
