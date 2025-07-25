@@ -47,7 +47,7 @@ export default function Home() {
             <div className="grid gap-10 md:grid-cols-2 md:gap-16">
               <div>
                 <img
-                  src="https://placehold.co/600x700.png"
+                  src="/brick.jpg"
                   width="600"
                   height="700"
                   alt="Ken Finch"
