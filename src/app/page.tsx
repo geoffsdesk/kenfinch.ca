@@ -162,7 +162,7 @@ export default function Home() {
                       <Star className="h-5 w-5 fill-current" />
                   </div>
                   <blockquote className="text-lg text-muted-foreground">
-                    "Ken had professional photos and drone videos that really made our home stand out and get a lot of interest. We had several buyers interested, and Ken worked several offers to get a sale price much more than we expected. This was done within a week, which was essential because we had already bought our next home with his help. The new place is perfect for us and my home business. We couldn’t be happier in our forever home and would absolutely recommend Ken to anyone looking to buy and sell."
+                    “Ken’s marketing, especially the photography and drone footage made our home shine. He expertly handled multiple offers and secured a price well above our expectations, all within a week. We’re now settled in our dream home, and we’d confidently recommend Ken to anyone buying or selling.”
                   </blockquote>
                 </CardContent>
                 <CardFooter>
