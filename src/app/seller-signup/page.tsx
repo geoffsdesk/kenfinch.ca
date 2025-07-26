@@ -7,7 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Button } from '@/components/ui/button';
 import {
@@ -53,7 +54,15 @@ export default function SellerSignupPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const newUser = userCredential.user;
+
+      // Save user info to Firestore
+      await setDoc(doc(db, "users", newUser.uid), {
+        email: newUser.email,
+        createdAt: serverTimestamp(),
+      });
+
       toast({
         title: "Account Created",
         description: "Redirecting to your dashboard...",

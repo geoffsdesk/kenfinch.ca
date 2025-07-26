@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, FileText, Users, LogOut, ChevronLeft } from 'lucide-react';
+import { Home, FileText, Users, LogOut, ChevronLeft, Building } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,19 +26,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const handleLogout = async () => {
     await signOut(auth);
     // Redirect to seller login for sellers, and home for admin after logout.
-    if (pathname.includes('/contacts')) {
+    if (pathname.includes('/contacts') || pathname.includes('/sellers')) {
       router.push('/');
     } else {
       router.push('/seller-login');
     }
   };
   
-  const isAdminRoute = pathname.includes('/contacts');
+  const isAdminRoute = pathname.includes('/contacts') || pathname.includes('/sellers');
   const isSellerRoute = !isAdminRoute;
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Dashboard', admin: false },
     { href: '/dashboard/documents', icon: FileText, label: 'Documents', admin: false },
+    { href: '/dashboard/sellers', icon: Building, label: 'Sellers', admin: true },
     { href: '/dashboard/contacts', icon: Users, label: 'Contacts', admin: true },
   ];
 
@@ -58,7 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
   }
   
-  const currentNavItem = navItems.find(item => item.href === pathname);
+  const currentNavItem = navItems.find(item => pathname.startsWith(item.href));
   const pageTitle = currentNavItem ? currentNavItem.label : 'Dashboard';
 
   return (
@@ -80,7 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     href={item.href}
                     className={cn(
                       'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
-                      { 'bg-accent text-accent-foreground': pathname === item.href }
+                      { 'bg-accent text-accent-foreground': pathname.startsWith(item.href) }
                     )}
                   >
                     <item.icon className="h-5 w-5" />
