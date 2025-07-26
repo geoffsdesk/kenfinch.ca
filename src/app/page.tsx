@@ -145,11 +145,11 @@ export default function Home() {
                       <Star className="h-5 w-5 fill-current" />
                   </div>
                   <blockquote className="text-lg text-muted-foreground">
-                    "Mr. Finch demonstrated proactive involvement in conducting thorough research to provide us with a comprehensive understanding of the current market conditions in our neighbourhood. His instrumental role in orchestrating all stages of our marketing plan...was crucial in achieving our success. His meticulous planning and execution...resulted in the receipt of offers within a few days...His prudent advice against accepting the initial offer proved highly insightful, helping us secure the maximum sales price for our home. This outcome left us with a profound sense of satisfaction...Throughout the transaction, he consistently maintained a professional demeanour and collaborated effectively with us to expedite the sale within record time."
+                    “Ken really knew the market and had a smart game plan from day one. Thanks to his marketing and advice, we got multiple offers within days—and ended up selling for more than we expected. He was professional, easy to work with, and kept things moving fast.”
                   </blockquote>
                 </CardContent>
                 <CardFooter>
-                    <p className="font-semibold text-right w-full">- Peter & Elizabeth</p>
+                    <p className="font-semibold text-right w-full">— Peter & Elizabeth</p>
                 </CardFooter>
               </Card>
               <Card>
