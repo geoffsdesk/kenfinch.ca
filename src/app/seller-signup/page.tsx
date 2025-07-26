@@ -23,12 +23,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, UserPlus } from 'lucide-react';
 import Link from 'next/link';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Create Seller Account',
-};
-
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
