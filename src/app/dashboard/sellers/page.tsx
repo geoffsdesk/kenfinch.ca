@@ -169,7 +169,7 @@ export default function SellersPage() {
     <Card>
       <CardHeader>
         <CardTitle>Registered Sellers</CardTitle>
-        <CardDescription>This is a list of all users who have created a seller account.</CardDescription>
+        <CardDescription>This is a list of all users who have created a full seller account to access the personalized dashboard.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>

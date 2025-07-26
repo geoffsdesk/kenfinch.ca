@@ -70,7 +70,7 @@ export default function ContactsPage() {
     <Card>
       <CardHeader>
         <CardTitle>Contact Submissions</CardTitle>
-        <CardDescription>Here are the users who requested an expert opinion.</CardDescription>
+        <CardDescription>These are potential clients who requested an expert opinion after an AI valuation. They may not have a registered seller account.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
