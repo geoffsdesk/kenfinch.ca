@@ -14,6 +14,11 @@ import { Badge } from "@/components/ui/badge";
 import { ClipboardCheck, Camera, CalendarDays, Home, Sparkles, Loader2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import type { HomeValuationOutput } from '@/ai/flows/home-valuation';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Seller Dashboard',
+};
 
 interface Task {
     id: string;

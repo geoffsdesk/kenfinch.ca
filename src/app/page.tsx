@@ -6,6 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { CheckCircle, BarChart, FileText, Star } from 'lucide-react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: 'Your Trusted Oakville Real Estate Partner',
+    description: 'Unlock your Oakville home\'s true value with Ken Finch. Get a free, AI-powered home valuation and experience a seamless, successful home selling process.',
+};
+
 
 export default function Home() {
   return (
@@ -34,7 +41,7 @@ export default function Home() {
                 src="/hero_house.png"
                 width="600"
                 height="400"
-                alt="Hero"
+                alt="A beautiful suburban house in Oakville at sunset"
                 data-ai-hint="large house suburb"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
               />
@@ -50,7 +57,7 @@ export default function Home() {
                   src="/brick.jpg"
                   width="600"
                   height="700"
-                  alt="Ken Finch"
+                  alt="Ken Finch, an Oakville real estate agent"
                   data-ai-hint="realtor portrait"
                   className="mx-auto aspect-[3/4] overflow-hidden rounded-xl object-cover"
                 />

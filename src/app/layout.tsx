@@ -3,8 +3,12 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
-  title: 'Oakville Home Seller Success',
-  description: 'Your trusted partner in selling your Oakville home.',
+  title: {
+    template: '%s | Oakville Home Seller Success',
+    default: 'Oakville Home Seller Success | Ken Finch Real Estate',
+  },
+  description: 'Partner with Ken Finch, your trusted real estate agent, for a seamless and successful home selling experience in Oakville, Ontario. Get a free, AI-powered home valuation today.',
+  keywords: ['Oakville real estate', 'sell home Oakville', 'Ken Finch realtor', 'home valuation Oakville', 'Westoak Trails real estate'],
 };
 
 export default function RootLayout({
