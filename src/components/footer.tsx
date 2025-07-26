@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Mail } from "lucide-react";
 
 export function Footer() {
   return (
@@ -10,6 +11,10 @@ export function Footer() {
           </p>
         </div>
         <div className="flex items-center gap-4">
+           <a href="mailto:ken@kenfinch.ca" className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm">
+            <Mail className="h-4 w-4" />
+            ken@kenfinch.ca
+          </a>
           <Link href="#" className="text-muted-foreground hover:text-foreground">
             <TwitterIcon className="h-5 w-5" />
           </Link>
