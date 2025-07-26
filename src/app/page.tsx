@@ -67,13 +67,13 @@ export default function Home() {
                   <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Why Sellers Choose Ken Finch</h2>
                   <p className="text-lg font-semibold text-primary">Your Westoak Trails Expert for Fast, Confident Home Sales</p>
                   <p className="text-muted-foreground">
-                    Sell Smarter. Sell Faster. Sell with Ken Finch. As a local Oakville real estate expert focused on Westoak Trails, I know what it takes to get your home sold quickly—and for top value. With strong ties in the community and a deep understanding of what buyers want in this high-demand neighbourhood, I do more than list homes—I generate interest and create demand.
+                   Sell Smarter. Sell Faster. With Someone Who Knows Oakville. I’ve been helping families sell in Oakville—especially in Westoak Trails—for years. I know the streets, the buyers, the timing, and what makes a home stand out in this market. My approach is hands-on and tailored to get your home sold quickly and for the best possible price.
                   </p>
                   <p className="text-muted-foreground">
-                    Every listing is positioned with care: from professional photography and cinematic drone videos to targeted digital marketing campaigns that put your home in front of serious buyers. With over 95% of buyers starting online, my digital-first approach ensures maximum exposure from day one.
+                    Every property I list is presented with care. That means professional photos, drone video, and sharp marketing that reaches the right buyers, online and in the community. With most buyers starting their search on the web, I make sure your home is front and center from the start.
                   </p>
                   <p className="text-muted-foreground">
-                    Why list with me? Because I bring more than experience—I bring results. My clients benefit from tailored pricing strategies, strategic negotiations, and personal service every step of the way. Backed by the trusted team at Royal LePage Signature Realty, I combine classic marketing with cutting-edge tools to deliver fast, high-impact sales. Whether you're upsizing, downsizing, or ready for your next chapter, I’ll help you move forward with confidence—and without delay.
+                    Clients come to me for results. I bring pricing strategies that match the market, strong negotiations, and a personal commitment to making the process smooth. Backed by my team at Royal LePage Signature Realty, I offer a balance of proven tactics and modern tools that get homes sold. Whether you're moving up, moving on, or just starting to plan, I'm here to help you take that next step with confidence.
                   </p>
                 </div>
               </div>
