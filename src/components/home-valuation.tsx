@@ -13,6 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 
 import { Button } from '@/components/ui/button';
+import { AddressAutocomplete } from '@/components/address-autocomplete';
 import {
   Form,
   FormControl,
@@ -305,7 +306,12 @@ export function HomeValuation() {
                 <FormItem>
                   <FormLabel>Street Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., 123 Maple Street, Oakville, ON" {...field} />
+                    <AddressAutocomplete
+                      placeholder="e.g., 123 Maple Street, Oakville, ON"
+                      value={field.value}
+                      onChange={field.onChange}
+                      ref={field.ref}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
