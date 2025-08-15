@@ -42,18 +42,23 @@ import { Separator } from './ui/separator';
 
 const formSchema = z.object({
   address: z.string().min(10, { message: 'Please enter a valid street address.' }),
+  homeType: z.string({ required_error: 'Please select a home type.' }),
   bedroomsAboveGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
   bedroomsBelowGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
   bathrooms: z.coerce.number().min(1, { message: 'Must have at least 1 bathroom.' }),
   squareFootage: z.string({ required_error: 'Please select a square footage range.' }),
-  lotSize: z.coerce.number().int().min(1000, { message: 'Must be at least 1000 sq ft.' }),
   yearBuilt: z.string({ required_error: 'Please select the age of the home.' }),
   renovated: z.boolean().default(false),
+  finishedBasement: z.string({ required_error: 'Please select an option.' }),
+  garageSpaces: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
+  parkingSpaces: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
   nearbySchools: z.string().min(10, { message: 'Please describe nearby schools.' }),
-  recentSales: z.string().min(10, { message: 'Please describe recent comparable sales.' }),
 }).refine(data => data.bedroomsAboveGrade + data.bedroomsBelowGrade > 0, {
     message: "Total number of bedrooms must be at least 1.",
     path: ["bedroomsAboveGrade"],
+}).refine(data => data.garageSpaces <= data.parkingSpaces, {
+    message: "Garage spaces cannot exceed total parking spaces.",
+    path: ["garageSpaces"],
 });
 
 const contactSchema = z.object({
@@ -61,6 +66,13 @@ const contactSchema = z.object({
     email: z.string().email({ message: 'Please enter a valid email address.' }),
     phone: z.string().optional(),
 });
+
+const homeTypeOptions = [
+    { value: 'Detached', label: 'Detached' },
+    { value: 'Semi-Detached', label: 'Semi-Detached' },
+    { value: 'Townhouse', label: 'Townhouse' },
+    { value: 'Condo Apartment', label: 'Condo Apartment' },
+]
 
 const squareFootageOptions = [
     { value: '600', label: '< 700' },
@@ -83,6 +95,10 @@ const yearBuiltOptions = [
     { value: '100', label: '100+ years' },
 ]
 
+const finishedBasementOptions = [
+    { value: 'true', label: 'Yes' },
+    { value: 'false', label: 'No' },
+]
 
 export function HomeValuation() {
   const [result, setResult] = useState<HomeValuationOutput | null>(null);
@@ -102,15 +118,17 @@ export function HomeValuation() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       address: '',
+      homeType: 'Detached',
       bedroomsAboveGrade: 3,
       bedroomsBelowGrade: 1,
       bathrooms: 2,
       squareFootage: '2250',
-      lotSize: 5000,
       yearBuilt: '23',
       renovated: false,
+      finishedBasement: 'true',
+      garageSpaces: 2,
+      parkingSpaces: 2,
       nearbySchools: '',
-      recentSales: '',
     },
   });
 
@@ -134,6 +152,7 @@ export function HomeValuation() {
         ...values,
         squareFootage: Number(values.squareFootage),
         yearBuilt: currentYear - Number(values.yearBuilt),
+        finishedBasement: values.finishedBasement === 'true',
       };
        const rawInputs = {
         ...values,
@@ -398,6 +417,30 @@ export function HomeValuation() {
                 />
             )}
 
+            <FormField
+              control={form.control}
+              name="homeType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Home Type</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a home type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {homeTypeOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FormField
@@ -428,7 +471,7 @@ export function HomeValuation() {
                 />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FormField
                 control={form.control}
                 name="bathrooms"
@@ -466,12 +509,66 @@ export function HomeValuation() {
                         </FormItem>
                     )}
                 />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <FormField
+                  control={form.control}
+                  name="yearBuilt"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Age of Home</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select the age range of the home" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {yearBuiltOptions.map(option => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                  <FormField
+                  control={form.control}
+                  name="finishedBasement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Finished Basement</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Is the basement finished?" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {finishedBasementOptions.map(option => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+            </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <FormField
                 control={form.control}
-                name="lotSize"
+                name="garageSpaces"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Lot Size (sq ft)</FormLabel>
+                    <FormLabel>Total Garage Parking Spaces</FormLabel>
                     <FormControl>
                         <Input type="number" {...field} />
                     </FormControl>
@@ -479,32 +576,24 @@ export function HomeValuation() {
                     </FormItem>
                 )}
                 />
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="yearBuilt"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Age of Home</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormField
+                control={form.control}
+                name="parkingSpaces"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Total Parking Spaces</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select the age range of the home" />
-                      </SelectTrigger>
+                        <Input type="number" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      {yearBuiltOptions.map(option => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormDescription>
+                        Including garage and driveway.
+                    </FormDescription>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
+            </div>
+
 
             <FormField
               control={form.control}
@@ -514,20 +603,6 @@ export function HomeValuation() {
                   <FormLabel>Nearby Schools</FormLabel>
                   <FormControl>
                     <Textarea placeholder="Describe the names and ratings of nearby schools..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="recentSales"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Recent Comparable Sales</FormLabel>
-                  <FormControl>
-                    <Textarea placeholder="Describe recent comparable sales in the neighborhood (address, price, date)..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -21,7 +21,7 @@ interface Seller {
 
 interface Valuation extends HomeValuationOutput {
     id: string;
-    inputs: HomeValuationInput & { yearBuilt: string }; // yearBuilt can be a string from the dropdown
+    inputs: HomeValuationInput & { yearBuilt: string, finishedBasement: string };
     createdAt: Timestamp;
 }
 
@@ -54,7 +54,7 @@ const ValuationDetails = ({ valuation }: { valuation: Valuation | null }) => {
 
     const displaySquareFootage = squareFootageRanges[String(valuation.inputs.squareFootage)] || `${valuation.inputs.squareFootage} sq ft`;
     const displayYearBuilt = yearBuiltRanges[String(valuation.inputs.yearBuilt)] || `${valuation.inputs.yearBuilt}`;
-
+    const displayFinishedBasement = valuation.inputs.finishedBasement === 'true' ? 'Yes' : 'No';
 
     return (
         <div className="space-y-4">
@@ -72,15 +72,17 @@ const ValuationDetails = ({ valuation }: { valuation: Valuation | null }) => {
                 <h4 className="font-semibold">User-Provided Inputs</h4>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mt-2">
                     <p><strong>Address:</strong> {valuation.inputs.address}</p>
+                    <p><strong>Home Type:</strong> {valuation.inputs.homeType}</p>
                     <p><strong>Bedrooms (Above Grade):</strong> {valuation.inputs.bedroomsAboveGrade}</p>
                     <p><strong>Bedrooms (Below Grade):</strong> {valuation.inputs.bedroomsBelowGrade}</p>
                     <p><strong>Bathrooms:</strong> {valuation.inputs.bathrooms}</p>
                     <p><strong>Square Footage:</strong> {displaySquareFootage}</p>
-                    <p><strong>Lot Size:</strong> {valuation.inputs.lotSize} sq ft</p>
                     <p><strong>Age of Home:</strong> {displayYearBuilt}</p>
                     <p><strong>Renovated:</strong> {valuation.inputs.renovated ? 'Yes' : 'No'}</p>
+                    <p><strong>Finished Basement:</strong> {displayFinishedBasement}</p>
+                    <p><strong>Garage Spaces:</strong> {valuation.inputs.garageSpaces}</p>
+                    <p><strong>Total Parking:</strong> {valuation.inputs.parkingSpaces}</p>
                     <p className="col-span-2"><strong>Nearby Schools:</strong> {valuation.inputs.nearbySchools}</p>
-                    <p className="col-span-2"><strong>Recent Sales:</strong> {valuation.inputs.recentSales}</p>
                 </div>
             </div>
         </div>

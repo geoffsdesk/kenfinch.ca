@@ -14,15 +14,17 @@ import {z} from 'genkit';
 
 const HomeValuationInputSchema = z.object({
   address: z.string().describe('The street address of the home.'),
+  homeType: z.string().describe('The type of home (e.g., Detached, Semi-Detached, Townhouse, Condo Apartment).'),
   bedroomsAboveGrade: z.number().int().min(0).describe('The number of bedrooms above grade in the home.'),
   bedroomsBelowGrade: z.number().int().min(0).describe('The number of bedrooms below grade in the home.'),
   bathrooms: z.number().min(1).describe('The number of bathrooms in the home.'),
   squareFootage: z.number().int().min(500).describe('The square footage of the home.'),
-  lotSize: z.number().int().min(1000).describe('The lot size of the property in square feet.'),
   yearBuilt: z.number().int().min(1900).max(2024).describe('The year the home was built.'),
   renovated: z.boolean().describe('Whether the home has been recently renovated.'),
+  finishedBasement: z.boolean().describe('Whether the basement is finished.'),
+  garageSpaces: z.number().int().min(0).describe('The number of garage parking spaces.'),
+  parkingSpaces: z.number().int().min(0).describe('The total number of parking spaces (including garage).'),
   nearbySchools: z.string().describe('The names and ratings of nearby schools.'),
-  recentSales: z.string().describe('A description of the recent comparable sales in the neighborhood.'),
 });
 export type HomeValuationInput = z.infer<typeof HomeValuationInputSchema>;
 
@@ -43,24 +45,26 @@ const prompt = ai.definePrompt({
   output: {schema: HomeValuationOutputSchema},
   prompt: `You are an expert real estate appraiser specializing in the Oakville, Ontario market. Your goal is to provide an accurate and well-reasoned valuation for a given home, along with a confidence score reflecting the reliability of your estimate.
 
-  Consider the following factors when determining the home's value and confidence score. Note that bedrooms below grade (in the basement) typically have a lower market value than bedrooms above grade.
+  Consider the following factors when determining the home's value and confidence score. Note that bedrooms below grade (in the basement) typically have a lower market value than bedrooms above grade. A finished basement adds more value than an unfinished one. Detached homes are typically valued highest, followed by semi-detached, townhouse, and then condo apartments. Parking spaces are a significant value-add.
 
   - Address: {{{address}}}
+  - Home Type: {{{homeType}}}
   - Bedrooms (Above Grade): {{{bedroomsAboveGrade}}}
   - Bedrooms (Below Grade): {{{bedroomsBelowGrade}}}
   - Bathrooms: {{{bathrooms}}}
   - Square Footage: {{{squareFootage}}} sq ft
-  - Lot Size: {{{lotSize}}} sq ft
   - Year Built: {{{yearBuilt}}}
   - Renovated: {{#if renovated}}Yes{{else}}No{{/if}}
+  - Finished Basement: {{#if finishedBasement}}Yes{{else}}No{{/if}}
+  - Garage Parking Spaces: {{{garageSpaces}}}
+  - Total Parking Spaces: {{{parkingSpaces}}}
   - Nearby Schools: {{{nearbySchools}}}
-  - Recent Comparable Sales: {{{recentSales}}}
 
   Instructions:
 
   1.  Valuation: Provide a single, definitive valuation for the property in USD. Ensure this value is realistic and justifiable based on the provided information.
   2.  Confidence Score: Determine a confidence score between 0 and 1. A score of 1 indicates very high confidence (e.g., ample comparable sales data, consistent property characteristics), while a score of 0 indicates very low confidence (e.g., limited data, unique property features making comparisons difficult).
-  3.  Reasoning: Explain your valuation process step-by-step. Reference specific details from the provided information (e.g., comparable sales prices, school ratings, bedroom locations) to justify your estimate and confidence score. Explain how each factor influenced your final valuation.
+  3.  Reasoning: Explain your valuation process step-by-step. Reference specific details from the provided information (e.g., home type, finished basement, parking) to justify your estimate and confidence score. Explain how each factor influenced your final valuation.
 
   Output:
   Return the valuation, confidenceScore, and reasoning in the format specified by the HomeValuationOutputSchema.
@@ -78,3 +82,4 @@ const homeValuationFlow = ai.defineFlow(
     return output!;
   }
 );
+
