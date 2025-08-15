@@ -21,7 +21,7 @@ interface Seller {
 
 interface Valuation extends HomeValuationOutput {
     id: string;
-    inputs: HomeValuationInput;
+    inputs: HomeValuationInput & { yearBuilt: string }; // yearBuilt can be a string from the dropdown
     createdAt: Timestamp;
 }
 
@@ -43,7 +43,17 @@ const ValuationDetails = ({ valuation }: { valuation: Valuation | null }) => {
         '5500': '5,000 +',
     };
 
+    const yearBuiltRanges: {[key: string]: string} = {
+        '2': '0-5 years',
+        '10': '6-15 years',
+        '23': '16-30 years',
+        '40': '31-50 years',
+        '75': '51-99 years',
+        '100': '100+ years',
+    };
+
     const displaySquareFootage = squareFootageRanges[String(valuation.inputs.squareFootage)] || `${valuation.inputs.squareFootage} sq ft`;
+    const displayYearBuilt = yearBuiltRanges[String(valuation.inputs.yearBuilt)] || `${valuation.inputs.yearBuilt}`;
 
 
     return (
@@ -67,7 +77,7 @@ const ValuationDetails = ({ valuation }: { valuation: Valuation | null }) => {
                     <p><strong>Bathrooms:</strong> {valuation.inputs.bathrooms}</p>
                     <p><strong>Square Footage:</strong> {displaySquareFootage}</p>
                     <p><strong>Lot Size:</strong> {valuation.inputs.lotSize} sq ft</p>
-                    <p><strong>Year Built:</strong> {valuation.inputs.yearBuilt}</p>
+                    <p><strong>Age of Home:</strong> {displayYearBuilt}</p>
                     <p><strong>Renovated:</strong> {valuation.inputs.renovated ? 'Yes' : 'No'}</p>
                     <p className="col-span-2"><strong>Nearby Schools:</strong> {valuation.inputs.nearbySchools}</p>
                     <p className="col-span-2"><strong>Recent Sales:</strong> {valuation.inputs.recentSales}</p>
@@ -229,5 +239,3 @@ export default function SellersPage() {
     </Card>
   );
 }
-
-    

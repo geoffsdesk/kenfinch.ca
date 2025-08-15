@@ -47,7 +47,7 @@ const formSchema = z.object({
   bathrooms: z.coerce.number().min(1, { message: 'Must have at least 1 bathroom.' }),
   squareFootage: z.string({ required_error: 'Please select a square footage range.' }),
   lotSize: z.coerce.number().int().min(1000, { message: 'Must be at least 1000 sq ft.' }),
-  yearBuilt: z.coerce.number().int().min(1900, { message: 'Year must be after 1900.' }).max(new Date().getFullYear()),
+  yearBuilt: z.string({ required_error: 'Please select the age of the home.' }),
   renovated: z.boolean().default(false),
   nearbySchools: z.string().min(10, { message: 'Please describe nearby schools.' }),
   recentSales: z.string().min(10, { message: 'Please describe recent comparable sales.' }),
@@ -67,11 +67,20 @@ const squareFootageOptions = [
     { value: '900', label: '700 - 1,100' },
     { value: '1300', label: '1,100 - 1,500' },
     { value: '1750', label: '1,500 - 2,000' },
-    { value: '2250', label: '2,000 - 2,500' },
+    { value: '2250', 'label': '2,000 - 2,500' },
     { value: '2750', label: '2,500 - 3,000' },
     { value: '3250', label: '3,000 - 3,500' },
     { value: '4250', label: '3,500 - 5,000' },
     { value: '5500', label: '5,000 +' },
+]
+
+const yearBuiltOptions = [
+    { value: '2', label: '0-5 years' },
+    { value: '10', label: '6-15 years' },
+    { value: '23', label: '16-30 years' },
+    { value: '40', label: '31-50 years' },
+    { value: '75', label: '51-99 years' },
+    { value: '100', label: '100+ years' },
 ]
 
 
@@ -98,7 +107,7 @@ export function HomeValuation() {
       bathrooms: 2,
       squareFootage: '2250',
       lotSize: 5000,
-      yearBuilt: 2005,
+      yearBuilt: '23',
       renovated: false,
       nearbySchools: '',
       recentSales: '',
@@ -120,10 +129,18 @@ export function HomeValuation() {
     setResult(null);
 
     try {
+      const currentYear = new Date().getFullYear();
       const submissionValues = {
         ...values,
         squareFootage: Number(values.squareFootage),
+        yearBuilt: currentYear - Number(values.yearBuilt),
       };
+       const rawInputs = {
+        ...values,
+        squareFootage: Number(values.squareFootage),
+        yearBuilt: values.yearBuilt, // Keep the original string value for storing
+      };
+      
       const valuationResult = await getHomeValuation(submissionValues);
       setResult(valuationResult);
 
@@ -131,7 +148,7 @@ export function HomeValuation() {
         const valuationRef = doc(collection(db, 'users', user.uid, 'valuations'));
         await writeBatch(db).set(valuationRef, {
             ...valuationResult,
-            inputs: submissionValues,
+            inputs: rawInputs,
             createdAt: serverTimestamp(),
         }).commit();
 
@@ -465,17 +482,28 @@ export function HomeValuation() {
             </div>
             
             <FormField
-            control={form.control}
-            name="yearBuilt"
-            render={({ field }) => (
+              control={form.control}
+              name="yearBuilt"
+              render={({ field }) => (
                 <FormItem>
-                <FormLabel>Year Built</FormLabel>
-                <FormControl>
-                    <Input type="number" {...field} />
-                </FormControl>
-                <FormMessage />
+                  <FormLabel>Age of Home</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select the age range of the home" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {yearBuiltOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
                 </FormItem>
-            )}
+              )}
             />
 
             <FormField
@@ -534,5 +562,3 @@ export function HomeValuation() {
     </Card>
   );
 }
-
-    
