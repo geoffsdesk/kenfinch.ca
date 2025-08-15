@@ -26,12 +26,14 @@ export function Header() {
             <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
-            <Link
-              href={user ? "/dashboard" : "/seller-login"}
+            <a
+              href="https://app.realmmlp.ca/shared/NkRorVzOjRH8EZq3l6e4/eP5L3rZYmMUg2VbgPj8qta3A24la7jtykEQ12JP5srj6l9WRW4HLRbVk7gy6HBY7QPl5R4TnYVZPzjyEfrVYykAknOSWYnewr8ZwI9LREjEgLEFRBO7k7pB7c6wb4WEkKgHDqgrEzOLnUoM1MZD8o"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-foreground/60 transition-colors hover:text-foreground/80"
             >
-              Seller Dashboard
-            </Link>
+              Listing
+            </a>
           </nav>
         </div>
         <div className="flex flex-1 items-center justify-end space-x-2">
