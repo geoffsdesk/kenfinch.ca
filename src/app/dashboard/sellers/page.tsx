@@ -31,6 +31,21 @@ const ValuationDetails = ({ valuation }: { valuation: Valuation | null }) => {
         return <p>No valuation data available for this seller.</p>;
     }
 
+    const squareFootageRanges: {[key: string]: string} = {
+        '600': '< 700',
+        '900': '700 - 1,100',
+        '1300': '1,100 - 1,500',
+        '1750': '1,500 - 2,000',
+        '2250': '2,000 - 2,500',
+        '2750': '2,500 - 3,000',
+        '3250': '3,000 - 3,500',
+        '4250': '3,500 - 5,000',
+        '5500': '5,000 +',
+    };
+
+    const displaySquareFootage = squareFootageRanges[String(valuation.inputs.squareFootage)] || `${valuation.inputs.squareFootage} sq ft`;
+
+
     return (
         <div className="space-y-4">
             <div>
@@ -50,7 +65,7 @@ const ValuationDetails = ({ valuation }: { valuation: Valuation | null }) => {
                     <p><strong>Bedrooms (Above Grade):</strong> {valuation.inputs.bedroomsAboveGrade}</p>
                     <p><strong>Bedrooms (Below Grade):</strong> {valuation.inputs.bedroomsBelowGrade}</p>
                     <p><strong>Bathrooms:</strong> {valuation.inputs.bathrooms}</p>
-                    <p><strong>Square Footage:</strong> {valuation.inputs.squareFootage} sq ft</p>
+                    <p><strong>Square Footage:</strong> {displaySquareFootage}</p>
                     <p><strong>Lot Size:</strong> {valuation.inputs.lotSize} sq ft</p>
                     <p><strong>Year Built:</strong> {valuation.inputs.yearBuilt}</p>
                     <p><strong>Renovated:</strong> {valuation.inputs.renovated ? 'Yes' : 'No'}</p>
@@ -214,3 +229,5 @@ export default function SellersPage() {
     </Card>
   );
 }
+
+    

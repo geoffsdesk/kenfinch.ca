@@ -24,6 +24,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -38,7 +45,7 @@ const formSchema = z.object({
   bedroomsAboveGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
   bedroomsBelowGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
   bathrooms: z.coerce.number().min(1, { message: 'Must have at least 1 bathroom.' }),
-  squareFootage: z.coerce.number().int().min(500, { message: 'Must be at least 500 sq ft.' }),
+  squareFootage: z.string({ required_error: 'Please select a square footage range.' }),
   lotSize: z.coerce.number().int().min(1000, { message: 'Must be at least 1000 sq ft.' }),
   yearBuilt: z.coerce.number().int().min(1900, { message: 'Year must be after 1900.' }).max(new Date().getFullYear()),
   renovated: z.boolean().default(false),
@@ -54,6 +61,18 @@ const contactSchema = z.object({
     email: z.string().email({ message: 'Please enter a valid email address.' }),
     phone: z.string().optional(),
 });
+
+const squareFootageOptions = [
+    { value: '600', label: '< 700' },
+    { value: '900', label: '700 - 1,100' },
+    { value: '1300', label: '1,100 - 1,500' },
+    { value: '1750', label: '1,500 - 2,000' },
+    { value: '2250', label: '2,000 - 2,500' },
+    { value: '2750', label: '2,500 - 3,000' },
+    { value: '3250', label: '3,000 - 3,500' },
+    { value: '4250', label: '3,500 - 5,000' },
+    { value: '5500', label: '5,000 +' },
+]
 
 
 export function HomeValuation() {
@@ -77,7 +96,7 @@ export function HomeValuation() {
       bedroomsAboveGrade: 3,
       bedroomsBelowGrade: 1,
       bathrooms: 2,
-      squareFootage: 2000,
+      squareFootage: '2250',
       lotSize: 5000,
       yearBuilt: 2005,
       renovated: false,
@@ -101,14 +120,18 @@ export function HomeValuation() {
     setResult(null);
 
     try {
-      const valuationResult = await getHomeValuation(values);
+      const submissionValues = {
+        ...values,
+        squareFootage: Number(values.squareFootage),
+      };
+      const valuationResult = await getHomeValuation(submissionValues);
       setResult(valuationResult);
 
       if (user) {
         const valuationRef = doc(collection(db, 'users', user.uid, 'valuations'));
         await writeBatch(db).set(valuationRef, {
             ...valuationResult,
-            inputs: values,
+            inputs: submissionValues,
             createdAt: serverTimestamp(),
         }).commit();
 
@@ -403,17 +426,28 @@ export function HomeValuation() {
                 )}
                 />
                 <FormField
-                control={form.control}
-                name="squareFootage"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Square Footage</FormLabel>
-                    <FormControl>
-                        <Input type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                    </FormItem>
-                )}
+                    control={form.control}
+                    name="squareFootage"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Square Footage</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a square footage range" />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                                {squareFootageOptions.map(option => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
                 />
                  <FormField
                 control={form.control}
@@ -500,3 +534,5 @@ export function HomeValuation() {
     </Card>
   );
 }
+
+    
