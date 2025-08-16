@@ -20,7 +20,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <section id="hero" className="w-full py-16 md:py-20 lg:py-24 bg-card">
+        <section id="hero" className="w-full py-12 md:py-16 lg:py-20 bg-card">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
@@ -194,11 +194,10 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-8 text-center">
                <img
-                  src="https://placehold.co/1200x400.png"
+                  src="/sold_by.png"
                   width="1200"
                   height="400"
-                  alt="A map of the Oakville area"
-                  data-ai-hint="map oakville"
+                  alt="A sign showing a house sold by Ken Finch"
                   className="mx-auto aspect-[3/1] overflow-hidden rounded-xl object-cover"
                 />
               <div className="space-y-2">
