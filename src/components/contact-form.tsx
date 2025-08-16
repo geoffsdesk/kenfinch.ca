@@ -45,6 +45,7 @@ export function ContactForm() {
         await sendEmail({
             to: 'realtor@kenfinch.net',
             from: 'realtor@kenfinch.ca',
+            replyTo: values.email,
             subject: `New Contact Form Submission from ${values.name}`,
             html: `
                 <p>You have a new contact form submission:</p>

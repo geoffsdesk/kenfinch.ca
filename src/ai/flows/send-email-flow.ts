@@ -13,6 +13,7 @@ import sgMail from '@sendgrid/mail';
 const SendEmailInputSchema = z.object({
     to: z.string().email().describe('The email address of the recipient.'),
     from: z.string().email().describe('The email address of the sender.'),
+    replyTo: z.string().email().optional().describe('The email address to reply to.'),
     subject: z.string().describe('The subject of the email.'),
     html: z.string().describe('The HTML body of the email.'),
 });
@@ -40,6 +41,7 @@ const sendEmailFlow = ai.defineFlow(
     const msg = {
       to: input.to,
       from: input.from,
+      replyTo: input.replyTo,
       subject: input.subject,
       html: input.html,
     };
