@@ -26,21 +26,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const handleLogout = async () => {
     await signOut(auth);
     // Redirect to seller login for sellers, and home for admin after logout.
-    if (pathname.includes('/contacts') || pathname.includes('/sellers')) {
+    if (pathname.includes('/sellers')) {
       router.push('/');
     } else {
       router.push('/seller-login');
     }
   };
   
-  const isAdminRoute = pathname.includes('/contacts') || pathname.includes('/sellers');
+  const isAdminRoute = pathname.includes('/sellers');
   const isSellerRoute = !isAdminRoute;
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Dashboard', admin: false },
     { href: '/dashboard/documents', icon: FileText, label: 'Documents', admin: false },
     { href: '/dashboard/sellers', icon: Building, label: 'Sellers', admin: true },
-    { href: '/dashboard/contacts', icon: Users, label: 'Contacts', admin: true },
   ];
 
   useEffect(() => {

@@ -1,12 +1,9 @@
 
 "use client";
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 
 import { Button } from '@/components/ui/button';
@@ -30,7 +27,6 @@ const contactSchema = z.object({
 
 
 export function ContactForm() {
-  const [contactSubmitted, setContactSubmitted] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof contactSchema>>({
@@ -45,29 +41,31 @@ export function ContactForm() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     form.clearErrors();
     try {
-        await addDoc(collection(db, "contacts"), {
-            ...values,
-            submittedAt: serverTimestamp(),
+        const response = await fetch("https://formspree.io/f/your_form_id", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(values)
         });
-        setContactSubmitted(true);
+
+        if (response.ok) {
+            form.reset();
+            toast({
+                title: "Message Sent!",
+                description: "Thank you for reaching out. Ken Finch will be in touch shortly.",
+            });
+        } else {
+             throw new Error("Form submission failed");
+        }
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error submitting form: ", e);
         toast({
             variant: "destructive",
             title: "Submission Failed",
             description: "There was a problem submitting your information. Please try again.",
         });
     }
-  }
-
-
-  if (contactSubmitted) {
-    return (
-        <div className="text-center p-6 bg-green-50 rounded-lg">
-           <h3 className="text-xl font-semibold text-green-800">Thank You!</h3>
-           <p className="text-green-700 mt-2">Your message has been sent. Ken Finch will be in touch shortly.</p>
-        </div>
-   );
   }
 
   return (
