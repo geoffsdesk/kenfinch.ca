@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -41,25 +43,17 @@ export function ContactForm() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     form.clearErrors();
     try {
-        const response = await fetch("https://formspree.io/f/your_form_id", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(values)
+        await addDoc(collection(db, "contacts"), {
+            ...values,
+            submittedAt: serverTimestamp(),
         });
-
-        if (response.ok) {
-            form.reset();
-            toast({
-                title: "Message Sent!",
-                description: "Thank you for reaching out. Ken Finch will be in touch shortly.",
-            });
-        } else {
-             throw new Error("Form submission failed");
-        }
+        form.reset();
+        toast({
+            title: "Message Sent!",
+            description: "Thank you for reaching out. Ken Finch will be in touch shortly.",
+        });
     } catch (e) {
-        console.error("Error submitting form: ", e);
+        console.error("Error adding document: ", e);
         toast({
             variant: "destructive",
             title: "Submission Failed",

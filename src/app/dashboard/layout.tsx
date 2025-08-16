@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, FileText, Users, LogOut, ChevronLeft, Building } from 'lucide-react';
+import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,19 +26,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const handleLogout = async () => {
     await signOut(auth);
     // Redirect to seller login for sellers, and home for admin after logout.
-    if (pathname.includes('/sellers')) {
+    if (pathname.includes('/sellers') || pathname.includes('/contacts')) {
       router.push('/');
     } else {
       router.push('/seller-login');
     }
   };
   
-  const isAdminRoute = pathname.includes('/sellers');
+  const isAdminRoute = pathname.includes('/sellers') || pathname.includes('/contacts');
   const isSellerRoute = !isAdminRoute;
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Dashboard', admin: false },
     { href: '/dashboard/documents', icon: FileText, label: 'Documents', admin: false },
+    { href: '/dashboard/contacts', icon: Mail, label: 'Contacts', admin: true },
     { href: '/dashboard/sellers', icon: Building, label: 'Sellers', admin: true },
   ];
 
