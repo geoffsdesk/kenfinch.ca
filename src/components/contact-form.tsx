@@ -53,7 +53,7 @@ export function ContactForm() {
         // Then, send the email notification
         await sendEmail({
             to: 'realtor@kenfinch.net',
-            from: 'realtor@kenfinch.net', // Use a no-reply address from your domain
+            from: 'realtor@kenfinch.ca', // Use a verified sender address
             subject: `New Contact Form Submission from ${values.name}`,
             html: `
                 <p>You have a new contact form submission:</p>
