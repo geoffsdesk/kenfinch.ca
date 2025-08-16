@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A flow for sending emails using SendGrid.
@@ -34,6 +35,7 @@ const sendEmailFlow = ai.defineFlow(
   async (input) => {
 
     if (!process.env.SENDGRID_API_KEY) {
+        console.error('SENDGRID_API_KEY is not set in the environment variables.');
         throw new Error('SENDGRID_API_KEY is not set in the environment variables.');
     }
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
