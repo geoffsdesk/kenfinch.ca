@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { sendEmail } from '@/ai/flows/send-email-flow';
 
@@ -53,7 +53,7 @@ export function ContactForm() {
         // Then, send the email notification
         await sendEmail({
             to: 'realtor@kenfinch.net',
-            from: 'noreply@kenfinch.ca', // Use a no-reply address from your domain
+            from: 'test@example.com', // Use a no-reply address from your domain
             subject: `New Contact Form Submission from ${values.name}`,
             html: `
                 <p>You have a new contact form submission:</p>
