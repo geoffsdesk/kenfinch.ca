@@ -198,7 +198,7 @@ export function HomeValuation() {
         // Send email
         await sendEmail({
             to: 'realtor@kenfinch.net',
-            from: 'test@example.com',
+            from: 'realtor@kenfinch.net',
             subject: `Expert Opinion Request for: ${form.getValues('address')}`,
             html: `
                 <p>You have a new request for an expert opinion following an AI valuation.</p>
