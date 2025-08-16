@@ -187,6 +187,7 @@ export function HomeValuation() {
 
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     contactForm.clearErrors();
+    contactForm.formState.isSubmitting = true;
     try {
         await sendEmail({
             to: 'realtor@kenfinch.net',
@@ -222,6 +223,8 @@ export function HomeValuation() {
             title: "Submission Failed",
             description: "There was a problem submitting your information. Please try again.",
         });
+    } finally {
+        contactForm.formState.isSubmitting = false;
     }
   }
 
