@@ -188,14 +188,6 @@ export function HomeValuation() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     contactForm.clearErrors();
     try {
-        // Save to general contacts collection
-        await addDoc(collection(db, "contacts"), {
-            ...values,
-            context: `Expert opinion request for ${form.getValues('address')}`,
-            submittedAt: serverTimestamp(),
-        });
-        
-        // Send email
         await sendEmail({
             to: 'realtor@kenfinch.net',
             from: 'realtor@kenfinch.ca',

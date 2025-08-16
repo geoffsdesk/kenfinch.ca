@@ -5,8 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { sendEmail } from '@/ai/flows/send-email-flow';
 
 import { Button } from '@/components/ui/button';
@@ -44,16 +42,9 @@ export function ContactForm() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     form.clearErrors();
     try {
-        // First, save the contact to the database for the admin's records
-        await addDoc(collection(db, "contacts"), {
-            ...values,
-            submittedAt: serverTimestamp(),
-        });
-        
-        // Then, send the email notification
         await sendEmail({
             to: 'realtor@kenfinch.net',
-            from: 'realtor@kenfinch.ca', // Use a verified sender address
+            from: 'realtor@kenfinch.ca',
             subject: `New Contact Form Submission from ${values.name}`,
             html: `
                 <p>You have a new contact form submission:</p>
