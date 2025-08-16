@@ -43,7 +43,7 @@ export function ContactForm() {
     form.clearErrors();
     try {
         await sendEmail({
-            to: 'realtor@kenfinch.net',
+            to: 'realtor@kenfinch.ca',
             from: 'realtor@kenfinch.ca',
             replyTo: values.email,
             subject: `New Contact Form Submission from ${values.name}`,
