@@ -9,7 +9,7 @@ service cloud.firestore {
       // In a real application, you would have a more secure way to identify admins,
       // such as checking a custom claim on the user's auth token.
       // For this project, we will identify the admin by a specific UID.
-      // Replace 'ADMIN_USER_UID' with the actual UID of your admin account.
+      // Replace 'a9tbn5TZzlPxR36SdvDjCljReIV2' with the actual UID of your admin account.
       // You can find a user's UID in the Firebase Console -> Authentication -> Users tab.
       return request.auth.uid == "PUT_ADMIN_UID_HERE";
     }
