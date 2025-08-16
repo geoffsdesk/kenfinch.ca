@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
+import { sendEmail } from '@/ai/flows/send-email-flow';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -187,31 +188,42 @@ export function HomeValuation() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     contactForm.clearErrors();
     try {
-        await addDoc(collection(db, "mail"), {
-            to: 'realtor@kenfinch.net',
-            message: {
-                subject: `Expert Opinion Request for: ${form.getValues('address')}`,
-                 html: `
-                    <p>You have a new request for an expert opinion following an AI valuation.</p>
-                    <ul>
-                        <li><strong>Name:</strong> ${values.name}</li>
-                        <li><strong>Email:</strong> ${values.email}</li>
-                        <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
-                    </ul>
-                    <hr>
-                    <p>The user generated the following AI valuation:</p>
-                     <ul>
-                        <li><strong>Address:</strong> ${form.getValues('address')}</li>
-                        <li><strong>Estimated Value:</strong> $${result?.valuation.toLocaleString()}</li>
-                        <li><strong>Confidence Score:</strong> ${result ? Math.round(result.confidenceScore * 100) : 'N/A'}%</li>
-                    </ul>
-                `,
-            },
+        // Save to general contacts collection
+        await addDoc(collection(db, "contacts"), {
+            ...values,
+            context: `Expert opinion request for ${form.getValues('address')}`,
             submittedAt: serverTimestamp(),
         });
+        
+        // Send email
+        await sendEmail({
+            to: 'realtor@kenfinch.net',
+            from: 'noreply@kenfinch.ca',
+            subject: `Expert Opinion Request for: ${form.getValues('address')}`,
+            html: `
+                <p>You have a new request for an expert opinion following an AI valuation.</p>
+                <ul>
+                    <li><strong>Name:</strong> ${values.name}</li>
+                    <li><strong>Email:</strong> ${values.email}</li>
+                    <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
+                </ul>
+                <hr>
+                <p>The user generated the following AI valuation:</p>
+                <ul>
+                    <li><strong>Address:</strong> ${form.getValues('address')}</li>
+                    <li><strong>Estimated Value:</strong> $${result?.valuation.toLocaleString()}</li>
+                    <li><strong>Confidence Score:</strong> ${result ? Math.round(result.confidenceScore * 100) : 'N/A'}%</li>
+                </ul>
+            `,
+        });
+
         setContactSubmitted(true);
+        toast({
+            title: "Request Sent!",
+            description: "Thank you for your interest. Ken Finch will be in touch shortly.",
+        });
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error submitting contact form: ", e);
         toast({
             variant: "destructive",
             title: "Submission Failed",

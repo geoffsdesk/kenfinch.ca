@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { sendEmail } from '@/ai/flows/send-email-flow';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -43,28 +44,34 @@ export function ContactForm() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     form.clearErrors();
     try {
-        await addDoc(collection(db, "mail"), {
-            to: 'realtor@kenfinch.net',
-            message: {
-                subject: `New Contact Form Submission from ${values.name}`,
-                html: `
-                    <p>You have a new contact form submission:</p>
-                    <ul>
-                        <li><strong>Name:</strong> ${values.name}</li>
-                        <li><strong>Email:</strong> ${values.email}</li>
-                        <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
-                    </ul>
-                `,
-            },
+        // First, save the contact to the database for the admin's records
+        await addDoc(collection(db, "contacts"), {
+            ...values,
             submittedAt: serverTimestamp(),
         });
+        
+        // Then, send the email notification
+        await sendEmail({
+            to: 'realtor@kenfinch.net',
+            from: 'noreply@kenfinch.ca', // Use a no-reply address from your domain
+            subject: `New Contact Form Submission from ${values.name}`,
+            html: `
+                <p>You have a new contact form submission:</p>
+                <ul>
+                    <li><strong>Name:</strong> ${values.name}</li>
+                    <li><strong>Email:</strong> ${values.email}</li>
+                    <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
+                </ul>
+            `,
+        });
+
         form.reset();
         toast({
             title: "Message Sent!",
             description: "Thank you for reaching out. Ken Finch will be in touch shortly.",
         });
     } catch (e) {
-        console.error("Error adding document: ", e);
+        console.error("Error submitting form: ", e);
         toast({
             variant: "destructive",
             title: "Submission Failed",
