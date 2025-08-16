@@ -43,8 +43,19 @@ export function ContactForm() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     form.clearErrors();
     try {
-        await addDoc(collection(db, "contacts"), {
-            ...values,
+        await addDoc(collection(db, "mail"), {
+            to: 'realtor@kenfinch.net',
+            message: {
+                subject: `New Contact Form Submission from ${values.name}`,
+                html: `
+                    <p>You have a new contact form submission:</p>
+                    <ul>
+                        <li><strong>Name:</strong> ${values.name}</li>
+                        <li><strong>Email:</strong> ${values.email}</li>
+                        <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
+                    </ul>
+                `,
+            },
             submittedAt: serverTimestamp(),
         });
         form.reset();

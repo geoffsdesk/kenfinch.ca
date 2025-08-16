@@ -187,8 +187,26 @@ export function HomeValuation() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     contactForm.clearErrors();
     try {
-        await addDoc(collection(db, "contacts"), {
-            ...values,
+        await addDoc(collection(db, "mail"), {
+            to: 'realtor@kenfinch.net',
+            message: {
+                subject: `Expert Opinion Request for: ${form.getValues('address')}`,
+                 html: `
+                    <p>You have a new request for an expert opinion following an AI valuation.</p>
+                    <ul>
+                        <li><strong>Name:</strong> ${values.name}</li>
+                        <li><strong>Email:</strong> ${values.email}</li>
+                        <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
+                    </ul>
+                    <hr>
+                    <p>The user generated the following AI valuation:</p>
+                     <ul>
+                        <li><strong>Address:</strong> ${form.getValues('address')}</li>
+                        <li><strong>Estimated Value:</strong> $${result?.valuation.toLocaleString()}</li>
+                        <li><strong>Confidence Score:</strong> ${result ? Math.round(result.confidenceScore * 100) : 'N/A'}%</li>
+                    </ul>
+                `,
+            },
             submittedAt: serverTimestamp(),
         });
         setContactSubmitted(true);
