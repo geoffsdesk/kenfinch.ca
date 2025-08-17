@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail, Menu } from 'lucide-react';
+import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail, Menu, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,14 +29,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const handleLogout = async () => {
     await signOut(auth);
     // Redirect to seller login for sellers, and home for admin after logout.
-    if (pathname.includes('/sellers') || pathname.includes('/contacts')) {
+    if (pathname.includes('/sellers') || pathname.includes('/contacts') || pathname.includes('/chat-logs')) {
       router.push('/');
     } else {
       router.push('/seller-login');
     }
   };
   
-  const isAdminRoute = pathname.includes('/sellers') || pathname.includes('/contacts');
+  const isAdminRoute = pathname.includes('/sellers') || pathname.includes('/contacts') || pathname.includes('chat-logs');
   const isSellerRoute = !isAdminRoute;
 
   const navItems = [
@@ -44,6 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/documents', icon: FileText, label: 'Documents', admin: false },
     { href: '/dashboard/contacts', icon: Mail, label: 'Contacts', admin: true },
     { href: '/dashboard/sellers', icon: Building, label: 'Sellers', admin: true },
+    { href: '/dashboard/chat-logs', icon: MessageSquare, label: 'Chat Logs', admin: true },
   ];
   
   const currentNavItems = navItems.filter(item => isAdminRoute ? item.admin : !item.admin);

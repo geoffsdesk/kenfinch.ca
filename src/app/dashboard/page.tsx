@@ -170,6 +170,7 @@ const Chatbot = () => {
     }, [messages, isLoading]);
 
     async function onSubmit(values: z.infer<typeof chatFormSchema>) {
+        if (!user) return;
         setIsLoading(true);
         const userMessage: ChatMessage = { id: nanoid(), role: 'user', text: values.message };
         const newMessages = [...messages, userMessage];
@@ -183,6 +184,7 @@ const Chatbot = () => {
             }));
 
             const chatInput: ChatInput = {
+                userId: user.uid,
                 message: values.message,
                 history: chatHistory.slice(0, -1),
             };

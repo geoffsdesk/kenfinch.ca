@@ -10,8 +10,12 @@
 
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+
 
 const ChatInputSchema = z.object({
+  userId: z.string().describe('The ID of the logged-in user.'),
   message: z.string().describe('The user\'s message to the chatbot.'),
   history: z.array(z.object({
     role: z.enum(['user', 'model']),
@@ -103,6 +107,22 @@ const chatFlow = ai.defineFlow(
         message: input.message,
         history: history,
     });
-    return { message: output!.message };
+    
+    const responseMessage = output!.message;
+    
+    // Log the conversation to Firestore
+    try {
+        await addDoc(collection(db, 'chatbot_logs'), {
+            userId: input.userId,
+            userMessage: input.message,
+            modelResponse: responseMessage,
+            createdAt: serverTimestamp(),
+        });
+    } catch (error) {
+        console.error("Error logging chatbot conversation:", error);
+        // Do not block the user response if logging fails
+    }
+    
+    return { message: responseMessage };
   }
 );
