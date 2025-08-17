@@ -4,13 +4,14 @@ import { Footer } from '@/components/footer';
 import { HomeValuation } from '@/components/home-valuation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, BarChart, FileText, Star } from 'lucide-react';
+import { CheckCircle, BarChart, FileText, Star, Megaphone, Network, Award } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Your Trusted Oakville Real Estate Partner',
     description: 'Unlock your Oakville home\'s true value with Ken Finch. Get a free, AI-powered home valuation and experience a seamless, successful home selling process.',
+    keywords: ['Oakville real estate', 'sell home Oakville', 'Ken Finch realtor', 'home valuation Oakville', 'Westoak Trails real estate'],
 };
 
 
@@ -120,6 +121,33 @@ export default function Home() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">Access all your important files, from staging guides to closing documents, in one secure, centralized location.</p>
+                </CardContent>
+              </Card>
+               <Card>
+                <CardHeader>
+                  <Megaphone className="h-8 w-8 text-primary" />
+                  <CardTitle className="font-headline pt-4">Targeted Digital Marketing</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Your home will be showcased with professional photography, video tours, and strategic social media campaigns to reach qualified buyers.</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <Network className="h-8 w-8 text-primary" />
+                  <CardTitle className="font-headline pt-4">Exclusive Buyer Network</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">With over 20 years of experience, Ken leverages a vast network of contacts and word-of-mouth referrals to connect with exclusive buyers.</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <Award className="h-8 w-8 text-primary" />
+                  <CardTitle className="font-headline pt-4">Masterful Negotiation</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Rely on decades of experience to navigate offers and secure the best possible price and terms for your home sale.</p>
                 </CardContent>
               </Card>
             </div>
