@@ -127,10 +127,14 @@ const TaskItem = ({ id, label, checked, onCheckedChange }: { id: string; label: 
 
 const initialPrepTasks = [
     { id: "declutter", label: "Declutter living spaces", checked: false },
-    { id: "deepclean", label: "Deep clean entire house", checked: false },
-    { id: "painting", label: "Touch-up painting", checked: false },
     { id: "repairs", label: "Complete minor repairs", checked: false },
+    { id: "deepclean", label: "Deep clean entire house", checked: false },
     { id: "staging", label: "Stage home with professional guidance", checked: false },
+    { id: "painting", label: "Touch-up painting", checked: false },
+    { id: "landscaping", label: "Exterior landscaping & curb appeal", checked: false },
+    { id: "furniture", label: "Remove excess furniture", checked: false },
+    { id: "documents", label: "Provide Property Tax & Utility Bills", checked: false },
+    { id: "maintenance", label: "Service HVAC, plumbing & electrical", checked: false },
 ];
 
 interface ChatMessage {
@@ -381,8 +385,8 @@ export default function DashboardPage() {
     return (
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:grid-cols-3">
             <div className="grid gap-4 lg:col-span-2">
-                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                    <Card className="sm:col-span-1 md:col-span-3">
+                 <div className="grid gap-4 sm:grid-cols-2">
+                    <Card className="sm:col-span-2">
                         <CardHeader className="pb-4">
                             <CardTitle className="font-headline">Welcome, {user?.email}!</CardTitle>
                             <CardDescription>Here's a snapshot of your home selling journey.</CardDescription>
@@ -395,7 +399,7 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
                     {valuation && (
-                        <Card className="lg:col-span-1">
+                        <Card className="sm:col-span-2">
                             <CardHeader className="pb-2">
                                 <CardTitle className="text-xl flex items-center gap-2">
                                 <Sparkles className="h-5 w-5 text-primary"/> AI Home Valuation
@@ -411,34 +415,6 @@ export default function DashboardPage() {
                             </CardFooter>
                         </Card>
                     )}
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-xl flex items-center gap-2">
-                            <Camera className="h-5 w-5 text-primary"/> Photo & Video Shoot
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="font-semibold text-lg">July 25, 2024 - 10:00 AM</p>
-                            <p className="text-sm text-muted-foreground">Photographer: Jane Doe</p>
-                        </CardContent>
-                        <CardFooter>
-                            <Badge variant="outline">Confirmed</Badge>
-                        </CardFooter>
-                    </Card>
-                    <Card>
-                        <CardHeader className="pb-2">
-                            <CardTitle className="text-xl flex items-center gap-2">
-                            <CalendarDays className="h-5 w-5 text-primary"/> Open House Schedule
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                        <p className="font-semibold text-lg">July 27-28, 2024</p>
-                        <p className="text-sm text-muted-foreground">1:00 PM - 4:00 PM</p>
-                        </CardContent>
-                        <CardFooter>
-                            <Badge>Upcoming</Badge>
-                        </CardFooter>
-                    </Card>
                 </div>
                  <Card>
                     <CardHeader>
