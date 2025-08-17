@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
 
   useEffect(() => {
     if (user && !loading) {
-      router.push('/admin/dashboard/contacts');
+      router.push('/admin/dashboard');
     }
   }, [user, loading, router]);
 
