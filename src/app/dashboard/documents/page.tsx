@@ -143,21 +143,14 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-                    // Save document metadata to Firestore
                     await addDoc(collection(db, 'users', userId, 'documents'), {
                         name: file.name,
                         url: downloadURL,
                         category: category,
-                        type: 'user_upload', // Differentiate user uploads
+                        type: 'user_upload',
                         date: serverTimestamp(),
                     });
 
-                    setIsUploading(false);
-                    setFile(null);
-                    if (fileInputRef.current) {
-                        fileInputRef.current.value = "";
-                    }
-                    setCategory('Other');
                     toast({
                         title: "Upload Successful",
                         description: "Your document has been added to the hub.",
@@ -218,11 +211,10 @@ export default function DocumentsPage() {
     const router = useRouter();
     const [documents, setDocuments] = useState<Document[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [uploadCounter, setUploadCounter] = useState(0);
     
-    // This function is now just a placeholder, as onSnapshot handles real-time updates.
-    // However, it can be useful for triggering any additional logic if needed.
     const handleUploadComplete = useCallback(() => {
-       // console.log("Upload finished, list will update automatically.");
+        setUploadCounter(count => count + 1);
     }, []);
 
     useEffect(() => {
@@ -256,7 +248,6 @@ export default function DocumentsPage() {
              setIsLoading(false);
         });
 
-        // Cleanup the listener when the component unmounts
         return () => unsubscribe();
     }, [user, loading, router]);
 
@@ -271,7 +262,7 @@ export default function DocumentsPage() {
 
     return (
         <div className="grid gap-8">
-            {user && <UploadDocument userId={user.uid} onUploadComplete={handleUploadComplete} />}
+            {user && <UploadDocument key={uploadCounter} userId={user.uid} onUploadComplete={handleUploadComplete} />}
             <Card>
                 <CardHeader>
                     <CardTitle>Document Hub</CardTitle>
