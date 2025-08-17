@@ -13,17 +13,47 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
 import { Loader2 } from 'lucide-react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function AdminDashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isCheckingRole, setIsCheckingRole] = useState(true);
   const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (user) {
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists() && userDoc.data().isAdmin === true) {
+            setIsAdmin(true);
+          } else {
+            // Not an admin, redirect them
+            router.push('/seller/dashboard'); 
+          }
+        } catch (err) {
+            console.error("Failed to check admin status", err);
+            router.push('/admin/login');
+        } finally {
+            setIsCheckingRole(false);
+        }
+      } else if (!loading) {
+        router.push('/admin/login');
+        setIsCheckingRole(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user, loading, router]);
+
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -34,13 +64,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   ];
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push('/admin/login');
-    }
-  }, [user, loading, router]);
-
-  if (loading || !user) {
+  if (loading || isCheckingRole || !isAdmin) {
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
   

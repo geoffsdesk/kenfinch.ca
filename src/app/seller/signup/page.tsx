@@ -61,6 +61,7 @@ export default function SellerSignupPage() {
       await setDoc(doc(db, "users", newUser.uid), {
         email: newUser.email,
         createdAt: serverTimestamp(),
+        isAdmin: false,
       });
 
       toast({
