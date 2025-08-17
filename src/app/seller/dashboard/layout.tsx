@@ -33,7 +33,6 @@ export default function SellerDashboardLayout({ children }: { children: React.Re
   
   const navItems = [
     { href: '/seller/dashboard', icon: Home, label: 'Dashboard' },
-    { href: '/seller/dashboard/documents', icon: FileText, label: 'Documents' },
   ];
   
   useEffect(() => {
