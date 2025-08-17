@@ -11,7 +11,7 @@ import { db, auth } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useJsApiLoader } from '@react-google-maps/api';
-import usePlacesAutocomplete from 'use-places-autocomplete';
+import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 import { sendEmail } from '@/ai/flows/send-email-flow';
@@ -270,9 +270,33 @@ function HomeValuationInternal() {
     setValue(e.target.value);
   };
 
-  const handleSelect = ({ description }: { description: string }) => () => {
+  const handleSelect = ({ description }: { description: string }) => async () => {
     setValue(description, false);
     clearSuggestions();
+    
+    try {
+        const results = await getGeocode({ address: description });
+        const { lat, lng } = await getLatLng(results[0]);
+        
+        const map = new google.maps.Map(document.createElement('div'));
+        const service = new google.maps.places.PlacesService(map);
+
+        const request = {
+            location: { lat, lng },
+            radius: 2000, // 2km radius
+            type: 'school',
+            rankBy: google.maps.places.RankBy.PROMINENCE,
+        };
+
+        service.nearbySearch(request, (results, status) => {
+            if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+                const schoolNames = results.slice(0, 5).map(place => place.name).join(', ');
+                form.setValue('nearbySchools', schoolNames);
+            }
+        });
+    } catch (error) {
+        console.error("Error fetching schools: ", error);
+    }
   };
 
   const renderSuggestions = () => (
@@ -723,7 +747,7 @@ const HomeValuation = () => {
      return (
       <Card className="flex flex-col items-center justify-center p-10 min-h-[400px]">
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
-        <p className="mt-4 text-muted-foreground">Loading Map...</p>
+        <p className="mt-4 text-muted-foreground">Loading valuation tool...</p>
       </Card>
     );
   }
@@ -732,6 +756,8 @@ const HomeValuation = () => {
 }
 
 export { HomeValuation };
+
+    
 
     
 
