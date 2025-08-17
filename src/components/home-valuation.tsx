@@ -40,7 +40,7 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Loader2, AlertCircle, Sparkles, TrendingUp, ShieldCheck, User, Mail, Phone, MapPin } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Separator } from './ui/separator';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
  address: z.string().min(1, { message: 'Please enter a street address.' }).refine(address => address.length > 0, { message: 'Address is required.' }),
