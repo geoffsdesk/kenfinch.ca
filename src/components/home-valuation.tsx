@@ -1,11 +1,11 @@
 
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { collection, addDoc, serverTimestamp, doc, writeBatch } from 'firebase/firestore';
+import { collection, doc, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useToast } from '@/hooks/use-toast';
@@ -203,24 +203,45 @@ function HomeValuationInternal() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     contactForm.clearErrors();
     try {
+        const formValues = form.getValues();
+        const squareFootageLabel = squareFootageOptions.find(opt => opt.value === formValues.squareFootage)?.label;
+        const yearBuiltLabel = yearBuiltOptions.find(opt => opt.value === formValues.yearBuilt)?.label;
+        const finishedBasementLabel = finishedBasementOptions.find(opt => opt.value === formValues.finishedBasement)?.label;
+
         await sendEmail({
             to: 'realtor@kenfinch.ca',
             from: 'realtor@kenfinch.ca',
             replyTo: values.email,
-            subject: `Expert Opinion Request for: ${form.getValues('address')}`,
+            subject: `Expert Opinion Request for: ${formValues.address}`,
             html: `
                 <p>You have a new request for an expert opinion following an AI valuation.</p>
+                <h3>Contact Details:</h3>
                 <ul>
                     <li><strong>Name:</strong> ${values.name}</li>
                     <li><strong>Email:</strong> ${values.email}</li>
                     <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
                 </ul>
                 <hr>
-                <p>The user generated the following AI valuation:</p>
+                <h3>AI Valuation Result:</h3>
                 <ul>
-                    <li><strong>Address:</strong> ${form.getValues('address')}</li>
                     <li><strong>Estimated Value:</strong> $${result?.valuation.toLocaleString()}</li>
                     <li><strong>Confidence Score:</strong> ${result ? Math.round(result.confidenceScore * 100) : 'N/A'}%</li>
+                </ul>
+                 <hr>
+                <h3>User-Provided Property Details:</h3>
+                 <ul>
+                    <li><strong>Address:</strong> ${formValues.address}</li>
+                    <li><strong>Home Type:</strong> ${formValues.homeType}</li>
+                    <li><strong>Bedrooms (Above Grade):</strong> ${formValues.bedroomsAboveGrade}</li>
+                    <li><strong>Bedrooms (Below Grade):</strong> ${formValues.bedroomsBelowGrade}</li>
+                    <li><strong>Bathrooms:</strong> ${formValues.bathrooms}</li>
+                    <li><strong>Square Footage:</strong> ${squareFootageLabel}</li>
+                    <li><strong>Age of Home:</strong> ${yearBuiltLabel}</li>
+                    <li><strong>Recently Renovated:</strong> ${formValues.renovated ? 'Yes' : 'No'}</li>
+                    <li><strong>Finished Basement:</strong> ${finishedBasementLabel}</li>
+                    <li><strong>Garage Spaces:</strong> ${formValues.garageSpaces}</li>
+                    <li><strong>Total Parking Spaces:</strong> ${formValues.parkingSpaces}</li>
+                    <li><strong>Nearby Schools:</strong> ${formValues.nearbySchools}</li>
                 </ul>
             `,
         });
@@ -677,7 +698,7 @@ function HomeValuationInternal() {
   );
 }
 
-export function HomeValuation() {
+const HomeValuation = () => {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     libraries: googleMapsLibraries,
@@ -704,3 +725,7 @@ export function HomeValuation() {
 
   return <HomeValuationInternal />;
 }
+
+export { HomeValuation };
+
+    
