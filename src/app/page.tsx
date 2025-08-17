@@ -36,6 +36,9 @@ export default function Home() {
                    <Link href="#valuation-tool" className="inline-block">
                     <Button size="lg">Get Free Valuation</Button>
                   </Link>
+                   <Link href="/contact" className="inline-block">
+                    <Button size="lg" variant="outline">Contact Ken</Button>
+                  </Link>
                 </div>
               </div>
               <img
@@ -50,7 +53,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="w-full py-8 md:py-12 lg:py-16">
+        <section id="about" className="w-full py-12 md:py-16 lg:py-20">
           <div className="container px-4 md:px-6">
             <div className="grid gap-10 md:grid-cols-2 md:gap-16">
               <div>
@@ -82,7 +85,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="features" className="w-full py-8 md:py-12 lg:py-16">
+        <section id="features" className="w-full py-12 md:py-16 lg:py-20">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -125,7 +128,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="testimonials" className="w-full py-8 md:py-12 lg:py-16 bg-muted">
+        <section id="testimonials" className="w-full py-12 md:py-16 lg:py-20 bg-muted">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -174,7 +177,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="valuation-tool" className="w-full py-8 md:py-12 lg:py-16 bg-card">
+        <section id="valuation-tool" className="w-full py-12 md:py-16 lg:py-20 bg-card">
           <div className="container px-4 md:px-6">
              <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
@@ -190,31 +193,6 @@ export default function Home() {
           </div>
         </section>
         
-        <section id="contact" className="w-full py-8 md:py-12 lg:py-16">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-8 text-center">
-                <div className="mx-auto max-w-3xl">
-                    <img
-                        src="/sold_by_ken1.png"
-                        width="1200"
-                        height="400"
-                        alt="A sign showing a house sold by Ken Finch"
-                        className="mx-auto aspect-auto overflow-hidden rounded-xl object-cover"
-                    />
-                </div>
-              <div className="space-y-2 pt-8">
-                <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">Contact Ken</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Have questions or ready to get started? Reach out today.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto max-w-4xl pt-12">
-              <ContactForm />
-            </div>
-          </div>
-        </section>
-
       </main>
       <Footer />
     </div>

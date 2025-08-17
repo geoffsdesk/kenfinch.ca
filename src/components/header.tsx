@@ -32,7 +32,7 @@ export function Header() {
         label: "Get Free Valuation",
     },
     {
-        href: "/#contact",
+        href: "/contact",
         label: "Contact Ken",
     }
   ]
