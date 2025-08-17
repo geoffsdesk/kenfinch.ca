@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, query, orderBy, Timestamp, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -97,19 +97,43 @@ const DocumentList = ({ documents }: { documents: Document[] }) => {
     )
 }
 
-const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUploadComplete: () => void }) => {
+const UploadDocument = ({ userId }: { userId: string }) => {
     const [file, setFile] = useState<File | null>(null);
     const [category, setCategory] = useState<string>('Other');
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const { toast } = useToast();
     const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            setFile(e.target.files[0]);
+        if (e.target.files && e.target.files[0]) {
+            const selectedFile = e.target.files[0];
+            if (selectedFile.size > MAX_FILE_SIZE) {
+                 toast({
+                    variant: 'destructive',
+                    title: "File is Too Large",
+                    description: "The file size cannot exceed 50MB. Please contact Ken for assistance.",
+                });
+                if(fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
+                setFile(null);
+                return;
+            }
+            setFile(selectedFile);
         }
     };
+    
+    const resetState = () => {
+        setFile(null);
+        setIsUploading(false);
+        setUploadProgress(0);
+        setCategory('Other');
+        if(fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    }
 
     const handleUpload = async () => {
         if (!file || !category) {
@@ -124,7 +148,7 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
         setIsUploading(true);
         setUploadProgress(0);
 
-        const storageRef = ref(storage, `users/${userId}/documents/${file.name}`);
+        const storageRef = ref(storage, `users/${userId}/documents/${Date.now()}_${file.name}`);
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on('state_changed',
@@ -134,12 +158,12 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
             },
             (error) => {
                 console.error("Upload error:", error);
-                setIsUploading(false);
                 toast({
                     variant: 'destructive',
                     title: "Upload Error",
                     description: "There was a problem uploading your file. Please try again."
                 });
+                resetState();
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
@@ -155,7 +179,7 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
                         title: "Upload Successful",
                         description: "Your document has been added to the hub.",
                     });
-                    onUploadComplete();
+                    resetState();
                 });
             }
         );
@@ -165,7 +189,7 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
         <Card>
             <CardHeader>
                 <CardTitle>Upload a New Document</CardTitle>
-                <CardDescription>Add files like inspection reports, receipts, or other important papers.</CardDescription>
+                <CardDescription>Add files like inspection reports, receipts, or other important papers. Max file size: 50MB.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -211,12 +235,7 @@ export default function DocumentsPage() {
     const router = useRouter();
     const [documents, setDocuments] = useState<Document[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [uploadCounter, setUploadCounter] = useState(0);
     
-    const handleUploadComplete = useCallback(() => {
-        setUploadCounter(count => count + 1);
-    }, []);
-
     useEffect(() => {
         if (loading) return;
         if (!user) {
@@ -262,7 +281,7 @@ export default function DocumentsPage() {
 
     return (
         <div className="grid gap-8">
-            {user && <UploadDocument key={uploadCounter} userId={user.uid} onUploadComplete={handleUploadComplete} />}
+            {user && <UploadDocument userId={user.uid} />}
             <Card>
                 <CardHeader>
                     <CardTitle>Document Hub</CardTitle>
@@ -275,3 +294,5 @@ export default function DocumentsPage() {
         </div>
     )
 }
+
+    
