@@ -168,11 +168,10 @@ export default function Home() {
               <Card>
                 <CardContent className="p-6 grid gap-6 md:grid-cols-[120px_1fr] items-start">
                     <img
-                        src="https://placehold.co/400x400.png"
+                        src="/peter_liz.png"
                         width="120"
                         height="120"
-                        alt="Happy couple who sold their home in Oakville"
-                        data-ai-hint="happy couple"
+                        alt="Happy clients Peter and Elizabeth who sold their home with Ken Finch"
                         className="rounded-full aspect-square object-cover"
                     />
                     <div className="grid gap-2">
@@ -240,3 +239,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
