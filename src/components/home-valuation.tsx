@@ -192,7 +192,7 @@ function HomeValuationInternal() {
             title: "Valuation Saved",
             description: "Redirecting to your updated dashboard...",
         });
-        router.push('/dashboard');
+        router.push('/seller/dashboard');
       } else {
         setResult(valuationResult);
       }
@@ -756,9 +756,3 @@ const HomeValuation = () => {
 }
 
 export { HomeValuation };
-
-    
-
-    
-
-    

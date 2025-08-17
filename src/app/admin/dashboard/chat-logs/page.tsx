@@ -28,7 +28,7 @@ export default function ChatLogsPage() {
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      router.push('/login');
+      router.push('/admin/login');
       return;
     }
 

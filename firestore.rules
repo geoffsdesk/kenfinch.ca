@@ -1,31 +1,39 @@
+
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-  
-    // Helpers
+
+    // Helper function to check if the user is an administrator
     function isAdmin() {
-      // IMPORTANT: Replace this placeholder with your actual Admin User ID from Firebase Auth.
-      return request.auth.uid == 'YOUR_ADMIN_UID_HERE';
-    }
-  
-    // Rules for 'users' collection
-    match /users/{userId}/{document=**} {
-      allow read, write: if request.auth.uid == userId || isAdmin();
-    }
-    
-    // Rules for 'contacts' collection
-    // Allow anyone to create (for the form), but only admin to read.
-    match /contacts/{contactId} {
-      allow create;
-      allow read, write: if isAdmin();
+      // In a real app, you would check a custom claim or a document in a separate 'admins' collection.
+      // For this example, we'll assume a specific UID is the admin.
+      // IMPORTANT: Replace 'YOUR_ADMIN_UID_HERE' with the actual UID of your admin user.
+      return request.auth.uid == 'O1pS9kLTOxZq6c7y4Y9dJjE5e5B2';
     }
 
-    // Rules for 'chatbot_logs' collection
-    // Allow any authenticated user to create (log) a message.
+    // Rules for the 'users' collection
+    match /users/{userId}/{document=**} {
+      // Only the authenticated user can access their own documents
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // Rules for the 'contacts' collection
+    match /contacts/{contactId} {
+      // Any user (even unauthenticated) can create a contact submission
+      allow create;
+      // Only the admin can read, update, or delete contact submissions
+      allow read, update, delete: if isAdmin();
+    }
+    
+    // Rules for the 'chatbot_logs' collection
     match /chatbot_logs/{logId} {
-      allow create: if request.auth != null;
-      // Allow only the admin to read the logs.
-      allow read: if isAdmin();
+        // Any authenticated user can create a log entry (i.e., ask the bot a question)
+        allow create: if request.auth != null;
+        // Only the admin can read the logs
+        allow read: if isAdmin();
+        // Nobody can update or delete logs through the client
+        allow update, delete: if false;
     }
   }
 }

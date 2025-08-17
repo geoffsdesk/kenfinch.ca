@@ -6,8 +6,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,14 +22,15 @@ import {
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, LogIn } from 'lucide-react';
+import { Loader2, UserPlus } from 'lucide-react';
+import Link from 'next/link';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address.' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
 });
 
-export default function LoginPage() {
+export default function SellerSignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
@@ -36,7 +38,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user && !loading) {
-      router.push('/dashboard/contacts');
+      router.push('/seller/dashboard');
     }
   }, [user, loading, router]);
 
@@ -52,18 +54,30 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      const newUser = userCredential.user;
+
+      // Save user info to Firestore
+      await setDoc(doc(db, "users", newUser.uid), {
+        email: newUser.email,
+        createdAt: serverTimestamp(),
+      });
+
       toast({
-        title: "Login Successful",
-        description: "Redirecting to admin dashboard...",
+        title: "Account Created",
+        description: "Redirecting to your dashboard...",
       });
       // The useEffect will handle the redirect
-    } catch (error) {
-      console.error('Login failed:', error);
+    } catch (error: any) {
+      console.error('Signup failed:', error);
+      let description = "An unexpected error occurred. Please try again.";
+      if (error.code === 'auth/email-already-in-use') {
+        description = "This email is already in use. Please try logging in.";
+      }
       toast({
         variant: "destructive",
-        title: "Login Failed",
-        description: "Please check your email and password and try again.",
+        title: "Signup Failed",
+        description: description,
       });
     } finally {
         setIsLoading(false);
@@ -82,8 +96,8 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-muted/40">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
-          <CardTitle className="font-headline text-2xl">Admin Login</CardTitle>
-          <CardDescription>Enter your credentials to access the contact list.</CardDescription>
+          <CardTitle className="font-headline text-2xl">Create Seller Account</CardTitle>
+          <CardDescription>Get access to your personalized home selling dashboard.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -95,7 +109,7 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="admin@example.com" {...field} />
+                      <Input type="email" placeholder="seller@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,11 +129,17 @@ export default function LoginPage() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <LogIn className="mr-2" />}
-                Login
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UserPlus className="mr-2" />}
+                Create Account
               </Button>
             </form>
           </Form>
+           <div className="mt-4 text-center text-sm">
+              Already have an account?{' '}
+              <Link href="/seller/login" className="underline">
+                Login
+              </Link>
+            </div>
         </CardContent>
       </Card>
     </div>

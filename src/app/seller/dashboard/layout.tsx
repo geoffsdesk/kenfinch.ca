@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail, Menu, MessageSquare } from 'lucide-react';
+import { Home, FileText, LogOut, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,7 +19,7 @@ import { signOut } from 'firebase/auth';
 import { Loader2 } from 'lucide-react';
 import React, { useEffect } from 'react';
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function SellerDashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
@@ -28,45 +28,26 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const handleLogout = async () => {
     await signOut(auth);
-    // Redirect to seller login for sellers, and home for admin after logout.
-    if (pathname.includes('/sellers') || pathname.includes('/contacts') || pathname.includes('/chat-logs')) {
-      router.push('/');
-    } else {
-      router.push('/seller-login');
-    }
+    router.push('/seller/login');
   };
   
-  const isAdminRoute = pathname.includes('/sellers') || pathname.includes('/contacts') || pathname.includes('chat-logs');
-  const isSellerRoute = !isAdminRoute;
-
   const navItems = [
-    { href: '/dashboard', icon: Home, label: 'Dashboard', admin: false },
-    { href: '/dashboard/documents', icon: FileText, label: 'Documents', admin: false },
-    { href: '/dashboard/contacts', icon: Mail, label: 'Contacts', admin: true },
-    { href: '/dashboard/sellers', icon: Building, label: 'Sellers', admin: true },
-    { href: '/dashboard/chat-logs', icon: MessageSquare, label: 'Chat Logs', admin: true },
+    { href: '/seller/dashboard', icon: Home, label: 'Dashboard' },
+    { href: '/seller/dashboard/documents', icon: FileText, label: 'Documents' },
   ];
   
-  const currentNavItems = navItems.filter(item => isAdminRoute ? item.admin : !item.admin);
-
-
   useEffect(() => {
      if (!loading && !user) {
-        if (isSellerRoute) {
-            router.push('/seller-login');
-        }
-        if (isAdminRoute) {
-            router.push('/login');
-        }
+        router.push('/seller/login');
     }
-  },[user, loading, router, isSellerRoute, isAdminRoute]);
+  },[user, loading, router]);
 
 
-  if(loading || (!user && (isSellerRoute || isAdminRoute))) {
+  if(loading || !user) {
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
   }
   
-  const currentNavItem = navItems.find(item => pathname.startsWith(item.href));
+  const currentNavItem = navItems.find(item => pathname === item.href);
   const pageTitle = currentNavItem ? currentNavItem.label : 'Dashboard';
 
   return (
@@ -81,7 +62,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className="sr-only">KenFinch.ca</span>
           </Link>
           <TooltipProvider>
-            {currentNavItems.map((item) => (
+            {navItems.map((item) => (
               <Tooltip key={item.href}>
                 <TooltipTrigger asChild>
                   <Link
@@ -138,7 +119,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <span className="font-headline text-lg">K</span>
                     <span className="sr-only">KenFinch.ca</span>
                   </Link>
-                  {currentNavItems.map((item) => (
+                  {navItems.map((item) => (
                      <Link
                         key={item.href}
                         href={item.href}

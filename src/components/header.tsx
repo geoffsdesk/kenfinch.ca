@@ -25,7 +25,7 @@ export function Header() {
         label: "Contact Ken",
     },
     {
-        href: "/seller-login",
+        href: "/seller/login",
         label: "Seller Login",
     }
   ]

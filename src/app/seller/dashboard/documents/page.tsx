@@ -220,7 +220,7 @@ export default function DocumentsPage() {
     useEffect(() => {
         if (loading) return;
         if (!user) {
-            router.push('/seller-login');
+            router.push('/seller/login');
             return;
         }
 

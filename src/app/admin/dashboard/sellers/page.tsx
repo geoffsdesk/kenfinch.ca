@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { auth, db } from '@/lib/firebase';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, Mail, Calendar, Building, Eye } from 'lucide-react';
+import { Loader2, Mail, Calendar, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import type { HomeValuationOutput, HomeValuationInput } from '@/ai/flows/home-valuation';
@@ -155,7 +155,7 @@ export default function SellersPage() {
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      router.push('/login');
+      router.push('/admin/login');
       return;
     }
 

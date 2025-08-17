@@ -301,7 +301,7 @@ const Chatbot = () => {
     )
 }
 
-export default function DashboardPage() {
+export default function SellerDashboardPage() {
     const [user, loading] = useAuthState(auth);
     const router = useRouter();
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -458,5 +458,3 @@ export default function DashboardPage() {
         </div>
     )
 }
-
-    
