@@ -55,7 +55,7 @@ export default function ChatPage() {
     }
   }, [messages, isLoading]);
 
-  const onSubmit = async (values: z.infer<typeof formSchema>>) => {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     const userMessage: Message = { id: nanoid(), role: 'user', text: values.message };
     const newMessages = [...messages, userMessage];
