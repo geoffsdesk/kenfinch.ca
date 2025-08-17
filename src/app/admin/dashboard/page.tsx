@@ -29,11 +29,10 @@ const ContactsTab = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchContacts = async () => {
-      try {
-        const contactsCollection = collection(db, 'contacts');
-        const q = query(contactsCollection, orderBy('submittedAt', 'desc'));
-        const querySnapshot = await getDocs(q);
+    const contactsCollection = collection(db, 'contacts');
+    const q = query(contactsCollection, orderBy('submittedAt', 'desc'));
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const contactsData = querySnapshot.docs.map(doc => {
             const data = doc.data();
             const submittedAt = data.submittedAt as Timestamp;
@@ -46,13 +45,13 @@ const ContactsTab = () => {
             };
         });
         setContacts(contactsData);
-      } catch (error) {
-        console.error("Error fetching contacts: ", error);
-      } finally {
         setIsLoading(false);
-      }
-    };
-    fetchContacts();
+    }, (error) => {
+        console.error("Error fetching contacts: ", error);
+        setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (isLoading) {
@@ -172,11 +171,10 @@ const SellersTab = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSellers = async () => {
-      try {
-        const usersCollection = collection(db, 'users');
-        const q = query(usersCollection, orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(q);
+    const usersCollection = collection(db, 'users');
+    const q = query(usersCollection, orderBy('createdAt', 'desc'));
+    
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const sellersData = querySnapshot.docs.map(doc => {
             const data = doc.data();
             const createdAt = data.createdAt as Timestamp;
@@ -187,13 +185,13 @@ const SellersTab = () => {
             };
         });
         setSellers(sellersData);
-      } catch (error) {
-        console.error("Error fetching sellers: ", error);
-      } finally {
         setIsLoading(false);
-      }
-    };
-    fetchSellers();
+    }, (error) => {
+        console.error("Error fetching sellers: ", error);
+        setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (isLoading) {
@@ -250,11 +248,10 @@ const ChatLogsTab = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchLogs = async () => {
-      try {
-        const logsCollection = collection(db, 'chatbot_logs');
-        const q = query(logsCollection, orderBy('createdAt', 'desc'));
-        const querySnapshot = await getDocs(q);
+    const logsCollection = collection(db, 'chatbot_logs');
+    const q = query(logsCollection, orderBy('createdAt', 'desc'));
+
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const logsData = querySnapshot.docs.map(doc => {
             const data = doc.data();
             const createdAt = data.createdAt as Timestamp;
@@ -267,13 +264,13 @@ const ChatLogsTab = () => {
             };
         });
         setLogs(logsData);
-      } catch (error) {
-        console.error("Error fetching chat logs: ", error);
-      } finally {
         setIsLoading(false);
-      }
-    };
-    fetchLogs();
+    }, (error) => {
+        console.error("Error fetching chat logs: ", error);
+        setIsLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
 
   if (isLoading) {
