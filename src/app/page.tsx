@@ -2,7 +2,6 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { HomeValuation } from '@/components/home-valuation';
-import { ContactForm } from '@/components/contact-form';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, BarChart, FileText, Star } from 'lucide-react';
