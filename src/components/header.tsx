@@ -7,15 +7,35 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Menu, Mountain } from 'lucide-react';
+import React from 'react';
 
 export function Header() {
   const [user, loading] = useAuthState(auth);
   const router = useRouter();
+  const [open, setOpen] = React.useState(false);
 
   const handleLogout = async () => {
     await signOut(auth);
     router.push('/');
   };
+
+  const navLinks = [
+    {
+        href: "https://app.realmmlp.ca/shared/NkRorVzOjRH8EZq3l6e4/eP5L3rZYmMUg2VbgPj8qta3A24la7jtykEQ12JP5srj6l9WRW4HLRbVk7gy6HBY7QPl5R4TnYVZPzjyEfrVYykAknOSWYnewr8ZwI9LREjEgLEFRBO7k7pB7c6wb4WEkKgHDqgrEzOLnUoM1MZD8o",
+        label: "Listings",
+        external: true,
+    },
+    {
+        href: "/#valuation-tool",
+        label: "Get Free Valuation",
+    },
+    {
+        href: "/#contact",
+        label: "Contact Ken",
+    }
+  ]
 
 
   return (
@@ -26,29 +46,65 @@ export function Header() {
             <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
-            <a
-              href="https://app.realmmlp.ca/shared/NkRorVzOjRH8EZq3l6e4/eP5L3rZYmMUg2VbgPj8qta3A24la7jtykEQ12JP5srj6l9WRW4HLRbVk7gy6HBY7QPl5R4TnYVZPzjyEfrVYykAknOSWYnewr8ZwI9LREjEgLEFRBO7k7pB7c6wb4WEkKgHDqgrEzOLnUoM1MZD8o"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-foreground/60 transition-colors hover:text-foreground/80"
-            >
-              Listings
-            </a>
-             <Link
-              href="/#valuation-tool"
-              className="text-foreground/60 transition-colors hover:text-foreground/80"
-            >
-              Get Free Valuation
-            </Link>
-             <Link
-              href="/#contact"
-              className="text-foreground/60 transition-colors hover:text-foreground/80"
-            >
-              Contact Ken
-            </Link>
+             {navLinks.map(link => (
+                link.external ? (
+                     <a
+                        key={link.href}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-foreground/60 transition-colors hover:text-foreground/80"
+                        >
+                        {link.label}
+                    </a>
+                ) : (
+                    <Link
+                        key={link.href}
+                        href={link.href}
+                        className="text-foreground/60 transition-colors hover:text-foreground/80"
+                        >
+                        {link.label}
+                    </Link>
+                )
+             ))}
           </nav>
         </div>
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        <div className="flex flex-1 items-center justify-end space-x-2 md:hidden">
+            <Sheet open={open} onOpenChange={setOpen}>
+                <SheetTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Toggle navigation menu</span>
+                    </Button>
+                </SheetTrigger>
+                <SheetContent side="right">
+                    <nav className="grid gap-6 text-lg font-medium mt-8">
+                         {navLinks.map(link => (
+                            link.external ? (
+                                <a
+                                    key={link.href}
+                                    href={link.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-foreground/80 transition-colors hover:text-foreground"
+                                    onClick={() => setOpen(false)}
+                                    >
+                                    {link.label}
+                                </a>
+                            ) : (
+                                <Link
+                                    key={link.href}
+                                    href={link.href}
+                                    className="text-foreground/80 transition-colors hover:text-foreground"
+                                    onClick={() => setOpen(false)}
+                                >
+                                    {link.label}
+                                </Link>
+                            )
+                        ))}
+                    </nav>
+                </SheetContent>
+            </Sheet>
         </div>
       </div>
     </header>
