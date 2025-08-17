@@ -147,7 +147,7 @@ const chatFormSchema = z.object({
   message: z.string().min(1, 'Message cannot be empty'),
 });
 
-const Chatbot = () => {
+const Chatbot = ({ tasks }: { tasks: Task[] }) => {
     const [user] = useAuthState(auth);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -187,6 +187,7 @@ const Chatbot = () => {
                 userId: user.uid,
                 message: values.message,
                 history: chatHistory.slice(0, -1),
+                prepTasks: tasks,
             };
 
             const result: ChatOutput = await chat(chatInput);
@@ -453,7 +454,7 @@ export default function SellerDashboardPage() {
                 </Card>
             </div>
              <div className="lg:col-span-1">
-                <Chatbot />
+                <Chatbot tasks={tasks} />
             </div>
         </div>
     )

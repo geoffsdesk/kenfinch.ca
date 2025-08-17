@@ -23,6 +23,10 @@ const ChatInputSchema = z.object({
         text: z.string()
     })),
   })).optional().describe('The previous conversation history.'),
+  prepTasks: z.array(z.object({
+    label: z.string(),
+    checked: z.boolean(),
+  })).optional().describe('The list of home preparation tasks and their completion status.'),
 });
 export type ChatInput = z.infer<typeof ChatInputSchema>;
 
@@ -35,18 +39,6 @@ export async function chat(input: ChatInput): Promise<ChatOutput> {
   return chatFlow(input);
 }
 
-const checklistItems = [
-    "Declutter living spaces",
-    "Complete minor repairs",
-    "Deep clean entire house",
-    "Stage home with professional guidance",
-    "Touch-up painting",
-    "Exterior landscaping",
-    "Remove excess furniture",
-    "Provide Property Tax & Utility Bills",
-    "Repair any electrical, mechanical & plumbing if necessary",
-];
-
 const prompt = ai.definePrompt({
   name: 'chatbotPrompt',
   input: {schema: z.object({
@@ -55,19 +47,27 @@ const prompt = ai.definePrompt({
           isUser: z.boolean(),
           text: z.string(),
       })).optional(),
+      completedTasks: z.string().optional(),
+      incompleteTasks: z.string().optional(),
   })},
   output: {schema: ChatOutputSchema},
   prompt: `You are a friendly and professional AI assistant for Ken Finch, a real estate agent in Oakville, Ontario. Your purpose is to coach and support home sellers through the process of preparing their home for sale.
 
   You are currently in a chat with a home seller. Your tone should be encouraging, helpful, and optimistic.
 
-  The seller is working through the following checklist to get their home ready:
-  ${checklistItems.map(item => `- ${item}`).join('\n')}
+  You have been given the seller's progress on their pre-listing preparation checklist. Use this information to provide personalized, contextual advice.
+  - If a user says they've completed a task, congratulate them and suggest a logical next step from their "To-Do" list.
+  - If a user asks "what should I do next?", suggest a task from their "To-Do" list.
+  - If a user asks a question related to a task, use the context of their progress to give a better answer.
+
+  Seller's Progress:
+  - Completed Tasks: {{completedTasks}}
+  - To-Do: {{incompleteTasks}}
 
   Your primary jobs are:
-  1.  Answer questions the seller has about any of the checklist items. Provide practical advice and tips.
+  1.  Answer questions the seller has about any of their tasks. Provide practical advice and tips.
   2.  Help the seller track their progress. They will tell you when they have completed a task.
-  3.  Provide encouragement and motivation. Selling a home can be stressful, so be a positive partner.
+  3.  Provide encouragement and motivation based on their progress. Selling a home can be stressful, so be a positive partner.
   4.  If asked about specific services (like cleaners, painters, or stagers), you can suggest that the user "coordinate with Ken Finch for his list of trusted local professionals."
   5.  If asked about products, like a painting touch-up kit, you can suggest they "check out home improvement stores like Home Depot or Lowe's, or find convenient kits on Amazon."
 
@@ -98,22 +98,23 @@ const chatFlow = ai.defineFlow(
     outputSchema: ChatOutputSchema,
   },
   async input => {
-     // This mapping was incorrect and causing the flow to fail silently.
-     // It's now corrected to properly handle the history object.
      const history = input.history?.map(msg => ({
         isUser: msg.role === 'user',
         text: msg.content[0]?.text || '',
     }));
 
+    const completedTasks = input.prepTasks?.filter(task => task.checked).map(task => task.label).join(', ') || 'None yet';
+    const incompleteTasks = input.prepTasks?.filter(task => !task.checked).map(task => task.label).join(', ') || 'All done!';
+
     const {output} = await prompt({
         message: input.message,
         history: history,
+        completedTasks: completedTasks,
+        incompleteTasks: incompleteTasks,
     });
     
     const responseMessage = output!.message;
     
-    // Log the conversation to Firestore
-    // This code is now reachable because the flow will no longer fail.
     try {
         await addDoc(collection(db, 'chatbot_logs'), {
             userId: input.userId,
@@ -123,7 +124,6 @@ const chatFlow = ai.defineFlow(
         });
     } catch (error) {
         console.error("Error logging chatbot conversation:", error);
-        // Do not block the user response if logging fails
     }
     
     return { message: responseMessage };
