@@ -7,8 +7,8 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Mountain } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Menu } from 'lucide-react';
 import React from 'react';
 
 export function Header() {
@@ -78,6 +78,12 @@ export function Header() {
                     </Button>
                 </SheetTrigger>
                 <SheetContent side="right">
+                    <SheetHeader>
+                        <Link href="/" className="flex items-center space-x-2" onClick={() => setOpen(false)}>
+                            <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
+                        </Link>
+                         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                    </SheetHeader>
                     <nav className="grid gap-6 text-lg font-medium mt-8">
                          {navLinks.map(link => (
                             link.external ? (
