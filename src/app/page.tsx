@@ -50,6 +50,8 @@ export default function Home() {
           </div>
         </section>
 
+        <div className="w-full h-8 bg-secondary" />
+
         <section id="about" className="w-full py-8 md:py-12 lg:py-16">
           <div className="container px-4 md:px-6">
             <div className="grid gap-10 md:grid-cols-2 md:gap-16">
@@ -163,7 +165,7 @@ export default function Home() {
                       <Star className="h-5 w-5 fill-current" />
                   </div>
                   <blockquote className="text-lg text-muted-foreground">
-                    “Ken’s marketing, especially the photography and drone footage made our home shine. He expertly handled multiple offers and secured a price well above our expectations, all within a week. We’re now settled in our dream home, and we’d confidently recommend Ken to anyone buying or selling.”
+                    “Ken’s marketing, especially the photography and drone footage made our home shine. He expertly handled multiple offers and and secured a price well above our expectations, all within a week. We’re now settled in our dream home, and we’d confidently recommend Ken to anyone buying or selling.”
                   </blockquote>
                 </CardContent>
                 <CardFooter>
