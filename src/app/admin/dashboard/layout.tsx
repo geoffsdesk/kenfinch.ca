@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LogOut, Menu, Mail, Building, MessageSquare } from 'lucide-react';
+import { LogOut, Menu, LayoutDashboard } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -31,9 +31,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
   };
 
   const navItems = [
-    { href: '/admin/dashboard/contacts', icon: Mail, label: 'Contacts' },
-    { href: '/admin/dashboard/sellers', icon: Building, label: 'Sellers' },
-    { href: '/admin/dashboard/chat-logs', icon: MessageSquare, label: 'Chat Logs' },
+    { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   ];
 
   useEffect(() => {
@@ -46,8 +44,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     return <div className="flex items-center justify-center min-h-screen"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
   
-  const currentNavItem = navItems.find(item => pathname.startsWith(item.href));
-  const pageTitle = currentNavItem ? currentNavItem.label : 'Admin Dashboard';
+  const pageTitle = 'Admin Dashboard';
 
   return (
     <div className="flex min-h-screen w-full bg-muted/40">
