@@ -23,6 +23,10 @@ export function Header() {
     {
         href: "/contact",
         label: "Contact Ken",
+    },
+    {
+        href: "/seller-login",
+        label: "Seller Login",
     }
   ]
 
