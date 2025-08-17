@@ -5,7 +5,7 @@ This document tracks the recent changes and architectural decisions made for the
 
 ## Recent Updates (July 2024)
 
-This series of updates focused on refining the user experience, enhancing AI capabilities, and adding core features for both sellers and the administrator.
+This series of updates focused on refining the user experience, enhancing AI capabilities, adding core features, and setting up production infrastructure.
 
 ### 1. Branding and UI Updates
 
@@ -53,3 +53,10 @@ To ensure timely communication, an email notification system was implemented usi
 *   **Email Sending Flow**: A robust, reusable Genkit flow was created in `src/ai/flows/send-email-flow.ts` to handle the transactional sending of emails.
 *   **Contact Form Integration**: The main contact form (`src/components/contact-form.tsx`) was updated to call this flow, ensuring that every new submission sends a notification email to the administrator.
 *   **Valuation Lead Integration**: The AI Home Valuation component (`src/components/home-valuation.tsx`) also leverages the email flow to send the administrator a detailed summary of the user's inputs and the AI's valuation results when a user requests an expert opinion.
+
+### 7. Infrastructure and Deployment
+
+Key operational tasks were completed to prepare the application for a production environment.
+
+*   **Custom Domain**: The application was connected to its custom domain, making it publicly accessible.
+*   **GitHub Integration**: The project was linked to a GitHub repository to enable version control and continuous integration workflows.
