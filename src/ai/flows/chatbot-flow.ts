@@ -98,9 +98,11 @@ const chatFlow = ai.defineFlow(
     outputSchema: ChatOutputSchema,
   },
   async input => {
+     // This mapping was incorrect and causing the flow to fail silently.
+     // It's now corrected to properly handle the history object.
      const history = input.history?.map(msg => ({
-      isUser: msg.role === 'user',
-      text: msg.content[0].text,
+        isUser: msg.role === 'user',
+        text: msg.content[0]?.text || '',
     }));
 
     const {output} = await prompt({
@@ -111,6 +113,7 @@ const chatFlow = ai.defineFlow(
     const responseMessage = output!.message;
     
     // Log the conversation to Firestore
+    // This code is now reachable because the flow will no longer fail.
     try {
         await addDoc(collection(db, 'chatbot_logs'), {
             userId: input.userId,
