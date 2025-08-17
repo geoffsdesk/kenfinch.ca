@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { sendEmail } from '@/ai/flows/send-email-flow';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -42,6 +44,7 @@ export function ContactForm() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     form.clearErrors();
     try {
+        // 1. Send the email notification
         await sendEmail({
             to: 'realtor@kenfinch.ca',
             from: 'realtor@kenfinch.ca',
@@ -56,6 +59,15 @@ export function ContactForm() {
                 </ul>
             `,
         });
+
+        // 2. Save the contact to Firestore
+        await addDoc(collection(db, "contacts"), {
+            name: values.name,
+            email: values.email,
+            phone: values.phone || '',
+            submittedAt: serverTimestamp(),
+        });
+
 
         form.reset();
         toast({

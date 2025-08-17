@@ -10,7 +10,7 @@ import { db, auth } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useToast } from '@/hooks/use-toast';
 import { useJsApiLoader } from '@react-google-maps/api';
-import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
+import usePlacesAutocomplete from 'use-places-autocomplete';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 import { sendEmail } from '@/ai/flows/send-email-flow';

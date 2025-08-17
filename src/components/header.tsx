@@ -3,23 +3,12 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
-import { signOut } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 import React from 'react';
 
 export function Header() {
-  const [user, loading] = useAuthState(auth);
-  const router = useRouter();
   const [open, setOpen] = React.useState(false);
-
-  const handleLogout = async () => {
-    await signOut(auth);
-    router.push('/');
-  };
 
   const navLinks = [
     {

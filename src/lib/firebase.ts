@@ -4,13 +4,12 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  projectId: "oakville-home-seller-success",
-  appId: "1:737891637177:web:df5b621fbcd855891bc868",
-  storageBucket: "oakville-home-seller-success.firebasestorage.app",
-  apiKey: "AIzaSyD7q8JzEzYghyrpH88Ta2xymAPNOUCbZho",
-  authDomain: "oakville-home-seller-success.firebaseapp.com",
-  measurementId: "",
-  messagingSenderId: "737891637177"
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 };
 
 // Initialize Firebase

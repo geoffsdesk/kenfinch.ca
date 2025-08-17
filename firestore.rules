@@ -1,51 +1,21 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
-    // PUBLIC ACCESS RULES
-    // These must come before any rules that check for authenticated users.
-
-    // Allow anyone to create a document in the 'mail' collection for the email trigger.
-    match /mail/{docId} {
-      allow create: if true;
-      // Admin can read/delete mail items if needed for debugging
-      allow read, delete: if request.auth != null && request.auth.uid == 'PUT_ADMIN_UID_HERE';
+    // Users can only read and write to their own user document and subcollections.
+    match /users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
 
-    // Allow anyone to create a document in the 'contacts' collection.
-    // (This is a fallback and is not currently used by the live forms).
+    // Admins (or a specific user) can read contact submissions.
+    // For a real app, you would lock this down to a specific admin UID.
     match /contacts/{contactId} {
-        allow create: if true;
-        // Logged-in admin can read contacts
-        allow read: if request.auth != null && request.auth.uid == 'PUT_ADMIN_UID_HERE';
+      allow read: if request.auth != null; // Or check for admin role
+      allow create: if true; // Allow anyone to create a contact message
     }
 
-    // USER-SPECIFIC AND ADMIN RULES
-
-    // Users collection
-    match /users/{userId} {
-      // A user can create their own account document
-      allow create: if request.auth != null && request.auth.uid == userId;
-      // A user can only read, update, or delete their own document
-      allow read, update, delete: if request.auth != null && request.auth.uid == userId;
-
-      // User-specific subcollections
-      match /tasks/{taskId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-      match /documents/{docId} {
-         allow read: if request.auth != null && request.auth.uid == userId;
-      }
-       match /valuations/{valuationId} {
-         allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-    }
-
-    // ADMIN-ONLY CATCH-ALL
-    // This rule gives the admin full read/write access to any document
-    // NOT covered by the more specific rules above.
+    // Deny all other access by default
     match /{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == 'PUT_ADMIN_UID_HERE';
+      allow read, write: if false;
     }
   }
 }
