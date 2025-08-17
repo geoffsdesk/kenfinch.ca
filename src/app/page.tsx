@@ -78,6 +78,9 @@ export default function Home() {
                   <p className="text-muted-foreground">
                     My clients trust me to deliver results. I provide data-driven pricing strategies, strong negotiation, and a personal commitment to a smooth process. Backed by Royal LePage Signature Realty, I offer a blend of proven tactics and modern tools designed to get your home sold.
                   </p>
+                   <Link href="/contact" className="inline-block pt-4">
+                    <Button size="lg">Contact Ken</Button>
+                  </Link>
                 </div>
               </div>
             </div>
