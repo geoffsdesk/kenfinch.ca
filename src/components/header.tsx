@@ -33,7 +33,7 @@ export function Header() {
       <div className="container flex h-16 items-center">
         <div className="mr-4 flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Image src="/kg_logo.png" alt="Ken Finch Real Estate Logo" width={40} height={40} />
+            <Image src="/kf_logo.png" alt="Ken Finch Real Estate Logo" width={40} height={40} />
             <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
           </Link>
           <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
@@ -71,7 +71,7 @@ export function Header() {
                 <SheetContent side="right">
                     <SheetHeader>
                         <Link href="/" className="flex items-center space-x-2" onClick={() => setOpen(false)}>
-                            <Image src="/kg_logo.png" alt="Ken Finch Real Estate Logo" width={40} height={40} />
+                            <Image src="/kf_logo.png" alt="Ken Finch Real Estate Logo" width={40} height={40} />
                             <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
                         </Link>
                          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
