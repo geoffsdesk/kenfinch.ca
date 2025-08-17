@@ -47,6 +47,8 @@ const prompt = ai.definePrompt({
 
   Your valuations should be conservative and reflect the current market conditions in Oakville. Avoid overly optimistic estimates.
   
+  If the provided address does not appear to be in Oakville, Ontario, you must begin your 'reasoning' with the following warning: 'This valuation is optimized for the Oakville, Ontario market. Results for properties outside this area may be less accurate due to different market conditions.'
+
   Consider the following factors when determining the home's value and confidence score. Note that bedrooms below grade (in the basement) typically have a lower market value than bedrooms above grade. A finished basement adds more value than an unfinished one. Detached homes are typically valued highest, followed by semi-detached, townhouse, and then condo apartments. Parking spaces are a significant value-add.
 
   - Address: {{{address}}}
