@@ -43,7 +43,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Separator } from './ui/separator';
 
 const formSchema = z.object({
-  address: z.string().min(10, { message: 'Please enter a valid street address.' }),
+ address: z.string().min(1, { message: 'Please enter a street address.' }).refine(address => address.length > 0, { message: 'Address is required.' }),
   homeType: z.string({ required_error: 'Please select a home type.' }),
   bedroomsAboveGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
   bedroomsBelowGrade: z.coerce.number().int().min(0, { message: 'Cannot be negative.' }),
@@ -119,7 +119,7 @@ function HomeValuationInternal() {
     setValue,
     clearSuggestions,
   } = usePlacesAutocomplete({
-    requestOptions: {
+    requestOptions: { 
       componentRestrictions: { country: "ca" },
     },
     debounce: 300,
