@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,7 +9,8 @@ import { collection, addDoc, serverTimestamp, doc, writeBatch } from 'firebase/f
 import { db, auth } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useToast } from '@/hooks/use-toast';
-import { useJsApiLoader, Autocomplete } from '@react-google-maps/api';
+import { useJsApiLoader } from '@react-google-maps/api';
+import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 import { sendEmail } from '@/ai/flows/send-email-flow';
@@ -101,19 +102,27 @@ const finishedBasementOptions = [
     { value: 'false', label: 'No' },
 ]
 
-export function HomeValuation() {
+function HomeValuationInternal() {
   const [result, setResult] = useState<HomeValuationOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const { toast } = useToast();
   const [user] = useAuthState(auth);
-  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
-  const { isLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries: ['places'],
+  const {
+    ready,
+    value,
+    suggestions: { status, data },
+    setValue,
+    clearSuggestions,
+  } = usePlacesAutocomplete({
+    requestOptions: {
+      componentRestrictions: { country: "ca" },
+    },
+    debounce: 300,
   });
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -132,6 +141,10 @@ export function HomeValuation() {
       nearbySchools: '',
     },
   });
+
+  useEffect(() => {
+    form.setValue('address', value);
+  }, [value, form]);
 
   const contactForm = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
@@ -224,15 +237,35 @@ export function HomeValuation() {
         });
     }
   }
-
-  const handlePlaceChanged = () => {
-    if (autocompleteRef.current) {
-      const place = autocompleteRef.current.getPlace();
-      if (place && place.formatted_address) {
-        form.setValue('address', place.formatted_address);
-      }
-    }
+  
+  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value);
   };
+
+  const handleSelect = ({ description }: { description: string }) => () => {
+    setValue(description, false);
+    clearSuggestions();
+  };
+
+  const renderSuggestions = () => (
+    <div className="absolute z-10 w-full bg-white rounded-md shadow-lg mt-1">
+      {data.map((suggestion) => {
+        const {
+          place_id,
+          structured_formatting: { main_text, secondary_text },
+        } = suggestion;
+        return (
+          <div
+            key={place_id}
+            onClick={handleSelect(suggestion)}
+            className="p-2 hover:bg-gray-100 cursor-pointer"
+          >
+            <strong>{main_text}</strong> <small>{secondary_text}</small>
+          </div>
+        );
+      })}
+    </div>
+  );
 
 
   if (isLoading) {
@@ -241,16 +274,6 @@ export function HomeValuation() {
         <Loader2 className="h-12 w-12 animate-spin text-primary" />
         <p className="mt-4 text-muted-foreground">Generating your valuation...</p>
       </Card>
-    );
-  }
-
-  if (loadError) {
-    return (
-        <Alert variant="destructive">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Map Error</AlertTitle>
-            <AlertDescription>Could not load Google Maps service. Please check your API key and configuration.</AlertDescription>
-        </Alert>
     );
   }
 
@@ -406,39 +429,30 @@ export function HomeValuation() {
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            {isLoaded && (
-                 <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Street Address</FormLabel>
-                        <FormControl>
-                            <Autocomplete
-                                onLoad={(autocomplete) => {
-                                    autocompleteRef.current = autocomplete;
-                                }}
-                                onPlaceChanged={handlePlaceChanged}
-                                options={{
-                                    componentRestrictions: { country: "ca" },
-                                    fields: ["formatted_address"],
-                                }}
-                            >
-                                <div className="relative">
-                                     <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                     <Input 
-                                        placeholder="e.g., 123 Maple Street, Oakville, ON" 
-                                        {...field} 
-                                        className="pl-10"
-                                    />
-                                </div>
-                            </Autocomplete>
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-            )}
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                  <FormItem>
+                  <FormLabel>Street Address</FormLabel>
+                  <FormControl>
+                      <div className="relative">
+                           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                           <Input 
+                              {...field}
+                              value={value}
+                              onChange={handleInput}
+                              disabled={!ready}
+                              placeholder="e.g., 123 Maple Street, Oakville, ON" 
+                              className="pl-10"
+                          />
+                           {status === 'OK' && renderSuggestions()}
+                      </div>
+                  </FormControl>
+                  <FormMessage />
+                  </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -650,7 +664,7 @@ export function HomeValuation() {
               )}
             />
 
-            <Button type="submit" size="lg" className="w-full" disabled={isLoading || !isLoaded}>
+            <Button type="submit" size="lg" className="w-full" disabled={isLoading || !ready}>
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Generate My Home Valuation
             </Button>
@@ -659,4 +673,32 @@ export function HomeValuation() {
       </CardContent>
     </Card>
   );
+}
+
+export function HomeValuation() {
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries: ['places'],
+  });
+
+  if (loadError) {
+    return (
+        <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Map Error</AlertTitle>
+            <AlertDescription>Could not load Google Maps service. Please check your API key and configuration.</AlertDescription>
+        </Alert>
+    );
+  }
+
+  if (!isLoaded) {
+     return (
+      <Card className="flex flex-col items-center justify-center p-10 min-h-[400px]">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
+        <p className="mt-4 text-muted-foreground">Loading Map...</p>
+      </Card>
+    );
+  }
+
+  return <HomeValuationInternal />;
 }
