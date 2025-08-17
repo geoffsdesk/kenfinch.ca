@@ -46,3 +46,10 @@ The "Document Hub" in the seller dashboard was enhanced to allow for client-side
 *   **Firebase Storage Integration**: The system now uses Firebase Storage to handle file uploads securely.
 *   **Real-time Updates & Bug Fixes**: The document list now updates in real-time after a successful upload using Firestore's `onSnapshot` listener. Several bugs related to the upload state getting "stuck" and the list not refreshing were identified and resolved by ensuring the component state was correctly reset after an upload.
 
+### 6. Email Notifications via SendGrid
+
+To ensure timely communication, an email notification system was implemented using the SendGrid API.
+
+*   **Email Sending Flow**: A robust, reusable Genkit flow was created in `src/ai/flows/send-email-flow.ts` to handle the transactional sending of emails.
+*   **Contact Form Integration**: The main contact form (`src/components/contact-form.tsx`) was updated to call this flow, ensuring that every new submission sends a notification email to the administrator.
+*   **Valuation Lead Integration**: The AI Home Valuation component (`src/components/home-valuation.tsx`) also leverages the email flow to send the administrator a detailed summary of the user's inputs and the AI's valuation results when a user requests an expert opinion.
