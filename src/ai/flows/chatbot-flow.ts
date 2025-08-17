@@ -45,7 +45,13 @@ const checklistItems = [
 
 const prompt = ai.definePrompt({
   name: 'chatbotPrompt',
-  input: {schema: ChatInputSchema},
+  input: {schema: z.object({
+      message: z.string(),
+      history: z.array(z.object({
+          isUser: z.boolean(),
+          text: z.string(),
+      })).optional(),
+  })},
   output: {schema: ChatOutputSchema},
   prompt: `You are a friendly and professional AI assistant for Ken Finch, a real estate agent in Oakville, Ontario. Your purpose is to coach and support home sellers through the process of preparing their home for sale.
 
@@ -66,10 +72,10 @@ const prompt = ai.definePrompt({
   Here is the current conversation history:
   {{#if history}}
     {{#each history}}
-      {{#if (eq role 'user')}}
-        User: {{{content.[0].text}}}
+      {{#if isUser}}
+        User: {{{text}}}
       {{else}}
-        Assistant: {{{content.[0].text}}}
+        Assistant: {{{text}}}
       {{/if}}
     {{/each}}
   {{/if}}
@@ -88,7 +94,15 @@ const chatFlow = ai.defineFlow(
     outputSchema: ChatOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
+     const history = input.history?.map(msg => ({
+      isUser: msg.role === 'user',
+      text: msg.content[0].text,
+    }));
+
+    const {output} = await prompt({
+        message: input.message,
+        history: history,
+    });
     return { message: output!.message };
   }
 );
