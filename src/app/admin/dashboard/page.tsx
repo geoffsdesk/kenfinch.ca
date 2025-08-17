@@ -30,7 +30,8 @@ const ContactsTab = () => {
 
   useEffect(() => {
     const contactsCollection = collection(db, 'contacts');
-    const q = query(contactsCollection, orderBy('submittedAt', 'desc'));
+    // Removed orderBy to prevent query failure without a composite index
+    const q = query(contactsCollection);
     
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const contactsData = querySnapshot.docs.map(doc => {
@@ -172,7 +173,8 @@ const SellersTab = () => {
 
   useEffect(() => {
     const usersCollection = collection(db, 'users');
-    const q = query(usersCollection, orderBy('createdAt', 'desc'));
+    // Removed orderBy to prevent query failure without a composite index
+    const q = query(usersCollection);
     
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const sellersData = querySnapshot.docs.map(doc => {
@@ -249,7 +251,8 @@ const ChatLogsTab = () => {
 
   useEffect(() => {
     const logsCollection = collection(db, 'chatbot_logs');
-    const q = query(logsCollection, orderBy('createdAt', 'desc'));
+    // Removed orderBy to prevent query failure without a composite index
+    const q = query(logsCollection);
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const logsData = querySnapshot.docs.map(doc => {
