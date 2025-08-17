@@ -1,12 +1,21 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { collection, doc, getDocs, onSnapshot, orderBy, query, updateDoc, writeBatch, Timestamp } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { nanoid } from 'nanoid';
+import ReactMarkdown from 'react-markdown';
+
 import { auth, db } from '@/lib/firebase';
+import { chat, type ChatInput, type ChatOutput } from '@/ai/flows/chatbot-flow';
+import type { HomeValuationOutput, HomeValuationInput } from '@/ai/flows/home-valuation';
+import { cn } from '@/lib/utils';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -14,9 +23,12 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ClipboardCheck, Camera, CalendarDays, Home, Sparkles, Loader2, RefreshCw } from "lucide-react";
+import { ClipboardCheck, Camera, CalendarDays, Home, Sparkles, Loader2, RefreshCw, Send, MessageSquare } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import type { HomeValuationOutput, HomeValuationInput } from '@/ai/flows/home-valuation';
+import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Task {
     id: string;
@@ -121,6 +133,167 @@ const initialPrepTasks = [
     { id: "staging", label: "Stage home with professional guidance", checked: false },
 ];
 
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'model';
+  text: string;
+}
+
+const chatFormSchema = z.object({
+  message: z.string().min(1, 'Message cannot be empty'),
+});
+
+const Chatbot = () => {
+    const [user] = useAuthState(auth);
+    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+    const form = useForm<z.infer<typeof chatFormSchema>>({
+        resolver: zodResolver(chatFormSchema),
+        defaultValues: {
+        message: '',
+        },
+    });
+
+    useEffect(() => {
+        if (scrollAreaRef.current) {
+            const scrollableView = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+            if(scrollableView) {
+                scrollableView.scrollTop = scrollableView.scrollHeight;
+            }
+        }
+    }, [messages, isLoading]);
+
+    async function onSubmit(values: z.infer<typeof chatFormSchema>) {
+        setIsLoading(true);
+        const userMessage: ChatMessage = { id: nanoid(), role: 'user', text: values.message };
+        const newMessages = [...messages, userMessage];
+        setMessages(newMessages);
+        form.reset();
+
+        try {
+            const chatHistory = newMessages.map(msg => ({
+                role: msg.role,
+                content: [{ text: msg.text }]
+            }));
+
+            const chatInput: ChatInput = {
+                message: values.message,
+                history: chatHistory.slice(0, -1),
+            };
+
+            const result: ChatOutput = await chat(chatInput);
+
+            const assistantMessage: ChatMessage = {
+                id: nanoid(),
+                role: 'model',
+                text: result.message,
+            };
+            setMessages((prev) => [...prev, assistantMessage]);
+
+        } catch (error) {
+            console.error('Error fetching chat response:', error);
+            const errorMessage: ChatMessage = {
+                id: nanoid(),
+                role: 'model',
+                text: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+            };
+            setMessages((prev) => [...prev, errorMessage]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+    
+    return (
+         <Card className="flex flex-col h-full">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="h-6 w-6 text-primary" /> AI Seller Assistant
+                </CardTitle>
+                <CardDescription>Your guide to preparing your home for sale. Ask me anything!</CardDescription>
+            </CardHeader>
+            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+                <div className="space-y-4">
+                {messages.map((message) => (
+                    <div
+                    key={message.id}
+                    className={cn(
+                        'flex items-start gap-3',
+                        message.role === 'user' ? 'justify-end' : 'justify-start'
+                    )}
+                    >
+                    {message.role === 'model' && (
+                        <Avatar className="h-8 w-8">
+                        <AvatarImage src="/kf_logo.png" alt="Ken Finch Logo" />
+                        <AvatarFallback>KF</AvatarFallback>
+                        </Avatar>
+                    )}
+                    <div
+                        className={cn(
+                        'max-w-prose rounded-lg p-3 text-sm prose prose-sm',
+                        message.role === 'user'
+                            ? 'bg-primary text-primary-foreground prose-invert'
+                            : 'bg-muted'
+                        )}
+                    >
+                        {message.role === 'model' ? (
+                        <ReactMarkdown
+                                components={{
+                                    ul: ({node, ...props}) => <ul className="list-disc pl-5" {...props} />,
+                                    ol: ({node, ...props}) => <ol className="list-decimal pl-5" {...props} />,
+                                }}
+                            >
+                                {message.text}
+                            </ReactMarkdown>
+                        ) : (
+                            message.text
+                        )}
+                    </div>
+                    {message.role === 'user' && (
+                        <Avatar className="h-8 w-8">
+                        <AvatarFallback>{user?.email?.[0].toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                    )}
+                    </div>
+                ))}
+                {isLoading && (
+                    <div className="flex items-start gap-3 justify-start">
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src="/kf_logo.png" alt="Ken Finch Logo" />
+                        <AvatarFallback>KF</AvatarFallback>
+                    </Avatar>
+                    <div className="max-w-md rounded-lg p-3 text-sm bg-muted">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                    </div>
+                    </div>
+                )}
+                </div>
+            </ScrollArea>
+            <CardFooter className="pt-6">
+                <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full items-center gap-2">
+                    <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                        <FormItem className="flex-1">
+                        <FormControl>
+                            <Input placeholder="Ask a question..." {...field} disabled={isLoading} autoComplete="off" />
+                        </FormControl>
+                        </FormItem>
+                    )}
+                    />
+                    <Button type="submit" disabled={isLoading} size="icon">
+                    <Send className="h-4 w-4" />
+                    <span className="sr-only">Send</span>
+                    </Button>
+                </form>
+                </Form>
+            </CardFooter>
+        </Card>
+    )
+}
 
 export default function DashboardPage() {
     const [user, loading] = useAuthState(auth);
@@ -155,7 +328,6 @@ export default function DashboardPage() {
         const tasksCollection = collection(db, 'users', user.uid, 'tasks');
         const unsubscribe = onSnapshot(tasksCollection, (snapshot) => {
             const userTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Task));
-            // Keep a stable order
             const orderedTasks = initialPrepTasks.map(initialTask => 
                 userTasks.find(userTask => userTask.id === initialTask.id) || { ...initialTask, label: initialTask.label }
             ).filter(Boolean) as Task[];
@@ -207,97 +379,100 @@ export default function DashboardPage() {
     const progress = tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
 
     return (
-        <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:col-span-2 xl:col-span-3">
-                <Card className="sm:col-span-1 md:col-span-3">
-                    <CardHeader className="pb-4">
-                        <CardTitle className="font-headline">Welcome, {user?.email}!</CardTitle>
-                        <CardDescription>Here's a snapshot of your home selling journey.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Home className="h-4 w-4" />
-                            <span>Your Selling Dashboard</span>
-                        </div>
-                    </CardContent>
-                </Card>
-                {valuation && (
-                    <Card className="lg:col-span-1 xl:col-span-1">
+        <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:grid-cols-3">
+            <div className="grid gap-4 lg:col-span-2">
+                 <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+                    <Card className="sm:col-span-1 md:col-span-3">
+                        <CardHeader className="pb-4">
+                            <CardTitle className="font-headline">Welcome, {user?.email}!</CardTitle>
+                            <CardDescription>Here's a snapshot of your home selling journey.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Home className="h-4 w-4" />
+                                <span>Your Selling Dashboard</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    {valuation && (
+                        <Card className="lg:col-span-1">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-xl flex items-center gap-2">
+                                <Sparkles className="h-5 w-5 text-primary"/> AI Home Valuation
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="font-semibold text-2xl">${valuation.valuation.toLocaleString()}</p>
+                                <p className="text-sm text-muted-foreground">Generated on {valuation.createdAt}</p>
+                            </CardContent>
+                            <CardFooter className="flex justify-between items-center">
+                                <Badge variant="outline">Confidence: {Math.round(valuation.confidenceScore * 100)}%</Badge>
+                                <ValuationDetailsDialog valuation={valuation} />
+                            </CardFooter>
+                        </Card>
+                    )}
+                    <Card>
                         <CardHeader className="pb-2">
                             <CardTitle className="text-xl flex items-center gap-2">
-                               <Sparkles className="h-5 w-5 text-primary"/> AI Home Valuation
+                            <Camera className="h-5 w-5 text-primary"/> Photo & Video Shoot
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="font-semibold text-2xl">${valuation.valuation.toLocaleString()}</p>
-                            <p className="text-sm text-muted-foreground">Generated on {valuation.createdAt}</p>
+                            <p className="font-semibold text-lg">July 25, 2024 - 10:00 AM</p>
+                            <p className="text-sm text-muted-foreground">Photographer: Jane Doe</p>
                         </CardContent>
-                         <CardFooter className="flex justify-between items-center">
-                            <Badge variant="outline">Confidence: {Math.round(valuation.confidenceScore * 100)}%</Badge>
-                            <ValuationDetailsDialog valuation={valuation} />
+                        <CardFooter>
+                            <Badge variant="outline">Confirmed</Badge>
                         </CardFooter>
                     </Card>
-                )}
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-xl flex items-center gap-2">
-                           <Camera className="h-5 w-5 text-primary"/> Photo & Video Shoot
+                    <Card>
+                        <CardHeader className="pb-2">
+                            <CardTitle className="text-xl flex items-center gap-2">
+                            <CalendarDays className="h-5 w-5 text-primary"/> Open House Schedule
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                        <p className="font-semibold text-lg">July 27-28, 2024</p>
+                        <p className="text-sm text-muted-foreground">1:00 PM - 4:00 PM</p>
+                        </CardContent>
+                        <CardFooter>
+                            <Badge>Upcoming</Badge>
+                        </CardFooter>
+                    </Card>
+                </div>
+                 <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <ClipboardCheck className="h-6 w-6 text-primary" /> Pre-Listing Prep Tracker
                         </CardTitle>
+                        <CardDescription>
+                            Follow these steps to get your home market-ready.
+                        </CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <p className="font-semibold text-lg">July 25, 2024 - 10:00 AM</p>
-                        <p className="text-sm text-muted-foreground">Photographer: Jane Doe</p>
+                    <CardContent className="space-y-4">
+                        <div>
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-medium text-muted-foreground">Progress</span>
+                                <span className="text-sm font-bold text-primary">{Math.round(progress)}%</span>
+                            </div>
+                            <Progress value={progress} aria-label={`${progress}% complete`} />
+                        </div>
+                        <Separator />
+                        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+                            {tasks.map(task => (
+                                <TaskItem 
+                                    key={task.id} 
+                                    {...task} 
+                                    onCheckedChange={(checked) => handleTaskCheckedChange(task.id, checked)}
+                                />
+                            ))}
+                        </div>
                     </CardContent>
-                     <CardFooter>
-                        <Badge variant="outline">Confirmed</Badge>
-                    </CardFooter>
-                </Card>
-                <Card>
-                    <CardHeader className="pb-2">
-                        <CardTitle className="text-xl flex items-center gap-2">
-                           <CalendarDays className="h-5 w-5 text-primary"/> Open House Schedule
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                       <p className="font-semibold text-lg">July 27-28, 2024</p>
-                       <p className="text-sm text-muted-foreground">1:00 PM - 4:00 PM</p>
-                    </CardContent>
-                    <CardFooter>
-                        <Badge>Upcoming</Badge>
-                    </CardFooter>
                 </Card>
             </div>
-            <Card className="lg:col-span-2 xl:col-span-3">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <ClipboardCheck className="h-6 w-6 text-primary" /> Pre-Listing Prep Tracker
-                    </CardTitle>
-                     <CardDescription>
-                        Follow these steps to get your home market-ready.
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div>
-                        <div className="flex justify-between items-center mb-2">
-                            <span className="text-sm font-medium text-muted-foreground">Progress</span>
-                            <span className="text-sm font-bold text-primary">{Math.round(progress)}%</span>
-                        </div>
-                        <Progress value={progress} aria-label={`${progress}% complete`} />
-                    </div>
-                    <Separator />
-                    <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-                        {tasks.map(task => (
-                            <TaskItem 
-                                key={task.id} 
-                                {...task} 
-                                onCheckedChange={(checked) => handleTaskCheckedChange(task.id, checked)}
-                            />
-                        ))}
-                    </div>
-                </CardContent>
-            </Card>
+             <div className="lg:col-span-1">
+                <Chatbot />
+            </div>
         </div>
     )
 }
-
-    
