@@ -50,7 +50,7 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="w-full h-8 bg-secondary" />
+        <div className="w-full h-8 bg-primary/20" />
 
         <section id="about" className="w-full py-8 md:py-12 lg:py-16">
           <div className="container px-4 md:px-6">
@@ -238,5 +238,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
