@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { collection, getDocs, query, where, orderBy, Timestamp, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import { collection, query, orderBy, Timestamp, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useRouter } from 'next/navigation';
 import { auth, db, storage } from '@/lib/firebase';
@@ -16,7 +16,6 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 
 interface Document {
     id: string;
@@ -35,6 +34,7 @@ const getIconForType = (type: string) => {
             return <FileImage className="h-5 w-5 text-muted-foreground" />;
         case 'guide':
         case 'offer':
+        case 'user_upload':
         default:
             return <FileText className="h-5 w-5 text-muted-foreground" />;
     }
@@ -158,7 +158,7 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
                         title: "Upload Successful",
                         description: "Your document has been added to the hub.",
                     });
-                    onUploadComplete();
+                    onUploadComplete(); // This will now trigger a re-render in the parent
                 });
             }
         );
@@ -214,10 +214,20 @@ export default function DocumentsPage() {
     const router = useRouter();
     const [documents, setDocuments] = useState<Document[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [_, setForceUpdate] = useState(0); // Used to force a re-render
 
-    const fetchDocuments = () => {
-        if(!user) return;
-        // Documents are stored in a subcollection under the user's UID
+    const handleUploadComplete = useCallback(() => {
+        setForceUpdate(c => c + 1); // Just need to trigger a state change
+    }, []);
+
+    useEffect(() => {
+        if (loading) return;
+        if (!user) {
+            router.push('/seller-login');
+            return;
+        }
+
+        setIsLoading(true);
         const docsCollection = collection(db, 'users', user.uid, 'documents');
         const q = query(docsCollection, orderBy('date', 'desc'));
         
@@ -228,7 +238,7 @@ export default function DocumentsPage() {
                 return {
                     id: doc.id,
                     name: data.name,
-                    type: data.type,
+                    type: data.type || 'user_upload',
                     category: data.category,
                     url: data.url,
                     date: date ? date.toDate().toLocaleDateString() : 'N/A',
@@ -241,18 +251,7 @@ export default function DocumentsPage() {
              setIsLoading(false);
         });
 
-        return unsubscribe;
-    }
-
-    useEffect(() => {
-        if (loading) return;
-        if (!user) {
-            router.push('/seller-login');
-            return;
-        }
-
-        const unsubscribe = fetchDocuments();
-        return () => unsubscribe && unsubscribe();
+        return () => unsubscribe();
     }, [user, loading, router]);
 
 
@@ -266,7 +265,7 @@ export default function DocumentsPage() {
 
     return (
         <div className="grid gap-8">
-            {user && <UploadDocument userId={user.uid} onUploadComplete={fetchDocuments} />}
+            {user && <UploadDocument userId={user.uid} onUploadComplete={handleUploadComplete} />}
             <Card>
                 <CardHeader>
                     <CardTitle>Document Hub</CardTitle>
