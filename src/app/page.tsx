@@ -83,6 +83,8 @@ export default function Home() {
             </div>
           </div>
         </section>
+        
+        <div className="w-full h-8 bg-primary/20" />
 
         <section id="features" className="w-full py-8 md:py-12 lg:py-16">
           <div className="container px-4 md:px-6">
