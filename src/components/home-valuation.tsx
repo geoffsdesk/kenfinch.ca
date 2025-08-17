@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useRouter } from 'next/navigation';
 import { collection, doc, writeBatch, serverTimestamp } from 'firebase/firestore';
 import { db, auth } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -111,6 +112,7 @@ function HomeValuationInternal() {
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const { toast } = useToast();
   const [user] = useAuthState(auth);
+  const router = useRouter();
 
   const {
     ready,
@@ -177,8 +179,7 @@ function HomeValuationInternal() {
       };
       
       const valuationResult = await getHomeValuation(submissionValues);
-      setResult(valuationResult);
-
+      
       if (user) {
         const valuationRef = doc(collection(db, 'users', user.uid, 'valuations'));
         await writeBatch(db).set(valuationRef, {
@@ -189,9 +190,13 @@ function HomeValuationInternal() {
 
         toast({
             title: "Valuation Saved",
-            description: "Your home valuation has been saved to your dashboard.",
+            description: "Redirecting to your updated dashboard...",
         });
+        router.push('/dashboard');
+      } else {
+        setResult(valuationResult);
       }
+
     } catch (e) {
       console.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred during valuation.');
@@ -727,5 +732,7 @@ const HomeValuation = () => {
 }
 
 export { HomeValuation };
+
+    
 
     
