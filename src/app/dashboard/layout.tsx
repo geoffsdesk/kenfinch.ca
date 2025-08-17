@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail, Menu } from 'lucide-react';
+import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail, Menu, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,6 +41,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navItems = [
     { href: '/dashboard', icon: Home, label: 'Dashboard', admin: false },
+    { href: '/dashboard/chat', icon: MessageSquare, label: 'Chat', admin: false },
     { href: '/dashboard/documents', icon: FileText, label: 'Documents', admin: false },
     { href: '/dashboard/contacts', icon: Mail, label: 'Contacts', admin: true },
     { href: '/dashboard/sellers', icon: Building, label: 'Sellers', admin: true },
