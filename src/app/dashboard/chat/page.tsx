@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,6 +9,8 @@ import { nanoid } from 'nanoid';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import { chat, type ChatInput, type ChatOutput } from '@/ai/flows/chatbot-flow';
+import ReactMarkdown from 'react-markdown';
+
 
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
@@ -33,6 +35,8 @@ export default function ChatPage() {
   const [user] = useAuthState(auth);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,21 +45,32 @@ export default function ChatPage() {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (scrollAreaRef.current) {
+        const scrollableView = scrollAreaRef.current.querySelector('div[data-radix-scroll-area-viewport]');
+        if(scrollableView) {
+            scrollableView.scrollTop = scrollableView.scrollHeight;
+        }
+    }
+  }, [messages, isLoading]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>>) => {
     setIsLoading(true);
     const userMessage: Message = { id: nanoid(), role: 'user', text: values.message };
-    setMessages((prev) => [...prev, userMessage]);
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
     form.reset();
 
     try {
-        const chatHistory = messages.map(msg => ({
+        const chatHistory = newMessages.map(msg => ({
             role: msg.role,
             content: [{ text: msg.text }]
         }));
 
       const chatInput: ChatInput = {
         message: values.message,
-        history: chatHistory,
+        history: chatHistory.slice(0, -1), // Send history without the latest user message
       };
 
       const result: ChatOutput = await chat(chatInput);
@@ -85,7 +100,7 @@ export default function ChatPage() {
       <CardHeader>
         {/* Header content can go here if needed */}
       </CardHeader>
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
          <div className="space-y-4">
           {messages.map((message) => (
             <div
@@ -103,13 +118,24 @@ export default function ChatPage() {
               )}
               <div
                 className={cn(
-                  'max-w-md rounded-lg p-3 text-sm',
+                  'max-w-prose rounded-lg p-3 text-sm prose prose-sm',
                   message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground prose-invert'
                     : 'bg-muted'
                 )}
               >
-                {message.text}
+                {message.role === 'model' ? (
+                   <ReactMarkdown
+                        components={{
+                            ul: ({node, ...props}) => <ul className="list-disc pl-5" {...props} />,
+                            ol: ({node, ...props}) => <ol className="list-decimal pl-5" {...props} />,
+                        }}
+                    >
+                        {message.text}
+                    </ReactMarkdown>
+                ) : (
+                    message.text
+                )}
               </div>
               {message.role === 'user' && (
                 <Avatar className="h-8 w-8">
