@@ -57,10 +57,10 @@ export default function Home() {
             <div className="grid gap-10 md:grid-cols-2 md:gap-16">
               <div>
                 <img
-                  src="/brick.jpg"
-                  width="600"
+                  src="/ken_hero_a.png"
+                  width="525"
                   height="700"
-                  alt="Ken Finch, a professional real estate agent in Oakville, Ontario."
+                  alt="Ken Finch, a professional and friendly real estate agent in Oakville, Ontario."
                   data-ai-hint="realtor portrait"
                   className="mx-auto aspect-[3/4] overflow-hidden rounded-xl object-cover"
                 />
