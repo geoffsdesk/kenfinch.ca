@@ -28,7 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Task {
     id: string;
@@ -309,21 +309,25 @@ export default function DashboardPage() {
     // Setup tasks for new users
     useEffect(() => {
         if (!user) return;
-
-        const setupTasks = async () => {
+    
+        const syncTasks = async () => {
             const tasksCollection = collection(db, 'users', user.uid, 'tasks');
             const snapshot = await getDocs(tasksCollection);
-            if (snapshot.empty) {
+            const existingTaskIds = new Set(snapshot.docs.map(doc => doc.id));
+            
+            const missingTasks = initialPrepTasks.filter(task => !existingTaskIds.has(task.id));
+    
+            if (missingTasks.length > 0) {
                 const batch = writeBatch(db);
-                initialPrepTasks.forEach(task => {
+                missingTasks.forEach(task => {
                     const docRef = doc(tasksCollection, task.id);
                     batch.set(docRef, { label: task.label, checked: task.checked });
                 });
                 await batch.commit();
             }
         };
-
-        setupTasks();
+    
+        syncTasks();
     }, [user]);
 
     // Listen for task changes
@@ -452,3 +456,5 @@ export default function DashboardPage() {
         </div>
     )
 }
+
+    
