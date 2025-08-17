@@ -29,7 +29,7 @@ const HomeValuationInputSchema = z.object({
 export type HomeValuationInput = z.infer<typeof HomeValuationInputSchema>;
 
 const HomeValuationOutputSchema = z.object({
-  valuation: z.number().describe('The estimated market value of the home in USD.'),
+  valuation: z.number().describe('The estimated market value of the home in CAD.'),
   confidenceScore: z.number().min(0).max(1).describe('A score between 0 and 1 indicating the confidence in the valuation. Higher values indicate higher confidence.'),
   reasoning: z.string().describe('The detailed reasoning behind the valuation, including factors that influenced the estimate and how the confidence score was determined.'),
 });
@@ -45,6 +45,8 @@ const prompt = ai.definePrompt({
   output: {schema: HomeValuationOutputSchema},
   prompt: `You are an expert real estate appraiser specializing in the Oakville, Ontario market. Your goal is to provide an accurate and well-reasoned valuation for a given home, along with a confidence score reflecting the reliability of your estimate.
 
+  Your valuations should be conservative and reflect the current market conditions in Oakville. Avoid overly optimistic estimates.
+  
   Consider the following factors when determining the home's value and confidence score. Note that bedrooms below grade (in the basement) typically have a lower market value than bedrooms above grade. A finished basement adds more value than an unfinished one. Detached homes are typically valued highest, followed by semi-detached, townhouse, and then condo apartments. Parking spaces are a significant value-add.
 
   - Address: {{{address}}}
@@ -62,7 +64,7 @@ const prompt = ai.definePrompt({
 
   Instructions:
 
-  1.  Valuation: Provide a single, definitive valuation for the property in USD. Ensure this value is realistic and justifiable based on the provided information.
+  1.  Valuation: Provide a single, definitive valuation for the property in CAD. Ensure this value is realistic and justifiable based on the provided information.
   2.  Confidence Score: Determine a confidence score between 0 and 1. A score of 1 indicates very high confidence (e.g., ample comparable sales data, consistent property characteristics), while a score of 0 indicates very low confidence (e.g., limited data, unique property features making comparisons difficult).
   3.  Reasoning: Explain your valuation process step-by-step. Reference specific details from the provided information (e.g., home type, finished basement, parking) to justify your estimate and confidence score. Explain how each factor influenced your final valuation.
 
