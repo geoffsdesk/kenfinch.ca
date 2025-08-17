@@ -9,9 +9,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Your Trusted Oakville Real Estate Partner',
-    description: 'Unlock your Oakville home\'s true value with Ken Finch. Get a free, AI-powered home valuation and experience a seamless, successful home selling process.',
-    keywords: ['Oakville real estate', 'sell home Oakville', 'Ken Finch realtor', 'home valuation Oakville', 'Westoak Trails real estate'],
+    title: 'Sell Your Home in Oakville | Ken Finch Real Estate',
+    description: 'Partner with Ken Finch, your trusted Oakville real estate agent, for a seamless and successful home selling experience. Get a free, AI-powered home valuation and expert market analysis for your Oakville property.',
+    keywords: ['sell home Oakville', 'Oakville real estate agent', 'home valuation Oakville', 'Ken Finch realtor', 'real estate listings Oakville'],
 };
 
 
@@ -29,7 +29,7 @@ export default function Home() {
                     Unlock Your Oakville Home's True Value
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Partner with Ken Finch for a seamless, successful home selling experience in Oakville. Get started with a free, AI-powered home valuation today.
+                    Thinking of selling your home in Oakville? Partner with Ken Finch for a seamless, successful experience. Get started with a free, AI-powered home valuation today.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -42,7 +42,7 @@ export default function Home() {
                 src="/hero_house.png"
                 width="600"
                 height="400"
-                alt="A beautiful suburban house in Oakville at sunset"
+                alt="A beautiful suburban house in Oakville, Ontario at sunset, a prime property for sale."
                 data-ai-hint="large house suburb"
                 className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
               />
@@ -60,23 +60,23 @@ export default function Home() {
                   src="/brick.jpg"
                   width="600"
                   height="700"
-                  alt="Ken Finch, an Oakville real estate agent"
+                  alt="Ken Finch, a professional real estate agent in Oakville, Ontario."
                   data-ai-hint="realtor portrait"
                   className="mx-auto aspect-[3/4] overflow-hidden rounded-xl object-cover"
                 />
               </div>
               <div className="flex flex-col justify-center">
                 <div className="space-y-4">
-                  <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Why Sellers Choose Ken Finch</h2>
-                  <p className="text-lg font-semibold text-primary">Your Westoak Trails Expert for Fast, Confident Home Sales</p>
+                  <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-4xl">Why Sellers in Oakville Choose Ken Finch</h2>
+                  <p className="text-lg font-semibold text-primary">Your Oakville Real Estate Expert for Fast, Confident Home Sales</p>
                   <p className="text-muted-foreground">
-                   Sell Smarter. Sell Faster. With Someone Who Knows Oakville. I’ve been helping families sell in Oakville—especially in Westoak Trails—for years. I know the streets, the buyers, the timing, and what makes a home stand out in this market. My approach is hands-on and tailored to get your home sold quickly and for the best possible price.
+                   Sell Smarter. Sell Faster. With a realtor who truly knows the Oakville market. I’ve been helping families sell their homes in this community for years. I understand the nuances of each neighborhood, the right timing, and how to make your home stand out to attract the perfect buyer. My approach is hands-on and tailored to get you the best possible price.
                   </p>
                   <p className="text-muted-foreground">
-                    Every property I list is presented with care. That means professional photos, drone video, and sharp marketing that reaches the right buyers, online and in the community. With most buyers starting their search on the web, I make sure your home is front and center from the start.
+                    Every property I list is presented with professional photography, drone video, and sharp marketing that reaches qualified buyers online and within the community. In a market where most buyers start their search online, I ensure your home makes an exceptional first impression.
                   </p>
                   <p className="text-muted-foreground">
-                    Clients come to me for results. I bring pricing strategies that match the market, strong negotiations, and a personal commitment to making the process smooth. Backed by my team at Royal LePage Signature Realty, I offer a balance of proven tactics and modern tools that get homes sold. Whether you're moving up, moving on, or just starting to plan, I'm here to help you take that next step with confidence.
+                    My clients trust me to deliver results. I provide data-driven pricing strategies, strong negotiation, and a personal commitment to a smooth process. Backed by Royal LePage Signature Realty, I offer a blend of proven tactics and modern tools designed to get your home sold.
                   </p>
                 </div>
               </div>
@@ -91,7 +91,7 @@ export default function Home() {
                 <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">Our Services</div>
                 <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">A Premium Selling Experience</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  We provide a comprehensive suite of tools and services to ensure your property stands out and sells for its maximum value.
+                  We provide a comprehensive suite of tools and services to ensure your property stands out and sells for its maximum value in the Oakville market.
                 </p>
               </div>
             </div>
@@ -160,44 +160,60 @@ export default function Home() {
               <div className="space-y-2">
                 <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">What Our Clients Say</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Hear from satisfied sellers who have partnered with Ken Finch.
+                  Hear from satisfied sellers who have partnered with Ken Finch in Oakville.
                 </p>
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-1 md:gap-12 lg:grid-cols-2 lg:max-w-none mt-12">
               <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-1 text-primary mb-2">
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                  </div>
-                  <blockquote className="text-lg text-muted-foreground">
-                    “Ken really knew the market and had a smart game plan from day one. Thanks to his marketing and advice, we got multiple offers within days—and ended up selling for more than we expected. He was professional, easy to work with, and kept things moving fast.”
-                  </blockquote>
+                <CardContent className="p-6 grid gap-6 md:grid-cols-[120px_1fr] items-start">
+                    <img
+                        src="https://placehold.co/400x400.png"
+                        width="120"
+                        height="120"
+                        alt="Happy couple who sold their home in Oakville"
+                        data-ai-hint="happy couple"
+                        className="rounded-full aspect-square object-cover"
+                    />
+                    <div className="grid gap-2">
+                        <div className="flex items-center gap-1 text-primary">
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                        </div>
+                        <blockquote className="text-base text-muted-foreground">
+                            “Ken really knew the market and had a smart game plan from day one. Thanks to his marketing and advice, we got multiple offers within days—and ended up selling for more than we expected. He was professional, easy to work with, and kept things moving fast.”
+                        </blockquote>
+                         <p className="font-semibold text-right w-full">— Peter & Elizabeth</p>
+                    </div>
                 </CardContent>
-                <CardFooter>
-                    <p className="font-semibold text-right w-full">— Peter & Elizabeth</p>
-                </CardFooter>
               </Card>
               <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center gap-1 text-primary mb-2">
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                      <Star className="h-5 w-5 fill-current" />
-                  </div>
-                  <blockquote className="text-lg text-muted-foreground">
-                    “Ken’s marketing, especially the photography and drone footage made our home shine. He expertly handled multiple offers and and secured a price well above our expectations, all within a week. We’re now settled in our dream home, and we’d confidently recommend Ken to anyone buying or selling.”
-                  </blockquote>
+                 <CardContent className="p-6 grid gap-6 md:grid-cols-[120px_1fr] items-start">
+                    <img
+                        src="https://placehold.co/400x400.png"
+                        width="120"
+                        height="120"
+                        alt="A smiling couple who sold their house with Ken Finch"
+                        data-ai-hint="smiling couple"
+                        className="rounded-full aspect-square object-cover"
+                    />
+                    <div className="grid gap-2">
+                        <div className="flex items-center gap-1 text-primary">
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                        </div>
+                        <blockquote className="text-base text-muted-foreground">
+                            “Ken’s marketing, especially the photography and drone footage made our home shine. He expertly handled multiple offers and and secured a price well above our expectations, all within a week. We’re now settled in our dream home, and we’d confidently recommend Ken to anyone buying or selling.”
+                        </blockquote>
+                        <p className="font-semibold text-right w-full">- Trisha & Ben</p>
+                    </div>
                 </CardContent>
-                <CardFooter>
-                    <p className="font-semibold text-right w-full">- Trisha & Ben</p>
-                </CardFooter>
               </Card>
             </div>
           </div>
@@ -209,7 +225,7 @@ export default function Home() {
                 <div className="space-y-2">
                     <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">AI Home Valuator</h2>
                     <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Fill in your property's details below to receive an instant, AI-powered valuation estimate.
+                    Fill in your property's details below to receive an instant, AI-powered valuation estimate for your Oakville home.
                     </p>
                 </div>
             </div>
