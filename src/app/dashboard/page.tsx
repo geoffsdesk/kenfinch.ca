@@ -23,7 +23,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ClipboardCheck, Camera, CalendarDays, Home, Sparkles, Loader2, RefreshCw, Send, MessageSquare } from "lucide-react";
+import { ClipboardCheck, Sparkles, Loader2, RefreshCw, Send, MessageSquare, Home } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Form, FormControl, FormField, FormItem } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
