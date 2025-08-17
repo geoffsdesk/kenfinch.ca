@@ -103,6 +103,7 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
     const [isUploading, setIsUploading] = useState(false);
     const [uploadProgress, setUploadProgress] = useState(0);
     const { toast } = useToast();
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
@@ -153,12 +154,15 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
 
                     setIsUploading(false);
                     setFile(null);
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                    }
                     setCategory('Other');
                     toast({
                         title: "Upload Successful",
                         description: "Your document has been added to the hub.",
                     });
-                    onUploadComplete(); // This will now trigger a re-render in the parent
+                    onUploadComplete();
                 });
             }
         );
@@ -174,11 +178,11 @@ const UploadDocument = ({ userId, onUploadComplete }: { userId: string, onUpload
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                      <div className="grid gap-2">
                         <label htmlFor="file-upload" className="text-sm font-medium">File</label>
-                        <Input id="file-upload" type="file" onChange={handleFileChange} disabled={isUploading} />
+                        <Input id="file-upload" type="file" ref={fileInputRef} onChange={handleFileChange} disabled={isUploading} />
                      </div>
                       <div className="grid gap-2">
                         <label htmlFor="category-select" className="text-sm font-medium">Category</label>
-                         <Select onValueChange={setCategory} defaultValue={category} disabled={isUploading}>
+                         <Select onValueChange={setCategory} value={category} disabled={isUploading}>
                             <SelectTrigger id="category-select">
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
@@ -214,10 +218,11 @@ export default function DocumentsPage() {
     const router = useRouter();
     const [documents, setDocuments] = useState<Document[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [_, setForceUpdate] = useState(0); // Used to force a re-render
-
+    
+    // This function is now just a placeholder, as onSnapshot handles real-time updates.
+    // However, it can be useful for triggering any additional logic if needed.
     const handleUploadComplete = useCallback(() => {
-        setForceUpdate(c => c + 1); // Just need to trigger a state change
+       // console.log("Upload finished, list will update automatically.");
     }, []);
 
     useEffect(() => {
@@ -251,6 +256,7 @@ export default function DocumentsPage() {
              setIsLoading(false);
         });
 
+        // Cleanup the listener when the component unmounts
         return () => unsubscribe();
     }, [user, loading, router]);
 
