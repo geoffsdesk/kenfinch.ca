@@ -20,7 +20,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        <section id="hero" className="w-full py-12 md:py-16 lg:py-20 bg-card">
+        <section id="hero" className="w-full py-8 md:py-12 lg:py-16 bg-card">
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
@@ -36,9 +36,6 @@ export default function Home() {
                    <Link href="#valuation-tool" className="inline-block">
                     <Button size="lg">Get Free Valuation</Button>
                   </Link>
-                   <Link href="/contact" className="inline-block">
-                    <Button size="lg" variant="outline">Contact Ken</Button>
-                  </Link>
                 </div>
               </div>
               <img
@@ -53,7 +50,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="about" className="w-full py-12 md:py-16 lg:py-20">
+        <section id="about" className="w-full py-8 md:py-12 lg:py-16">
           <div className="container px-4 md:px-6">
             <div className="grid gap-10 md:grid-cols-2 md:gap-16">
               <div>
@@ -85,7 +82,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="features" className="w-full py-12 md:py-16 lg:py-20">
+        <section id="features" className="w-full py-8 md:py-12 lg:py-16">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -128,7 +125,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="testimonials" className="w-full py-12 md:py-16 lg:py-20 bg-muted">
+        <section id="testimonials" className="w-full py-8 md:py-12 lg:py-16 bg-muted">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
@@ -177,7 +174,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="valuation-tool" className="w-full py-12 md:py-16 lg:py-20 bg-card">
+        <section id="valuation-tool" className="w-full py-8 md:py-12 lg:py-16 bg-card">
           <div className="container px-4 md:px-6">
              <div className="flex flex-col items-center justify-center space-y-4 text-center">
                 <div className="space-y-2">
