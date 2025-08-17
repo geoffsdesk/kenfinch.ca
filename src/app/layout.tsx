@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: '%s | Oakville Home Seller Success',
     default: 'Oakville Home Seller Success | Ken Finch Real Estate',
   },
-  icons: { icon: '/KF.ico' },
+  icons: { icon: '/kf_favicon.ico' },
   description: 'Partner with Ken Finch, your trusted real estate agent, for a seamless and successful home selling experience in Oakville, Ontario. Get a free, AI-powered home valuation today.',
   keywords: ['Oakville real estate', 'sell home Oakville', 'Ken Finch realtor', 'home valuation Oakville', 'Westoak Trails real estate'],
 };
