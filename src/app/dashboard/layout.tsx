@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail } from 'lucide-react';
+import { Home, FileText, Users, LogOut, ChevronLeft, Building, Mail, Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,16 +12,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { auth } from '@/lib/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { signOut } from 'firebase/auth';
 import { Loader2 } from 'lucide-react';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [user, loading] = useAuthState(auth);
+  const [open, setOpen] = React.useState(false);
+
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -42,6 +45,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/contacts', icon: Mail, label: 'Contacts', admin: true },
     { href: '/dashboard/sellers', icon: Building, label: 'Sellers', admin: true },
   ];
+  
+  const currentNavItems = navItems.filter(item => isAdminRoute ? item.admin : !item.admin);
+
 
   useEffect(() => {
      if (!loading && !user) {
@@ -74,7 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <span className="sr-only">KenFinch.ca</span>
           </Link>
           <TooltipProvider>
-            {navItems.filter(item => user ? (isAdminRoute ? item.admin : !item.admin) : true).map((item) => (
+            {currentNavItems.map((item) => (
               <Tooltip key={item.href}>
                 <TooltipTrigger asChild>
                   <Link
@@ -114,10 +120,47 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 flex-1">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-            <Button variant="outline" size="icon" className="sm:hidden" onClick={() => router.back()}>
-                <ChevronLeft className="h-5 w-5" />
-                <span className="sr-only">Back</span>
-            </Button>
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon" className="sm:hidden">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="sm:max-w-xs">
+                <nav className="grid gap-6 text-lg font-medium">
+                  <Link
+                    href="/"
+                    className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+                    onClick={() => setOpen(false)}
+                  >
+                    <span className="font-headline text-lg">K</span>
+                    <span className="sr-only">KenFinch.ca</span>
+                  </Link>
+                  {currentNavItems.map((item) => (
+                     <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          'flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground',
+                          { 'text-foreground': pathname.startsWith(item.href) }
+                        )}
+                      >
+                        <item.icon className="h-5 w-5" />
+                        {item.label}
+                      </Link>
+                  ))}
+                   <button
+                      onClick={() => { handleLogout(); setOpen(false); }}
+                      className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      Logout
+                  </button>
+                </nav>
+              </SheetContent>
+            </Sheet>
             <h1 className="font-headline text-2xl font-semibold flex-1">
                 {pageTitle}
             </h1>
