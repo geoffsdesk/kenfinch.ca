@@ -102,6 +102,8 @@ const finishedBasementOptions = [
     { value: 'false', label: 'No' },
 ]
 
+const googleMapsLibraries = ["places"] as ("places")[];
+
 function HomeValuationInternal() {
   const [result, setResult] = useState<HomeValuationOutput | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -678,7 +680,7 @@ function HomeValuationInternal() {
 export function HomeValuation() {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries: ['places'],
+    libraries: googleMapsLibraries,
   });
 
   if (loadError) {
