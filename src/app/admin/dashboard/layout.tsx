@@ -36,16 +36,18 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
           if (userDoc.exists() && userDoc.data().isAdmin === true) {
             setIsAdmin(true);
           } else {
-            // Not an admin, redirect them
+            // Not an admin, redirect them to the seller dashboard
             router.push('/seller/dashboard'); 
           }
         } catch (err) {
             console.error("Failed to check admin status", err);
+            // If there's an error (e.g., Firestore rules), deny access
             router.push('/admin/login');
         } finally {
             setIsCheckingRole(false);
         }
       } else if (!loading) {
+        // Not logged in, send to admin login page
         router.push('/admin/login');
         setIsCheckingRole(false);
       }

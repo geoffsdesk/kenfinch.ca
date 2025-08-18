@@ -57,11 +57,11 @@ export default function SellerSignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       const newUser = userCredential.user;
 
-      // Save user info to Firestore
+      // Save user info to Firestore, explicitly setting them as not an admin
       await setDoc(doc(db, "users", newUser.uid), {
         email: newUser.email,
         createdAt: serverTimestamp(),
-        isAdmin: false,
+        isAdmin: false, 
       });
 
       toast({
