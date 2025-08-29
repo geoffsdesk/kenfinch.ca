@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 import React from 'react';
-import Image from 'next/image';
 
 export function Header() {
   const [open, setOpen] = React.useState(false);
@@ -44,12 +43,12 @@ export function Header() {
             <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
           </Link>
            <div className="ml-4 hidden md:block">
-            <Image
+            <img
                 src="/royal_lepage_logo.png"
                 alt="Royal LePage Logo"
-                width={150}
-                height={35}
-                priority
+                width="150"
+                height="35"
+                style={{ height: 'auto' }}
             />
           </div>
         </div>
@@ -90,11 +89,11 @@ export function Header() {
                            <Link href="/" className="flex items-center space-x-2" onClick={() => setOpen(false)}>
                                 <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
                             </Link>
-                             <Image
+                             <img
                                 src="/royal_lepage_logo.png"
                                 alt="Royal LePage Logo"
-                                width={150}
-                                height={35}
+                                width="150"
+                                height="35"
                             />
                         </div>
                          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
@@ -130,5 +129,3 @@ export function Header() {
       </div>
     </header>
   );
-}
-
