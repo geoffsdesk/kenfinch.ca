@@ -1,6 +1,6 @@
 ---
 title: 'The 90-Day Executive Sale Plan: How to Sell Your Oakville Home Fast & For Top Dollar'
-date: '2024-07-27'
+date: '2025-08-29'
 excerpt: 'Need to sell your executive home in Oakville fast? Our 90-day strategic plan covers everything from pricing to marketing for a swift, top-dollar sale.'
 ---
 

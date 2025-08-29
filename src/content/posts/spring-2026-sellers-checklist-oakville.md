@@ -1,6 +1,6 @@
 ---
 title: 'The Ultimate Spring 2026 Seller''s Checklist: River Oaks, West Oak Trails & Palermo West'
-date: '2024-07-27'
+date: '2025-08-29'
 excerpt: 'Selling your townhouse or semi-detached home in Oakville''s River Oaks, West Oak Trails, or Palermo West? Our Ultimate Spring 2026 checklist is your expert guide to preparing your property and maximizing your sale price.'
 ---
 
