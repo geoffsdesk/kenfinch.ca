@@ -12,10 +12,6 @@ export function Header() {
 
   const navLinks = [
     {
-        href: "/blog",
-        label: "Blog",
-    },
-    {
         href: "https://app.realmmlp.ca/shared/NkRorVzOjRH8EZq3l6e4/eP5L3rZYmMUg2VbgPj8qta3A24la7jtykEQ12JP5srj6l9WRW4HLRbVk7gy6HBY7QPl5R4TnYVZPzjyEfrVYykAknOSWYnewr8ZwI9LREjEgLEFRBO7k7pB7c6wb4WEkKgHDqgrEzOLnUoM1MZD8o",
         label: "Listings",
         external: true,
@@ -31,7 +27,11 @@ export function Header() {
     {
         href: "/seller/login",
         label: "Seller Login",
-    }
+    },
+    {
+        href: "/blog",
+        label: "Blog",
+    },
   ]
 
 
