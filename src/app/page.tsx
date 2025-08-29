@@ -16,8 +16,35 @@ export const metadata: Metadata = {
 
 
 export default function Home() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    "name": "Ken Finch Real Estate",
+    "url": "https://www.kenfinch.ca",
+    "logo": "https://www.kenfinch.ca/kf_logo.png",
+    "image": "https://www.kenfinch.ca/ken_hero_a.png",
+    "telephone": "+1-905-510-3642",
+    "email": "ken@kenfinch.ca",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Oakville",
+      "addressRegion": "ON",
+      "addressCountry": "CA"
+    },
+    "description": "Ken Finch is a trusted real estate agent in Oakville, Ontario, specializing in helping clients sell their homes quickly and for the best value. Offering expert market analysis, a suite of digital tools, and personalized service.",
+    "areaServed": {
+      "@type": "Place",
+      "name": "Oakville, ON"
+    },
+    "priceRange" : "$$$"
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <Header />
       <main className="flex-1">
         <section id="hero" className="w-full py-8 md:py-12 lg:py-16 bg-card">
@@ -243,5 +270,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

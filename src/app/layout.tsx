@@ -10,14 +10,31 @@ const playfairDisplay = Playfair_Display({
   variable: '--font-playfair-display',
 });
 
+const siteUrl = 'https://www.kenfinch.ca';
+
 export const metadata: Metadata = {
   title: {
     template: '%s | Oakville Home Seller Success',
     default: 'Oakville Home Seller Success | Ken Finch Real Estate',
   },
-  icons: { icon: '/kf_favicon.ico' },
   description: 'Partner with Ken Finch, your trusted real estate agent, for a seamless and successful home selling experience in Oakville, Ontario. Get a free, AI-powered home valuation today.',
   keywords: ['Oakville real estate', 'sell home Oakville', 'Ken Finch realtor', 'home valuation Oakville', 'Westoak Trails real estate'],
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    type: 'website',
+    url: siteUrl,
+    title: 'Oakville Home Seller Success | Ken Finch Real Estate',
+    description: 'Partner with Ken Finch for a seamless home selling experience in Oakville. Get a free, AI-powered home valuation.',
+    images: [`${siteUrl}/hero_house.png`],
+    siteName: 'KenFinch.ca',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Oakville Home Seller Success | Ken Finch Real Estate',
+    description: 'Partner with Ken Finch for a seamless home selling experience in Oakville. Get a free, AI-powered home valuation.',
+    images: [`${siteUrl}/hero_house.png`],
+  },
+  icons: { icon: '/kf_favicon.ico' },
 };
 
 export default function RootLayout({
