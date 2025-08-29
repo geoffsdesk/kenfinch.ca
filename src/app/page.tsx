@@ -51,17 +51,29 @@ export default function Home() {
           <div className="container px-4 md:px-6">
             <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
               <div className="flex flex-col justify-center space-y-4">
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Unlock Your Oakville Home's True Value
                   </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Thinking of selling your home in Oakville? Partner with Ken Finch for a seamless, successful experience. Get started with an AI-powered home valuation today.
-                  </p>
+                   <div>
+                    <h2 className="text-lg font-semibold text-primary">For an Instant Market Snapshot:</h2>
+                    <p className="max-w-[600px] text-muted-foreground md:text-lg">
+                      Curious about your home's current standing? Our cutting-edge AI tool provides a quick, data-driven estimate of its market value. It's a fantastic starting point for your research.
+                    </p>
+                  </div>
+                  <div>
+                     <h2 className="text-lg font-semibold text-primary">For a Bespoke, Expert Analysis:</h2>
+                    <p className="max-w-[600px] text-muted-foreground md:text-lg">
+                     For a more nuanced and comprehensive valuation, nothing surpasses a personal consultation. Ken Finch offers a confidential, white-glove assessment that considers your home's unique features, recent upgrades, and the market dynamics an algorithm can't see.
+                    </p>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                    <Link href="#valuation-tool" className="inline-block">
-                    <Button size="lg">Get Valuation</Button>
+                    <Button size="lg">AI-Powered Valuation Now</Button>
+                  </Link>
+                   <Link href="/contact" className="inline-block">
+                    <Button size="lg" variant="outline">Schedule Your Private Consultation</Button>
                   </Link>
                 </div>
               </div>
