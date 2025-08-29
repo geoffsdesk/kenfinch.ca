@@ -55,26 +55,26 @@ export default function Home() {
                   <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
                     Unlock Your Oakville Home's True Value
                   </h1>
-                   <div>
-                    <h2 className="text-lg font-semibold text-primary">For an Instant Market Snapshot:</h2>
-                    <p className="max-w-[600px] text-muted-foreground md:text-lg">
-                      Curious about your home's current standing? Our cutting-edge AI tool provides a quick, data-driven estimate of its market value. It's a fantastic starting point for your research.
-                    </p>
-                  </div>
-                  <div>
-                     <h2 className="text-lg font-semibold text-primary">For a Bespoke, Expert Analysis:</h2>
-                    <p className="max-w-[600px] text-muted-foreground md:text-lg">
-                     For a more nuanced and comprehensive valuation, nothing surpasses a personal consultation. Ken Finch offers a confidential, white-glove assessment that considers your home's unique features, recent upgrades, and the market dynamics an algorithm can't see.
-                    </p>
-                  </div>
                 </div>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                   <Link href="#valuation-tool" className="inline-block">
-                    <Button size="lg">AI-Powered Valuation Now</Button>
-                  </Link>
-                   <Link href="/contact" className="inline-block">
-                    <Button size="lg" variant="outline">Schedule Your Private Consultation</Button>
-                  </Link>
+                <div className="grid md:grid-cols-2 gap-8 pt-4">
+                    <div className="flex flex-col space-y-4">
+                        <h2 className="text-lg font-semibold text-primary">For an Instant Market Snapshot:</h2>
+                        <p className="text-muted-foreground md:text-base flex-grow">
+                          Curious about your home's current standing? Our cutting-edge AI tool provides a quick, data-driven estimate of its market value. It's a fantastic starting point for your research.
+                        </p>
+                         <Link href="#valuation-tool" className="inline-block">
+                            <Button size="lg" className="w-full">AI-Powered Valuation Now</Button>
+                        </Link>
+                    </div>
+                     <div className="flex flex-col space-y-4">
+                        <h2 className="text-lg font-semibold text-primary">For a Bespoke, Expert Analysis:</h2>
+                        <p className="text-muted-foreground md:text-base flex-grow">
+                         For a more nuanced and comprehensive valuation, nothing surpasses a personal consultation. Ken Finch offers a confidential, white-glove assessment that considers your home's unique features, recent upgrades, and the market dynamics an algorithm can't see.
+                        </p>
+                        <Link href="/contact" className="inline-block">
+                            <Button size="lg" variant="outline" className="w-full">Schedule Your Private Consultation</Button>
+                        </Link>
+                    </div>
                 </div>
               </div>
               <img
