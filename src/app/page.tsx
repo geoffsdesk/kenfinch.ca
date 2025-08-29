@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Sell Your Home in Oakville | Ken Finch Real Estate',
-    description: 'Partner with Ken Finch, your trusted Oakville real estate agent, for a seamless and successful home selling experience. Get a free, AI-powered home valuation and expert market analysis for your Oakville property.',
+    description: 'Partner with Ken Finch, your trusted Oakville real estate agent, for a seamless and successful home selling experience. Get an AI-powered home valuation and expert market analysis for your Oakville property.',
     keywords: ['sell home Oakville', 'Oakville real estate agent', 'home valuation Oakville', 'Ken Finch realtor', 'real estate listings Oakville'],
 };
 
@@ -56,12 +56,12 @@ export default function Home() {
                     Unlock Your Oakville Home's True Value
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Thinking of selling your home in Oakville? Partner with Ken Finch for a seamless, successful experience. Get started with a free, AI-powered home valuation today.
+                    Thinking of selling your home in Oakville? Partner with Ken Finch for a seamless, successful experience. Get started with an AI-powered home valuation today.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                    <Link href="#valuation-tool" className="inline-block">
-                    <Button size="lg">Get Free Valuation</Button>
+                    <Button size="lg">Get Valuation</Button>
                   </Link>
                 </div>
               </div>

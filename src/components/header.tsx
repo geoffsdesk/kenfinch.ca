@@ -18,7 +18,7 @@ export function Header() {
     },
     {
         href: "/#valuation-tool",
-        label: "Get Free Valuation",
+        label: "Get Valuation",
     },
     {
         href: "/contact",
