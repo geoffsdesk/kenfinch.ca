@@ -212,10 +212,10 @@ export default function Home() {
               <Card>
                 <CardContent className="p-6 grid gap-6 md:grid-cols-[120px_1fr] items-start">
                     <img
-                        src="/peter_liz.png"
+                        src="/wei_linda_sold.png"
                         width="120"
                         height="120"
-                        alt="Happy clients Peter and Elizabeth who sold their home with Ken Finch"
+                        alt="Happy clients Wei and Linda who sold their home with Ken Finch"
                         className="rounded-full aspect-square object-cover"
                     />
                     <div className="grid gap-2">
@@ -229,7 +229,7 @@ export default function Home() {
                         <blockquote className="text-base text-muted-foreground">
                             “Ken really knew the market and had a smart game plan from day one. Thanks to his marketing and advice, we got multiple offers within days—and ended up selling for more than we expected. He was professional, easy to work with, and kept things moving fast.”
                         </blockquote>
-                         <p className="font-semibold text-right w-full">— Peter & Elizabeth</p>
+                         <p className="font-semibold text-right w-full">— Wei and Linda</p>
                     </div>
                 </CardContent>
               </Card>
