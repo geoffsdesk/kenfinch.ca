@@ -1,6 +1,6 @@
 ---
 title: 'The Ultimate Spring 2026 Seller''s Checklist: River Oaks, West Oak Trails & Palermo West'
-date: '2025-08-29'
+date: '2025-12-29'
 excerpt: 'Selling your townhouse or semi-detached home in Oakville''s River Oaks, West Oak Trails, or Palermo West? Our Ultimate Spring 2026 checklist is your expert guide to preparing your property and maximizing your sale price.'
 ---
 
@@ -9,6 +9,8 @@ excerpt: 'Selling your townhouse or semi-detached home in Oakville''s River Oaks
 Are you thinking of selling your semi-detached home or townhouse in River Oaks, West Oak Trails, or Palermo West in the spring of 2026? This is the checklist for you. Selling in these specific, family-friendly Oakville neighbourhoods requires a tailored approach to attract the right buyers and achieve a premium price.
 
 This guide will walk you through the entire process, from planning today to a successful closing next spring.
+
+![Spring 2026 Seller's Checklist Infographic](/spring-2026-checklist.png)
 
 ### Phase 1: Autumn/Winter 2025 - The Strategic Planning Stage
 
