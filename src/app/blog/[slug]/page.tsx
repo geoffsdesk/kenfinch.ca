@@ -7,7 +7,10 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { Separator } from '@/components/ui/separator';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { CheckCircle2 } from 'lucide-react';
+import { ContactForm } from '@/components/contact-form';
+import Script from 'next/script';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = await getPostData(params.slug);
@@ -47,6 +50,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           <div className="prose prose-lg max-w-none dark:prose-invert">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
               components={{
                 input: ({ node, ...props }) => {
                   if (props.type === 'checkbox') {
@@ -71,11 +75,26 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             >
               {post.content}
             </ReactMarkdown>
-
           </div>
+
+          <Separator className="my-12" />
+
+          <section className="bg-muted/50 rounded-lg p-8">
+            <div className="text-center mb-8">
+              <h2 className="font-headline text-3xl font-bold mb-4">Ready to Sell Your Oakville Home?</h2>
+              <p className="text-muted-foreground text-lg">
+                Contact Ken Finch today for a personalized evaluation and strategic plan.
+              </p>
+            </div>
+            <div className="max-w-xl mx-auto">
+              <ContactForm />
+            </div>
+          </section>
         </article>
       </main>
       <Footer />
+      <Script src="//www.instagram.com/embed.js" strategy="lazyOnload" />
     </div>
   );
 }
+

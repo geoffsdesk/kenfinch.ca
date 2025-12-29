@@ -7,12 +7,13 @@ import { format } from 'date-fns';
 const postsDirectory = path.join(process.cwd(), 'src/content/posts');
 
 export interface PostData {
-    slug: string;
-    title: string;
-    date: string;
-    formattedDate: string;
-    excerpt: string;
-    content: string;
+  slug: string;
+  title: string;
+  date: string;
+  formattedDate: string;
+  excerpt: string;
+  image?: string;
+  content: string;
 }
 
 export function getSortedPostsData(): Omit<PostData, 'content'>[] {
@@ -37,6 +38,7 @@ export function getSortedPostsData(): Omit<PostData, 'content'>[] {
       date: typedMatterData.date,
       formattedDate: format(new Date(typedMatterData.date), 'MMMM d, yyyy'),
       excerpt: typedMatterData.excerpt,
+      image: (typedMatterData as any).image,
     };
   });
 
@@ -51,23 +53,24 @@ export function getSortedPostsData(): Omit<PostData, 'content'>[] {
 }
 
 export async function getPostData(slug: string): Promise<PostData> {
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const fullPath = path.join(postsDirectory, `${slug}.md`);
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
 
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
-    
-    const typedMatterData = matterResult.data as { title: string; date: string; excerpt: string; };
+  // Use gray-matter to parse the post metadata section
+  const matterResult = matter(fileContents);
 
-    // You can optionally process the content with a markdown parser here if you want to return HTML
-    const content = matterResult.content;
+  const typedMatterData = matterResult.data as { title: string; date: string; excerpt: string; };
 
-    return {
-        slug,
-        title: typedMatterData.title,
-        date: typedMatterData.date,
-        formattedDate: format(new Date(typedMatterData.date), 'MMMM d, yyyy'),
-        excerpt: typedMatterData.excerpt,
-        content: content,
-    };
+  // You can optionally process the content with a markdown parser here if you want to return HTML
+  const content = matterResult.content;
+
+  return {
+    slug,
+    title: typedMatterData.title,
+    date: typedMatterData.date,
+    formattedDate: format(new Date(typedMatterData.date), 'MMMM d, yyyy'),
+    excerpt: typedMatterData.excerpt,
+    image: (typedMatterData as any).image,
+    content: content,
+  };
 }

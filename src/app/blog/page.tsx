@@ -33,9 +33,18 @@ export default function BlogIndexPage() {
 
                 <section id="blog-posts" className="w-full py-12 md:py-16 lg:py-20">
                     <div className="container px-4 md:px-6">
-                         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                            {allPosts.map(({ slug, title, formattedDate, excerpt }) => (
-                                <Card key={slug} className="flex flex-col">
+                        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            {allPosts.map(({ slug, title, formattedDate, excerpt, image }) => (
+                                <Card key={slug} className="flex flex-col overflow-hidden">
+                                    {image && (
+                                        <Link href={`/blog/${slug}`} className="w-full h-48 relative block">
+                                            <img
+                                                src={image}
+                                                alt={title}
+                                                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                                            />
+                                        </Link>
+                                    )}
                                     <CardHeader>
                                         <p className="text-sm text-muted-foreground">{formattedDate}</p>
                                         <CardTitle className="font-headline text-2xl pt-2">{title}</CardTitle>
@@ -44,7 +53,7 @@ export default function BlogIndexPage() {
                                         <p className="text-muted-foreground">{excerpt}</p>
                                     </CardContent>
                                     <CardFooter>
-                                         <Link href={`/blog/${slug}`} className="w-full">
+                                        <Link href={`/blog/${slug}`} className="w-full">
                                             <Button variant="outline" className="w-full">
                                                 Read More <ArrowRight className="ml-2 h-4 w-4" />
                                             </Button>

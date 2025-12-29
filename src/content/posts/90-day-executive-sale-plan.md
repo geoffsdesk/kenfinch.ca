@@ -1,6 +1,7 @@
 ---
 title: 'The 90-Day Executive Sale Plan: How to Sell Your Oakville Home Fast & For Top Dollar'
 date: '2025-08-29'
+image: '/90-day-sale-plan-cover.png'
 excerpt: 'Need to sell your executive home in Oakville fast? Our 90-day strategic plan covers everything from pricing to marketing for a swift, top-dollar sale.'
 ---
 
@@ -8,13 +9,15 @@ Selling an executive home in Oakville on a tight timeline presents a unique chal
 
 This is your 90-day action plan, designed for the discerning Oakville homeowner who values time, efficiency, and results.
 
+![90-Day Executive Sale Plan](/90-day-sale-plan-body.jpg)
+
 ## Phase 1: The First 72 Hours – Immediate Strategic Decisions
 The clock is ticking. Decisive action in the first three days is critical to setting up a successful sale.
 
-- Engage a Local Market Expert: Your first call should be to a real estate professional who specializes in Oakville's luxury market and has a proven track record with accelerated sales. They will act as your project manager for the entire process.
-- Establish a Pricing Strategy: In a time-sensitive sale, pricing is a strategic tool, not an aspiration. Your agent will provide a data-driven analysis to price your home competitively for the current market, attracting immediate attention from serious, qualified buyers.
-- Sign the Listing Agreement: This authorizes your agent to begin executing the marketing plan immediately.
-- Engage a Real Estate Lawyer: Notify your lawyer of your timeline so they can prepare to handle the transaction with the required speed.
+- [ ] **Engage a Local Market Expert:** Your first call should be to a real estate professional who specializes in Oakville's luxury market and has a proven track record with accelerated sales. They will act as your project manager for the entire process.
+- [ ] **Establish a Pricing Strategy:** In a time-sensitive sale, pricing is a strategic tool, not an aspiration. Your agent will provide a data-driven analysis to price your home competitively for the current market, attracting immediate attention from serious, qualified buyers.
+- [ ] **Sign the Listing Agreement:** This authorizes your agent to begin executing the marketing plan immediately.
+- [ ] **Engage a Real Estate Lawyer:** Notify your lawyer of your timeline so they can prepare to handle the transaction with the required speed.
 
 ## Phase 2: Week 1 – High-Impact Preparation
 This week is about transforming your property into a market-ready product. Efficiency is key.
