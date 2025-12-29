@@ -1,0 +1,20 @@
+{
+  "node": {
+    "408e57f9415af1dda3f1556cd9b405fc919cfa87ac": {
+      "workers": {
+        "app/contact/page": {
+          "moduleId": 43107,
+          "async": false,
+          "exportedName": "sendEmail",
+          "filename": "kenfinch.ca/src/ai/flows/send-email-flow.ts"
+        }
+      },
+      "layer": {
+        "app/contact/page": "action-browser"
+      },
+      "exportedName": "sendEmail",
+      "filename": "kenfinch.ca/src/ai/flows/send-email-flow.ts"
+    }
+  },
+  "edge": {}
+}
