@@ -10,7 +10,7 @@ import React from 'react';
 export function Header() {
   const [open, setOpen] = React.useState(false);
 
-  const navLinks = [
+  const navLinks: { href: string; label: string; external?: boolean }[] = [
     {
         href: "/#valuation-tool",
         label: "Get Valuation",
