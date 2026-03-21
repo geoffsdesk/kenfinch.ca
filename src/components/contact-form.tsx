@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { sendEmail } from '@/ai/flows/send-email-flow';
+import { trackContactFormSubmission } from '@/lib/analytics';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
@@ -68,6 +69,13 @@ export function ContactForm() {
             submittedAt: serverTimestamp(),
         });
 
+
+        // 3. Fire conversion tracking across all pixels
+        trackContactFormSubmission({
+            name: values.name,
+            email: values.email,
+            phone: values.phone,
+        });
 
         form.reset();
         toast({

@@ -15,6 +15,7 @@ import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocom
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 import { sendEmail } from '@/ai/flows/send-email-flow';
+import { trackValuationSubmission, trackExpertOpinionRequest } from '@/lib/analytics';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -197,6 +198,12 @@ function HomeValuationInternal() {
         setResult(valuationResult);
       }
 
+      // Fire valuation tracking across all pixels
+      trackValuationSubmission({
+        address: values.address,
+        homeType: values.homeType,
+      });
+
     } catch (e) {
       console.error(e);
       setError(e instanceof Error ? e.message : 'An unexpected error occurred during valuation.');
@@ -249,6 +256,13 @@ function HomeValuationInternal() {
                     <li><strong>Nearby Schools:</strong> ${formValues.nearbySchools}</li>
                 </ul>
             `,
+        });
+
+        // Fire expert opinion tracking across all pixels
+        trackExpertOpinionRequest({
+            name: values.name,
+            email: values.email,
+            address: formValues.address,
         });
 
         setContactSubmitted(true);
