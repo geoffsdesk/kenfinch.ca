@@ -132,10 +132,10 @@ test.describe('Home Valuation Multi-Step Form', () => {
       page.getByText(/estimated value|your.*valuation/i).first(),
     ).toBeVisible({ timeout: 120_000 });
 
-    // Verify key result elements
-    await expect(page.getByText(/\$[\d,]+/)).toBeVisible(); // Dollar amount
-    await expect(page.getByText(/confidence score/i)).toBeVisible();
-    await expect(page.getByText(/valuation reasoning/i)).toBeVisible();
+    // Verify key result elements — use specific selectors to avoid strict mode violations
+    await expect(page.getByText(/\$[\d,]+/).first()).toBeVisible(); // Dollar amount
+    await expect(page.getByRole('heading', { name: 'Confidence Score' })).toBeVisible();
+    await expect(page.getByText('Valuation Reasoning')).toBeVisible();
 
     // ── Step 3: Expert Opinion contact form ─────────────────────
 
@@ -156,9 +156,9 @@ test.describe('Home Valuation Multi-Step Form', () => {
       .getByRole('button', { name: /contact ken|expert opinion/i })
       .click();
 
-    // Verify success
+    // Verify success — use exact match to avoid multiple toast element matches
     await expect(
-      page.getByText(/thank you/i),
+      page.getByText('Thank You!', { exact: true }).first(),
     ).toBeVisible({ timeout: 30_000 });
 
     // ── Step 4: Verify email delivery ───────────────────────────

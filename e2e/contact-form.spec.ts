@@ -45,9 +45,10 @@ test.describe('Contact Form', () => {
     // Submit
     await page.getByRole('button', { name: /send message/i }).click();
 
-    // Wait for success toast
+    // Wait for success toast — use exact match to avoid strict mode violation
+    // (toast renders title, description, and aria-live span that all match loosely)
     await expect(
-      page.getByText(/message sent|thank you/i),
+      page.getByText('Message Sent!', { exact: true }),
     ).toBeVisible({ timeout: 30_000 });
 
     // Verify button is no longer in submitting state
