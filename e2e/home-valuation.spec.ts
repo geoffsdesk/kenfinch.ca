@@ -151,9 +151,9 @@ test.describe('Home Valuation Multi-Step Form', () => {
     await page.getByPlaceholder('you@example.com').fill(TEST_CONTACT.email);
     await page.getByPlaceholder('(123) 456-7890').fill(TEST_CONTACT.phone);
 
-    // Submit
+    // Submit — use exact text to avoid matching the nav "Contact Ken" link
     await page
-      .getByRole('button', { name: /contact ken|expert opinion/i })
+      .getByRole('button', { name: 'Contact Ken Finch for an Expert Opinion' })
       .click();
 
     // Verify success — use exact match to avoid multiple toast element matches
