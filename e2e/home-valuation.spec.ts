@@ -56,7 +56,6 @@ test.describe('Home Valuation Multi-Step Form', () => {
     if (await valuationSection.isVisible()) {
       await valuationSection.scrollIntoViewIfNeeded();
     } else {
-      // Fall back to scrolling to the form by looking for the heading
       const formHeading = page.getByText(/home details/i).first();
       await formHeading.scrollIntoViewIfNeeded();
     }
@@ -64,68 +63,61 @@ test.describe('Home Valuation Multi-Step Form', () => {
     // Wait for Google Maps to load (address field becomes enabled)
     await page.waitForTimeout(3000);
 
-    // Address — type directly (Google Places autocomplete may not work in test)
-    const addressInput = page.getByPlaceholder(/maple street|address/i).first();
+    // Address — use placeholder selector
+    const addressInput = page.getByPlaceholder(/123 Maple Street/i);
     await addressInput.fill(TEST_PROPERTY.address);
     await page.waitForTimeout(1000);
-    // If autocomplete suggestions appear, dismiss them by clicking elsewhere
+    // Dismiss any autocomplete suggestions
     await page.keyboard.press('Escape');
 
-    // Home Type — select from dropdown
-    await page.getByRole('combobox').filter({ hasText: /detached|home type/i }).first().click();
+    // Home Type — the combobox trigger button shows current value
+    // Find the Home Type trigger by its role and current text
+    const homeTypeTrigger = page.locator('button[role="combobox"]').first();
+    await homeTypeTrigger.click();
     await page.getByRole('option', { name: TEST_PROPERTY.homeType, exact: true }).click();
 
-    // Bedrooms
-    const bedroomsAbove = page.getByLabel(/bedrooms.*above/i);
-    await bedroomsAbove.clear();
+    // Bedrooms — use the accessible name from the label text
+    // The number inputs have accessible names matching their label text
+    const bedroomsAbove = page.getByRole('spinbutton', { name: /bedrooms.*above/i });
     await bedroomsAbove.fill(TEST_PROPERTY.bedroomsAbove);
 
-    const bedroomsBelow = page.getByLabel(/bedrooms.*below/i);
-    await bedroomsBelow.clear();
+    const bedroomsBelow = page.getByRole('spinbutton', { name: /bedrooms.*below/i });
     await bedroomsBelow.fill(TEST_PROPERTY.bedroomsBelow);
 
     // Bathrooms
-    const bathrooms = page.getByLabel(/bathrooms/i);
-    await bathrooms.clear();
+    const bathrooms = page.getByRole('spinbutton', { name: /bathrooms/i });
     await bathrooms.fill(TEST_PROPERTY.bathrooms);
 
-    // Square Footage — select
-    const sqftSelect = page.getByRole('combobox').filter({ hasText: /square footage|sq/i });
-    if (await sqftSelect.isVisible()) {
-      await sqftSelect.click();
-      await page.getByRole('option', { name: new RegExp(TEST_PROPERTY.squareFootage) }).click();
-    }
+    // Square Footage — second combobox
+    const allComboboxes = page.locator('button[role="combobox"]');
+    const sqftTrigger = allComboboxes.nth(1); // Square Footage is the 2nd combobox
+    await sqftTrigger.click();
+    await page.getByRole('option', { name: new RegExp(TEST_PROPERTY.squareFootage) }).click();
 
-    // Age of Home — select
-    const ageSelect = page.getByRole('combobox').filter({ hasText: /age|year/i });
-    if (await ageSelect.isVisible()) {
-      await ageSelect.click();
-      await page.getByRole('option', { name: new RegExp(TEST_PROPERTY.yearBuilt) }).click();
-    }
+    // Age of Home — third combobox
+    const ageTrigger = allComboboxes.nth(2);
+    await ageTrigger.click();
+    await page.getByRole('option', { name: new RegExp(TEST_PROPERTY.yearBuilt) }).click();
 
-    // Finished Basement — select
-    const basementSelect = page.getByRole('combobox').filter({ hasText: /basement|finished/i });
-    if (await basementSelect.isVisible()) {
-      await basementSelect.click();
-      await page.getByRole('option', { name: TEST_PROPERTY.finishedBasement }).click();
-    }
+    // Finished Basement — fourth combobox
+    const basementTrigger = allComboboxes.nth(3);
+    await basementTrigger.click();
+    await page.getByRole('option', { name: TEST_PROPERTY.finishedBasement }).click();
 
     // Garage Spaces
-    const garage = page.getByLabel(/garage/i);
-    await garage.clear();
+    const garage = page.getByRole('spinbutton', { name: /garage/i });
     await garage.fill(TEST_PROPERTY.garageSpaces);
 
     // Total Parking
-    const parking = page.getByLabel(/total parking|parking spaces/i);
-    await parking.clear();
+    const parking = page.getByRole('spinbutton', { name: /total parking/i });
     await parking.fill(TEST_PROPERTY.parkingSpaces);
 
-    // Nearby Schools
-    const schools = page.getByLabel(/nearby schools/i);
+    // Nearby Schools — textarea by placeholder
+    const schools = page.getByPlaceholder(/nearby schools/i);
     await schools.fill(TEST_PROPERTY.nearbySchools);
 
-    // Renovated checkbox
-    const renovatedCheckbox = page.getByLabel(/recently renovated/i);
+    // Renovated checkbox — the checkbox role with its label
+    const renovatedCheckbox = page.getByRole('checkbox', { name: /recently renovated/i });
     if (await renovatedCheckbox.isVisible()) {
       await renovatedCheckbox.check();
     }
@@ -135,10 +127,10 @@ test.describe('Home Valuation Multi-Step Form', () => {
 
     // ── Step 2: Verify AI valuation results ─────────────────────
 
-    // Wait for the loading spinner to appear and then the results
+    // Wait for the results page to appear (AI can take up to 2 minutes)
     await expect(
       page.getByText(/estimated value|your.*valuation/i).first(),
-    ).toBeVisible({ timeout: 120_000 }); // AI can take up to 2 minutes
+    ).toBeVisible({ timeout: 120_000 });
 
     // Verify key result elements
     await expect(page.getByText(/\$[\d,]+/)).toBeVisible(); // Dollar amount
@@ -147,22 +139,20 @@ test.describe('Home Valuation Multi-Step Form', () => {
 
     // ── Step 3: Expert Opinion contact form ─────────────────────
 
-    // The "Ready for an Expert Opinion?" section should be visible
     await expect(
       page.getByText(/expert opinion/i).first(),
     ).toBeVisible();
 
     const beforeSubmit = new Date();
 
-    // Fill out the expert opinion contact form
-    // These are the SECOND set of name/email/phone fields on the page
-    const expertForm = page.locator('form').last();
-    await expertForm.getByLabel(/full name/i).fill(TEST_CONTACT.name);
-    await expertForm.getByLabel(/email/i).fill(TEST_CONTACT.email);
-    await expertForm.getByLabel(/phone/i).fill(TEST_CONTACT.phone);
+    // The expert opinion form uses the same placeholder pattern as the contact form
+    // After valuation results, there's a new form with name/email/phone fields
+    await page.getByPlaceholder('John Doe').fill(TEST_CONTACT.name);
+    await page.getByPlaceholder('you@example.com').fill(TEST_CONTACT.email);
+    await page.getByPlaceholder('(123) 456-7890').fill(TEST_CONTACT.phone);
 
     // Submit
-    await expertForm
+    await page
       .getByRole('button', { name: /contact ken|expert opinion/i })
       .click();
 
