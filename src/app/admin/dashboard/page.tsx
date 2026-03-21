@@ -108,7 +108,7 @@ interface Seller {
 
 interface Valuation extends HomeValuationOutput {
     id: string;
-    inputs: HomeValuationInput & { yearBuilt: string, finishedBasement: string };
+    inputs: Omit<HomeValuationInput, 'yearBuilt' | 'finishedBasement'> & { yearBuilt: string; finishedBasement: string };
     createdAt: Timestamp;
 }
 
