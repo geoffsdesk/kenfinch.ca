@@ -1,0 +1,73 @@
+name: "E2E Tests — KenFinch.ca"
+
+# Run Mon / Wed / Fri at 9:00 AM Eastern (14:00 UTC)
+on:
+  schedule:
+    - cron: "0 14 * * 1,3,5"
+  workflow_dispatch: # Allow manual runs from GitHub UI
+
+permissions:
+  contents: read
+
+env:
+  TEST_BASE_URL: https://www.kenfinch.ca
+
+jobs:
+  e2e:
+    name: "Run E2E Tests"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        id: tests
+        continue-on-error: true # Don't fail the job — we send alerts instead
+        env:
+          # Gmail API credentials for email delivery verification
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+          GMAIL_CHECK_EMAIL: ${{ secrets.GMAIL_CHECK_EMAIL }}
+        run: npx playwright test --project=chromium
+
+      - name: Send failure alerts
+        if: steps.tests.outcome == 'failure'
+        env:
+          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          ALERT_EMAIL_TO: ${{ secrets.ALERT_EMAIL_TO }}
+          ALERT_EMAIL_FROM: ${{ secrets.ALERT_EMAIL_FROM }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE_FROM: ${{ secrets.TWILIO_PHONE_FROM }}
+          TWILIO_WHATSAPP_FROM: ${{ secrets.TWILIO_WHATSAPP_FROM }}
+          ALERT_PHONE_TO: ${{ secrets.ALERT_PHONE_TO }}
+        run: npx tsx e2e/send-alerts.ts
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+      - name: Fail job if tests failed
+        if: steps.tests.outcome == 'failure'
+        run: exit 1
