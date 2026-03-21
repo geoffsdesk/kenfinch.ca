@@ -39,7 +39,7 @@ interface Task {
 interface Valuation extends HomeValuationOutput {
     id: string;
     createdAt: string;
-    inputs: HomeValuationInput & { yearBuilt: string, finishedBasement: string };
+    inputs: Omit<HomeValuationInput, 'yearBuilt' | 'finishedBasement'> & { yearBuilt: string; finishedBasement: string };
 }
 
 const ValuationDetailsDialog = ({ valuation }: { valuation: Valuation | null }) => {
