@@ -88,11 +88,10 @@ export default function Home() {
               </div>
               <div className="animate-fade-in-up animate-delay-200">
                 <img
-                  src="/hero_house.png"
+                  src="/hero_sold.jpg"
                   width="600"
                   height="400"
-                  alt="A beautiful suburban house in Oakville, Ontario at sunset, a prime property for sale."
-                  data-ai-hint="large house suburb"
+                  alt="Beautiful Oakville home with SOLD by Ken Finch sign at golden hour, Royal LePage"
                   className="mx-auto aspect-video overflow-hidden rounded-2xl object-cover sm:w-full lg:order-last shadow-2xl"
                 />
               </div>
@@ -131,15 +130,26 @@ export default function Home() {
         <section id="about" className="w-full py-16 md:py-24 lg:py-28">
           <div className="container px-4 md:px-6">
             <div className="grid gap-12 md:grid-cols-2 md:gap-20 items-center">
-              <div>
+              <div className="space-y-4">
                 <img
-                  src="/ken_hero_a.png"
+                  src="/ken_headshot_professional.jpg"
                   width="525"
                   height="700"
                   alt="Ken Finch, a professional and friendly real estate agent in Oakville, Ontario."
-                  data-ai-hint="realtor portrait"
                   className="mx-auto aspect-[3/4] overflow-hidden rounded-2xl object-cover shadow-xl"
                 />
+                <div className="grid grid-cols-2 gap-3">
+                  <img
+                    src="/ken_with_client.jpg"
+                    alt="Ken Finch with happy clients in front of a SOLD sign"
+                    className="rounded-xl object-cover aspect-[4/3] w-full shadow-md"
+                  />
+                  <img
+                    src="/ken_community.jpg"
+                    alt="Ken Finch at the Oakville Farmers Market"
+                    className="rounded-xl object-cover aspect-[4/3] w-full shadow-md"
+                  />
+                </div>
               </div>
               <div className="flex flex-col justify-center">
                 <div className="space-y-6">
@@ -250,6 +260,30 @@ export default function Home() {
                   <p className="text-muted-foreground leading-relaxed">Rely on decades of experience to navigate offers and secure the best possible price and terms for your home sale.</p>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Full-width image band — social proof */}
+        <section className="w-full">
+          <div className="grid md:grid-cols-3 gap-0">
+            <div className="relative h-48 md:h-64 overflow-hidden">
+              <img src="/hero_oakville_aerial.jpg" alt="Aerial view of Oakville waterfront at sunset" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <p className="text-white font-headline text-xl font-bold drop-shadow-lg">Oakville&apos;s Waterfront</p>
+              </div>
+            </div>
+            <div className="relative h-48 md:h-64 overflow-hidden">
+              <img src="/ken_at_open_house.jpg" alt="Ken Finch hosting an open house" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <p className="text-white font-headline text-xl font-bold drop-shadow-lg">Open House Expert</p>
+              </div>
+            </div>
+            <div className="relative h-48 md:h-64 overflow-hidden">
+              <img src="/hero_family_moving.jpg" alt="Happy family celebrating their home sale with Ken Finch" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <p className="text-white font-headline text-xl font-bold drop-shadow-lg">Happy Families</p>
+              </div>
             </div>
           </div>
         </section>

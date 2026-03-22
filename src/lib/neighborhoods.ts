@@ -34,7 +34,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Lakeshore Road', 'Oakville Harbour', 'Centennial Square', 'Oakville GO Station'],
     sellerInsight:
       'Homes in Old Oakville sell fastest when they balance heritage character with modern updates. Buyers here are willing to pay a significant premium for move-in-ready properties with updated kitchens and bathrooms while preserving original architectural details.',
-    image: '/neighborhoods/old-oakville.jpg',
+    image: '/neighbourhoods/old-oakville.jpg',
     mapQuery: 'Old Oakville, Ontario',
   },
   {
@@ -56,7 +56,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Bronte Harbour', 'Bronte Creek Provincial Park', 'Bronte Village Mall', 'Coronation Park'],
     sellerInsight:
       'Bronte buyers are often families moving from Toronto or Milton looking for community feel with lake access. Staging your outdoor spaces and highlighting walkability to the harbour can add significant perceived value to your listing.',
-    image: '/neighborhoods/bronte.jpg',
+    image: '/neighbourhoods/bronte.jpg',
     mapQuery: 'Bronte, Oakville, Ontario',
   },
   {
@@ -78,7 +78,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Glen Abbey Golf Course', 'Upper Oakville Shopping Centre', 'Glen Abbey Recreation Centre', 'Sixteen Mile Creek trails'],
     sellerInsight:
       'Glen Abbey homes sell best when marketed to families relocating from Toronto. Highlight school rankings, proximity to the golf course, and the neighborhood\'s established reputation. Properties near the ravine lots command the highest premiums.',
-    image: '/neighborhoods/glen-abbey.jpg',
+    image: '/neighbourhoods/glen-abbey.jpg',
     mapQuery: 'Glen Abbey, Oakville, Ontario',
   },
   {
@@ -100,7 +100,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['River Oaks Community Centre', 'Sixteen Mile Sports Complex', 'North Park', 'SmartCentres Oakville'],
     sellerInsight:
       'River Oaks attracts a younger demographic — many buyers are upgrading from condos or first homes in Mississauga and Burlington. Modern finishes and open-concept layouts are expected, so invest in cosmetic updates if your home has dated fixtures.',
-    image: '/neighborhoods/river-oaks.jpg',
+    image: '/neighbourhoods/river-oaks.jpg',
     mapQuery: 'River Oaks, Oakville, Ontario',
   },
   {
@@ -122,7 +122,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['West Oak Trails Community Centre', 'Oakville Place Mall', 'Neyagawa Boulevard trails', 'Sixteen Mile Creek'],
     sellerInsight:
       'West Oak Trails is where many first-time Oakville buyers start their search. Price competitively and you\'ll often see multiple offers. Highlight proximity to trails and the community centre — these are major selling points for young families.',
-    image: '/neighborhoods/west-oak-trails.jpg',
+    image: '/neighbourhoods/westoak-trails.jpg',
     mapQuery: 'West Oak Trails, Oakville, Ontario',
   },
   {
@@ -144,7 +144,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Oakville GO Station', 'Downtown Oakville', 'Gairloch Gardens', 'Oakville Museum'],
     sellerInsight:
       'Eastlake buyers value the walkable lifestyle and proximity to the GO train. If your home has been renovated, make sure to document all upgrades — buyers here pay premiums for quality renovations that respect the neighborhood\'s character.',
-    image: '/neighborhoods/eastlake.jpg',
+    image: '/neighbourhoods/east-lake.jpg',
     mapQuery: 'Eastlake, Oakville, Ontario',
   },
   {
@@ -166,7 +166,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Sheridan College', 'Oakville Place', 'Oakville Transit Hub', 'QEW Access'],
     sellerInsight:
       'College Park attracts first-time buyers, investors, and downsizers. The condo market here is strong thanks to proximity to Sheridan College. If you\'re selling a detached home, price it right and you\'ll attract families who can\'t afford South Oakville but want central convenience.',
-    image: '/neighborhoods/college-park.jpg',
+    image: '/neighbourhoods/college-park.jpg',
     mapQuery: 'College Park, Oakville, Ontario',
   },
   {
@@ -188,7 +188,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Coronation Park', 'Shell Park', 'South Oakville Centre', 'Oakville GO Station'],
     sellerInsight:
       'Morrison is gaining momentum as South Oakville buyers seek alternatives to Old Oakville prices. Position your listing as "South Oakville value" and highlight the neighborhood\'s proximity to the lake, GO train, and established amenities.',
-    image: '/neighborhoods/morrison.jpg',
+    image: '/neighbourhoods/clearview.jpg',
     mapQuery: 'Morrison, Oakville, Ontario',
   },
   {
@@ -210,7 +210,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Bronte Creek Provincial Park', 'Palermo Village', '407 ETR Access', 'Bruce Trail access'],
     sellerInsight:
       'Palermo buyers are often looking for exactly what Toronto can\'t offer — space. Aerial/drone photography is essential for marketing larger properties here. Emphasize lot size, privacy, and the lifestyle appeal of semi-rural living within commuting distance.',
-    image: '/neighborhoods/palermo.jpg',
+    image: '/neighbourhoods/falgarwood.jpg',
     mapQuery: 'Palermo, Oakville, Ontario',
   },
   {
@@ -232,7 +232,7 @@ export const neighborhoods: Neighborhood[] = [
     nearbyAmenities: ['Trafalgar Road retail', 'Dundas Street corridor', 'Town Centre', 'Future transit connections'],
     sellerInsight:
       'The Uptown Core market moves fast for well-priced condos and townhomes. Your competition is often new construction, so staging and competitive pricing are critical. Highlight any upgrades over builder-grade finishes and the convenience of the walkable location.',
-    image: '/neighborhoods/uptown-core.jpg',
+    image: '/neighbourhoods/iroquois-ridge.jpg',
     mapQuery: 'Uptown Core, Oakville, Ontario',
   },
 ];

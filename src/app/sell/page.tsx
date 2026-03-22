@@ -125,7 +125,7 @@ export default function SellLandingPage() {
               <div className="relative mx-auto lg:mx-0">
                 <div className="w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-xl border-4 border-primary/20">
                   <Image
-                    src="/ken_hero_a.png"
+                    src="/ken_headshot_professional.jpg"
                     alt="Ken Finch — Oakville Real Estate Agent"
                     width={300}
                     height={300}

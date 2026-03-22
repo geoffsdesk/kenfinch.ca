@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { neighborhoods } from '@/lib/neighborhoods';
 import { Header } from '@/components/header';
@@ -75,29 +76,44 @@ export default async function NeighborhoodPage({ params }: PageProps) {
     <>
       <Header />
       <main className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <section className="bg-secondary/30 py-16 md:py-24">
-          <div className="container mx-auto max-w-4xl px-4">
-            <Link
-              href="/neighborhoods"
-              className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              All Neighborhoods
-            </Link>
-            <div className="flex items-center gap-2 text-primary">
-              <MapPin className="h-5 w-5" />
-              <span className="text-sm font-medium uppercase tracking-wider">
-                {neighborhood.name}, Oakville
-              </span>
+        {/* Hero Image */}
+        <section className="relative h-64 md:h-80 lg:h-96 overflow-hidden">
+          <Image
+            src={neighborhood.image}
+            alt={`${neighborhood.name}, Oakville`}
+            fill
+            className="object-cover"
+            priority
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10">
+            <div className="container mx-auto max-w-4xl">
+              <Link
+                href="/neighborhoods"
+                className="mb-4 inline-flex items-center gap-1.5 text-sm text-white/80 transition-colors hover:text-white"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                All Neighborhoods
+              </Link>
+              <div className="flex items-center gap-2 text-primary">
+                <MapPin className="h-5 w-5" />
+                <span className="text-sm font-medium uppercase tracking-wider">
+                  {neighborhood.name}, Oakville
+                </span>
+              </div>
+              <h1 className="mt-2 font-heading text-3xl font-bold text-white md:text-4xl lg:text-5xl drop-shadow-md">
+                {neighborhood.headline}
+              </h1>
             </div>
-            <h1 className="mt-3 font-heading text-3xl font-bold md:text-4xl lg:text-5xl">
-              {neighborhood.headline}
-            </h1>
-            <p className="mt-4 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-              {neighborhood.description}
-            </p>
           </div>
+        </section>
+
+        {/* Description */}
+        <section className="container mx-auto max-w-4xl px-4 py-8">
+          <p className="max-w-3xl text-lg leading-relaxed text-muted-foreground">
+            {neighborhood.description}
+          </p>
         </section>
 
         {/* Market Snapshot */}

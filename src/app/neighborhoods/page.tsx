@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { neighborhoods } from '@/lib/neighborhoods';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
@@ -22,19 +23,6 @@ export const metadata: Metadata = {
   ],
 };
 
-// Gradient backgrounds for neighbourhood cards (since we don't have photos yet)
-const cardGradients = [
-  'from-amber-100 to-orange-50',
-  'from-emerald-100 to-teal-50',
-  'from-sky-100 to-blue-50',
-  'from-violet-100 to-purple-50',
-  'from-rose-100 to-pink-50',
-  'from-amber-50 to-yellow-100',
-  'from-cyan-100 to-sky-50',
-  'from-lime-100 to-green-50',
-  'from-fuchsia-100 to-pink-50',
-  'from-indigo-100 to-blue-50',
-];
 
 export default function NeighborhoodsPage() {
   return (
@@ -107,11 +95,19 @@ export default function NeighborhoodsPage() {
             {neighborhoods.map((n, idx) => (
               <Link key={n.slug} href={`/neighborhoods/${n.slug}`} className="group">
                 <Card className="h-full transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1 overflow-hidden">
-                  {/* Visual header area with gradient + icon */}
-                  <div className={`relative h-36 bg-gradient-to-br ${cardGradients[idx % cardGradients.length]} flex items-center justify-center`}>
-                    <div className="text-center">
-                      <MapPin className="h-8 w-8 text-primary/60 mx-auto mb-2" />
-                      <p className="text-lg font-bold font-headline text-primary/80">{n.name}</p>
+                  {/* Neighbourhood photo */}
+                  <div className="relative h-44 overflow-hidden">
+                    <Image
+                      src={n.image}
+                      alt={`${n.name}, Oakville`}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                    {/* Neighbourhood name overlay */}
+                    <div className="absolute bottom-3 left-4">
+                      <p className="text-lg font-bold font-headline text-white drop-shadow-md">{n.name}</p>
                     </div>
                     {/* Price badge */}
                     <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
