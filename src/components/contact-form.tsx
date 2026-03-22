@@ -21,12 +21,22 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Loader2, User, Mail, Phone } from 'lucide-react';
 
 const contactSchema = z.object({
     name: z.string().min(2, { message: 'Please enter your name.' }),
     email: z.string().email({ message: 'Please enter a valid email address.' }),
     phone: z.string().optional(),
+    intent: z.string().optional(),
+    message: z.string().optional(),
 });
 
 
@@ -39,6 +49,8 @@ export function ContactForm() {
       name: '',
       email: '',
       phone: '',
+      intent: '',
+      message: '',
     },
   });
 
@@ -50,14 +62,16 @@ export function ContactForm() {
             to: 'realtor@kenfinch.ca',
             from: 'realtor@kenfinch.ca',
             replyTo: values.email,
-            subject: `New Contact Form Submission from ${values.name}`,
+            subject: `New Contact Form Submission from ${values.name}${values.intent ? ` — ${values.intent}` : ''}`,
             html: `
                 <p>You have a new contact form submission:</p>
                 <ul>
                     <li><strong>Name:</strong> ${values.name}</li>
                     <li><strong>Email:</strong> ${values.email}</li>
                     <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
+                    <li><strong>Interest:</strong> ${values.intent || 'Not specified'}</li>
                 </ul>
+                ${values.message ? `<p><strong>Message:</strong></p><p>${values.message}</p>` : ''}
             `,
         });
 
@@ -66,6 +80,8 @@ export function ContactForm() {
             name: values.name,
             email: values.email,
             phone: values.phone || '',
+            intent: values.intent || '',
+            message: values.message || '',
             submittedAt: serverTimestamp(),
         });
 
@@ -131,6 +147,7 @@ export function ContactForm() {
                         )}
                         />
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                         control={form.control}
                         name="phone"
@@ -142,6 +159,48 @@ export function ContactForm() {
                                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input placeholder="(123) 456-7890" {...field} className="pl-10" />
                                 </div>
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                        <FormField
+                        control={form.control}
+                        name="intent"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>What Are You Looking For?</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select an option..." />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    <SelectItem value="Ready to list my home">Ready to list my home</SelectItem>
+                                    <SelectItem value="Curious about my home value">Curious about my home value</SelectItem>
+                                    <SelectItem value="Thinking of selling in 3-6 months">Thinking of selling in 3-6 months</SelectItem>
+                                    <SelectItem value="Want a market update">Want a market update</SelectItem>
+                                    <SelectItem value="Other question">Other question</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    </div>
+                        <FormField
+                        control={form.control}
+                        name="message"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Message (Optional)</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    placeholder="Tell Ken a bit about your situation — your timeline, questions, or anything else you'd like him to know."
+                                    className="min-h-[100px]"
+                                    {...field}
+                                />
                             </FormControl>
                             <FormMessage />
                             </FormItem>

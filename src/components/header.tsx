@@ -16,6 +16,10 @@ export function Header() {
         label: "Get Valuation",
     },
     {
+        href: "/neighborhoods",
+        label: "Neighborhoods",
+    },
+    {
         href: "/contact",
         label: "Contact Ken",
     },
