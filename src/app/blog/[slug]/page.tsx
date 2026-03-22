@@ -44,6 +44,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <Header />
       <main className="flex-1">
         <article className="container max-w-4xl py-12 md:py-16 lg:py-20">
+          {post.image && (
+            <div className="mb-8 -mt-4 overflow-hidden rounded-2xl shadow-lg">
+              <img
+                src={post.image}
+                alt={post.title}
+                width="1200"
+                height="630"
+                className="w-full aspect-[16/9] object-cover"
+              />
+            </div>
+          )}
           <header className="text-center space-y-4">
             <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">{post.title}</h1>
             <p className="text-muted-foreground">{post.formattedDate}</p>
