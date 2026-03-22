@@ -105,3 +105,25 @@
   height: 3px;
   background: linear-gradient(90deg, transparent, hsl(46 65% 52%), transparent);
 }
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Improve focus visibility for accessibility */
+:focus-visible {
+  outline: 2px solid hsl(46 65% 52%);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Better image rendering */
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Sticky CTA spacer to prevent content overlap */
+.sticky-cta-spacer {
+  height: 60px;
+}

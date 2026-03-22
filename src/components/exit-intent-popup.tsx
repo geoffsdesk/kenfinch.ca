@@ -117,7 +117,7 @@ export function ExitIntentPopup() {
                   required
                 />
                 <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                  {loading ? 'Sending...' : 'Send Me the Free Guide'}
+                  {loading ? 'Sending...' : 'Get the Free Guide'}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </form>
@@ -133,16 +133,24 @@ export function ExitIntentPopup() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="font-headline text-2xl font-bold">Check Your Inbox!</h2>
+              <h2 className="font-headline text-2xl font-bold">Your Guide Is Ready!</h2>
               <p className="text-muted-foreground mt-2">
-                Your Oakville Seller&apos;s Guide is on its way. In the meantime, try our free AI home valuation tool.
+                Click below to download your Oakville Seller&apos;s Guide, then try our free AI home valuation.
               </p>
-              <a href="/#valuation-tool">
-                <Button className="mt-6" size="lg" onClick={() => setShow(false)}>
-                  Get Your Free Valuation
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </a>
+              <div className="flex flex-col gap-3 mt-6">
+                <a href="/oakville-sellers-guide.pdf" download target="_blank" rel="noopener noreferrer">
+                  <Button className="w-full" size="lg" variant="default">
+                    <Download className="mr-2 h-4 w-4" />
+                    Download Seller&apos;s Guide (PDF)
+                  </Button>
+                </a>
+                <a href="/#valuation-tool">
+                  <Button className="w-full" size="lg" variant="outline" onClick={() => setShow(false)}>
+                    Get Your Free Valuation
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </div>
             </div>
           )}
         </div>

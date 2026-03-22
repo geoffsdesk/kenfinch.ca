@@ -15,13 +15,15 @@ export const metadata: Metadata = {
 export default function SellLandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Minimal header — no navigation, just logo + phone */}
+      {/* Minimal header — no navigation, just branding + phone */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/kf_logo.png" alt="Ken Finch Real Estate" width={140} height={40} className="h-8 w-auto" />
+          <Link href="/" className="flex items-center gap-3">
+            <Image src="/kf_logo.png" alt="Ken Finch Real Estate" width={160} height={45} className="h-10 w-auto" />
+            <span className="hidden sm:inline-block h-6 w-px bg-border" />
+            <span className="hidden sm:inline-block text-xs text-muted-foreground leading-tight">Royal LePage<br />Burloak Real Estate</span>
           </Link>
-          <a href="tel:+19055103642" className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
+          <a href="tel:+19055103642" className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm">
             <Phone className="h-4 w-4" />
             (905) 510-3642
           </a>
@@ -78,7 +80,7 @@ export default function SellLandingPage() {
                     ))}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    <span className="font-semibold text-foreground">4.9/5</span> — Trusted by Oakville homeowners
+                    <span className="font-semibold text-foreground">5-Star Service</span> — Trusted by Oakville homeowners
                   </p>
                 </div>
               </div>
@@ -144,7 +146,7 @@ export default function SellLandingPage() {
                     "20+ years in Oakville",
                     "500+ homes sold",
                     "Royal LePage",
-                    "98% client satisfaction",
+                    "5-star client reviews",
                   ].map((badge) => (
                     <span key={badge} className="inline-flex items-center gap-1.5 text-sm bg-primary/10 text-primary font-medium px-3 py-1 rounded-full">
                       <CheckCircle className="h-3.5 w-3.5" />
@@ -174,7 +176,7 @@ export default function SellLandingPage() {
                 </Button>
               </a>
               <a href="tel:+19055103642">
-                <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-base px-8">
+                <Button size="lg" variant="secondary" className="font-semibold text-base px-8 shadow-lg">
                   <Phone className="mr-2 h-4 w-4" />
                   Call Ken Directly
                 </Button>

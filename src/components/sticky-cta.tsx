@@ -43,11 +43,11 @@ export function StickyCTA() {
               <a href="tel:+19055103642">
                 <Button
                   size="sm"
-                  variant="outline"
-                  className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 text-xs sm:text-sm"
+                  variant="secondary"
+                  className="font-semibold shadow-md text-xs sm:text-sm"
                 >
                   <Phone className="mr-1.5 h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">(905) 510-3642</span>
+                  <span className="hidden sm:inline">Call (905) 510-3642</span>
                   <span className="sm:hidden">Call Ken</span>
                 </Button>
               </a>

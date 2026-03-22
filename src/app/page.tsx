@@ -116,8 +116,8 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground mt-1">Homes Sold</p>
               </div>
               <div>
-                <p className="text-3xl font-bold font-headline text-primary">98%</p>
-                <p className="text-sm text-muted-foreground mt-1">Client Satisfaction</p>
+                <p className="text-3xl font-bold font-headline text-primary">5&#11088;</p>
+                <p className="text-sm text-muted-foreground mt-1">Client Reviews</p>
               </div>
               <div>
                 <p className="text-3xl font-bold font-headline text-primary">10</p>
