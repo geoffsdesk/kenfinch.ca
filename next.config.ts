@@ -2,7 +2,31 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /* Permanent redirects for old .php URLs (pre-Next.js site) */
+  async redirects() {
+    return [
+      {
+        source: '/index.php',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/register.php',
+        destination: '/contact',
+        permanent: true,
+      },
+      {
+        source: '/investments.php',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/blog.php',
+        destination: '/blog',
+        permanent: true,
+      },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
