@@ -54,8 +54,8 @@ export default function NeighborhoodsPage() {
                 <p className="text-xs text-muted-foreground">Years Local Experience</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-primary font-headline">500+</p>
-                <p className="text-xs text-muted-foreground">Homes Sold</p>
+                <p className="text-2xl font-bold text-primary font-headline">#1</p>
+                <p className="text-xs text-muted-foreground">Oakville Specialist</p>
               </div>
               <div className="text-center flex flex-col items-center">
                 <div className="flex gap-0.5">

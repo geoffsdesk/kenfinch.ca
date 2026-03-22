@@ -371,6 +371,12 @@ function HomeValuationInternal() {
               ${result.valuation.toLocaleString('en-US')}
             </p>
           </div>
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertCircle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-800 text-sm">
+              <strong>Disclaimer:</strong> This is an AI-generated estimate for informational purposes only. It is not an appraisal, and should not be relied upon for financial or legal decisions. For an accurate market valuation, contact Ken Finch directly.
+            </AlertDescription>
+          </Alert>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card className="p-4">
                   <div className="flex items-center gap-2">

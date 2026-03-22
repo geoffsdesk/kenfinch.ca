@@ -115,8 +115,8 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground mt-1">Years Experience</p>
               </div>
               <div>
-                <p className="text-3xl font-bold font-headline text-primary">500+</p>
-                <p className="text-sm text-muted-foreground mt-1">Homes Sold</p>
+                <p className="text-3xl font-bold font-headline text-primary">#1</p>
+                <p className="text-sm text-muted-foreground mt-1">Oakville Specialist</p>
               </div>
               <div>
                 <p className="text-3xl font-bold font-headline text-primary">5&#11088;</p>

@@ -55,7 +55,7 @@ export default function SellLandingPage() {
                   {[
                     { icon: Clock, label: "Instant Results", desc: "AI-powered in seconds" },
                     { icon: Shield, label: "100% Free", desc: "No obligation ever" },
-                    { icon: Star, label: "500+ Homes Sold", desc: "20+ years experience" },
+                    { icon: Star, label: "5-Star Service", desc: "20+ years experience" },
                     { icon: CheckCircle, label: "Local Expert", desc: "Oakville specialist" },
                   ].map((item) => (
                     <div key={item.label} className="flex items-start gap-3">
@@ -139,12 +139,12 @@ export default function SellLandingPage() {
                   Meet Ken Finch
                 </h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  With over 20 years of experience and 500+ homes sold across Oakville, Ken combines deep local knowledge with modern marketing to help sellers get top dollar. As a Broker with Royal LePage Signature Realty, Ken brings the resources of Canada&apos;s largest real estate network to every client.
+                  With over 20 years of experience serving Oakville homeowners, Ken combines deep local knowledge with modern marketing to help sellers get top dollar. As a Broker with Royal LePage Signature Realty, Ken brings the resources of Canada&apos;s largest real estate network to every client.
                 </p>
                 <div className="flex flex-wrap gap-4 pt-2">
                   {[
                     "20+ years in Oakville",
-                    "500+ homes sold",
+                    "Oakville specialist",
                     "Royal LePage",
                     "5-star client reviews",
                   ].map((badge) => (
