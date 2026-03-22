@@ -4,6 +4,8 @@ import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { TrackingScripts } from '@/components/tracking-scripts';
+import { StickyCTA } from '@/components/sticky-cta';
+import { ExitIntentPopup } from '@/components/exit-intent-popup';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -46,6 +48,8 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} ${playfairDisplay.variable} font-sans antialiased`} suppressHydrationWarning>
         {children}
+        <StickyCTA />
+        <ExitIntentPopup />
         <Toaster />
         <TrackingScripts />
       </body>

@@ -6,7 +6,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/seller/dashboard', '/api/', '/ken'],
+        disallow: ['/admin/', '/seller/dashboard', '/api/', '/ken', '/sell'],
       },
     ],
     sitemap: 'https://www.kenfinch.ca/sitemap.xml',
