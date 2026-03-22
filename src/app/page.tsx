@@ -214,10 +214,10 @@ export default function Home() {
                   <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
                     <CheckCircle className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="font-headline text-xl">Seller Dashboard</CardTitle>
+                  <CardTitle className="font-headline text-xl">Dedicated Support</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground leading-relaxed">Stay informed with a personalized dashboard to track listing prep, photo shoots, open houses, and more.</p>
+                  <p className="text-muted-foreground leading-relaxed">From listing prep to closing day, Ken personally guides you through every step of the selling process.</p>
                 </CardContent>
               </Card>
               <Card className="card-hover border-0 shadow-md">

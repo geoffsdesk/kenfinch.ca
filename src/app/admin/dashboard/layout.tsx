@@ -36,8 +36,8 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
           if (userDoc.exists() && userDoc.data().isAdmin === true) {
             setIsAdmin(true);
           } else {
-            // Not an admin, redirect them to the seller dashboard
-            router.push('/seller/dashboard'); 
+            // Not an admin, redirect to homepage
+            router.push('/');
           }
         } catch (err) {
             console.error("Failed to check admin status", err);

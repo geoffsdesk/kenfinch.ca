@@ -5,10 +5,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useRouter } from 'next/navigation';
-import { collection, doc, writeBatch, serverTimestamp } from 'firebase/firestore';
-import { db, auth } from '@/lib/firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { useJsApiLoader } from '@react-google-maps/api';
 import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
@@ -112,8 +109,6 @@ function HomeValuationInternal() {
   const [error, setError] = useState<string | null>(null);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const { toast } = useToast();
-  const [user] = useAuthState(auth);
-  const router = useRouter();
 
   const {
     ready,
@@ -180,23 +175,7 @@ function HomeValuationInternal() {
       };
       
       const valuationResult = await getHomeValuation(submissionValues);
-      
-      if (user) {
-        const valuationRef = doc(collection(db, 'users', user.uid, 'valuations'));
-        await writeBatch(db).set(valuationRef, {
-            ...valuationResult,
-            inputs: rawInputs,
-            createdAt: serverTimestamp(),
-        }).commit();
-
-        toast({
-            title: "Valuation Saved",
-            description: "Redirecting to your updated dashboard...",
-        });
-        router.push('/seller/dashboard');
-      } else {
-        setResult(valuationResult);
-      }
+      setResult(valuationResult);
 
       // Fire valuation tracking across all pixels
       trackValuationSubmission({

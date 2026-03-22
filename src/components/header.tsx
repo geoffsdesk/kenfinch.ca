@@ -24,10 +24,6 @@ export function Header() {
         label: "Contact Ken",
     },
     {
-        href: "/seller/login",
-        label: "Seller Login",
-    },
-    {
         href: "/blog",
         label: "Blog",
     },
