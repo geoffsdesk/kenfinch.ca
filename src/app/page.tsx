@@ -19,10 +19,10 @@ export default function Home() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
-    "name": "Ken Finch Real Estate",
+    "name": "Ken Finch, Broker",
     "url": "https://www.kenfinch.ca",
     "logo": "https://www.kenfinch.ca/kf_logo.png",
-    "image": "https://www.kenfinch.ca/ken_hero_a.png",
+    "image": "https://www.kenfinch.ca/ken_headshot_professional.jpg",
     "telephone": "+1-905-510-3642",
     "email": "ken@kenfinch.ca",
     "address": {
@@ -31,10 +31,14 @@ export default function Home() {
       "addressRegion": "ON",
       "addressCountry": "CA"
     },
-    "description": "Ken Finch is a trusted real estate agent in Oakville, Ontario, specializing in helping clients sell their homes quickly and for the best value. Offering expert market analysis, a suite of digital tools, and personalized service.",
+    "description": "Ken Finch is a real estate Broker with Royal LePage Signature Realty, Brokerage, specializing in helping clients sell their homes in Oakville, Ontario. Offering expert market analysis, digital marketing tools, and personalized service.",
     "areaServed": {
       "@type": "Place",
       "name": "Oakville, ON"
+    },
+    "memberOf": {
+      "@type": "Organization",
+      "name": "Royal LePage Signature Realty, Brokerage"
     },
     "priceRange" : "$$$"
   };
@@ -153,10 +157,10 @@ export default function Home() {
               </div>
               <div className="flex flex-col justify-center">
                 <div className="space-y-6">
-                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Your Agent</p>
+                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Your Broker</p>
                   <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Why Sellers Choose Ken Finch</h2>
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                   Sell smarter. Sell faster. With a realtor who truly knows Oakville. I&apos;ve been helping families sell their homes in this community for over two decades. I understand the nuances of each neighborhood, the right timing, and how to make your home stand out.
+                   Sell smarter. Sell faster. With a broker who truly knows Oakville. I&apos;ve been helping families sell their homes in this community for over two decades. I understand the nuances of each neighborhood, the right timing, and how to make your home stand out.
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
                     Every property I list is presented with professional photography, drone video, and sharp marketing that reaches qualified buyers online and within the community. My clients trust me to deliver results with data-driven pricing, strong negotiation, and a personal commitment to a smooth process.

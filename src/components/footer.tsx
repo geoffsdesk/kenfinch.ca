@@ -14,7 +14,7 @@ export function Footer() {
             </p>
             <img
               src="/royal_lepage_logo.png"
-              alt="Royal LePage Signature Realty"
+              alt="Royal LePage Signature Realty, Brokerage"
               width="130"
               height="30"
               style={{ height: 'auto' }}
@@ -64,7 +64,7 @@ export function Footer() {
       <div className="border-t">
         <div className="container px-4 md:px-6 flex flex-col items-center justify-between gap-4 py-6 md:flex-row">
           <p className="text-center text-xs text-muted-foreground md:text-left">
-            &copy; {new Date().getFullYear()} Ken Finch Real Estate. All rights reserved. Royal LePage Signature Realty, Brokerage.
+            &copy; {new Date().getFullYear()} Ken Finch, Broker. Royal LePage Signature Realty, Brokerage. All rights reserved.
           </p>
         </div>
       </div>

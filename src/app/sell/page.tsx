@@ -21,7 +21,7 @@ export default function SellLandingPage() {
           <Link href="/" className="flex items-center gap-3">
             <Image src="/kf_logo.png" alt="Ken Finch Real Estate" width={160} height={45} className="h-10 w-auto" />
             <span className="hidden sm:inline-block h-6 w-px bg-border" />
-            <span className="hidden sm:inline-block text-xs text-muted-foreground leading-tight">Royal LePage<br />Burloak Real Estate</span>
+            <span className="hidden sm:inline-block text-xs text-muted-foreground leading-tight">Royal LePage<br />Signature Realty</span>
           </Link>
           <a href="tel:+19055103642" className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm">
             <Phone className="h-4 w-4" />
@@ -139,7 +139,7 @@ export default function SellLandingPage() {
                   Meet Ken Finch
                 </h2>
                 <p className="text-muted-foreground leading-relaxed">
-                  With over 20 years of experience and 500+ homes sold across Oakville, Ken combines deep local knowledge with modern marketing to help sellers get top dollar. As a Royal LePage Sales Representative, Ken brings the resources of Canada&apos;s largest real estate network to every client.
+                  With over 20 years of experience and 500+ homes sold across Oakville, Ken combines deep local knowledge with modern marketing to help sellers get top dollar. As a Broker with Royal LePage Signature Realty, Ken brings the resources of Canada&apos;s largest real estate network to every client.
                 </p>
                 <div className="flex flex-wrap gap-4 pt-2">
                   {[
@@ -190,7 +190,7 @@ export default function SellLandingPage() {
       <footer className="border-t py-6">
         <div className="container px-4 text-center">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Ken Finch, Sales Representative — Royal LePage Burloak Real Estate Services. All rights reserved.
+            &copy; {new Date().getFullYear()} Ken Finch, Broker — Royal LePage Signature Realty, Brokerage. All rights reserved.
           </p>
         </div>
       </footer>

@@ -62,7 +62,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'RealEstateAgent',
-    name: 'Ken Finch - Royal LePage',
+    name: 'Ken Finch, Broker — Royal LePage Signature Realty',
     url: `https://www.kenfinch.ca/neighborhoods/${neighborhood.slug}`,
     description: neighborhood.description,
     areaServed: {

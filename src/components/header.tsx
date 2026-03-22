@@ -41,14 +41,15 @@ export function Header() {
           <Link href="/" className="flex items-center space-x-2">
             <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
           </Link>
-           <div className="ml-4 hidden md:block">
+           <div className="ml-4 hidden md:flex items-center gap-2">
             <img
                 src="/royal_lepage_logo.png"
-                alt="Royal LePage Logo"
-                width="150"
-                height="35"
+                alt="Royal LePage Signature Realty, Brokerage"
+                width="130"
+                height="30"
                 style={{ height: 'auto' }}
             />
+            <span className="text-[10px] text-muted-foreground leading-tight">Signature Realty,<br />Brokerage</span>
           </div>
         </div>
         <nav className="hidden items-center space-x-6 text-sm font-medium md:flex">
@@ -88,12 +89,15 @@ export function Header() {
                            <Link href="/" className="flex items-center space-x-2" onClick={() => setOpen(false)}>
                                 <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
                             </Link>
-                             <img
-                                src="/royal_lepage_logo.png"
-                                alt="Royal LePage Logo"
-                                width="150"
-                                height="35"
-                            />
+                             <div>
+                               <img
+                                  src="/royal_lepage_logo.png"
+                                  alt="Royal LePage Signature Realty, Brokerage"
+                                  width="130"
+                                  height="30"
+                               />
+                               <p className="text-[10px] text-muted-foreground mt-1">Signature Realty, Brokerage</p>
+                             </div>
                         </div>
                          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                     </SheetHeader>
