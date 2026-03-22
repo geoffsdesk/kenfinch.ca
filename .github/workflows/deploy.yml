@@ -79,4 +79,4 @@ jobs:
           NEXT_PUBLIC_TIKTOK_PIXEL_ID: ${{ secrets.NEXT_PUBLIC_TIKTOK_PIXEL_ID }}
           SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: npx firebase-tools deploy --only hosting --project $FIREBASE_PROJECT --non-interactive --debug
+        run: npx firebase-tools@13.28.0 deploy --only hosting --project $FIREBASE_PROJECT --non-interactive --debug
