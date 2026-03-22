@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ken's Dashboard - Mockup</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #fafafa; color: #1a1a2e; }
+
+  .font-headline { font-family: 'Playfair Display', serif; }
+  .gold { color: #C4962C; }
+  .bg-gold { background: #C4962C; }
+  .bg-gold-light { background: rgba(196, 150, 44, 0.08); }
+  .bg-gold-ring { box-shadow: 0 0 0 1px rgba(196, 150, 44, 0.2); }
+
+  /* Header */
+  .header {
+    position: sticky; top: 0; z-index: 50;
+    border-bottom: 1px solid #e2e8f0;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(8px);
+    padding: 0 24px;
+    height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .header-brand { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: #C4962C; }
+  .header-sub { font-size: 13px; color: #64748b; margin-left: 12px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .header-time { font-size: 12px; color: #94a3b8; }
+  .btn-refresh {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border: 1px solid #e2e8f0; border-radius: 6px;
+    font-size: 13px; color: #64748b; background: white; cursor: pointer;
+  }
+
+  /* Container */
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+  /* Section header */
+  .section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .section-head svg { width: 20px; height: 20px; color: #C4962C; }
+  .section-head h2 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; }
+
+  /* Grid */
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-bottom: 32px; }
+
+  @media (max-width: 768px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+
+  /* Cards */
+  .card {
+    background: white; border-radius: 12px; padding: 24px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px -8px rgba(196, 150, 44, 0.15);
+  }
+  .card.accent {
+    background: rgba(196, 150, 44, 0.04);
+    box-shadow: 0 0 0 1px rgba(196, 150, 44, 0.2), 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  /* Stat card */
+  .stat-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .stat-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: rgba(196, 150, 44, 0.1); display: flex; align-items: center; justify-content: center;
+  }
+  .stat-icon svg { width: 20px; height: 20px; color: #C4962C; }
+  .stat-trend { font-size: 12px; font-weight: 500; display: flex; align-items: center; gap: 2px; }
+  .stat-trend.up { color: #16a34a; }
+  .stat-trend.down { color: #dc2626; }
+  .stat-value { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; line-height: 1; }
+  .stat-sub { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+  /* Spark bars */
+  .spark-bars { display: flex; align-items: flex-end; gap: 3px; height: 40px; margin-top: 12px; }
+  .spark-bar { flex: 1; border-radius: 2px; background: #C4962C; min-width: 4px; transition: height 0.5s ease; }
+
+  /* Intent bar */
+  .intent-row { margin-bottom: 14px; }
+  .intent-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
+  .intent-label span:first-child { color: #64748b; }
+  .intent-label span:last-child { font-weight: 600; }
+  .intent-track { height: 8px; background: #f1f5f9; border-radius: 999px; overflow: hidden; }
+  .intent-fill { height: 100%; background: #C4962C; border-radius: 999px; transition: width 0.6s ease; }
+
+  /* Top pages */
+  .page-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 13px;
+  }
+  .page-row:last-child { border: none; }
+  .page-rank { color: #94a3b8; width: 24px; text-align: right; margin-right: 8px; }
+  .page-path { color: #64748b; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .page-views { font-weight: 600; margin-left: 16px; }
+  .page-users { font-size: 12px; color: #94a3b8; margin-left: 12px; min-width: 60px; }
+
+  /* Leads table */
+  table { width: 100%; font-size: 13px; border-collapse: collapse; }
+  th { text-align: left; padding: 12px 16px 12px 0; font-weight: 500; color: #64748b; border-bottom: 1px solid #e2e8f0; }
+  td { padding: 12px 16px 12px 0; border-bottom: 1px solid #f1f5f9; }
+  tr:last-child td { border: none; }
+  .lead-name { font-weight: 500; }
+  .lead-email { color: #64748b; }
+  .lead-badge {
+    display: inline-flex; padding: 2px 10px; border-radius: 999px; font-size: 11px; font-weight: 500;
+    background: rgba(196, 150, 44, 0.1); color: #C4962C;
+  }
+  .lead-date { color: #94a3b8; }
+
+  /* Footer */
+  .footer { text-align: center; font-size: 12px; color: #94a3b8; padding: 16px 0 40px; }
+
+  /* Arrow SVGs */
+  .arrow-up { display: inline-block; width: 12px; height: 12px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div style="border-bottom: 1px solid #e2e8f0; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 50;">
+  <div class="header">
+    <div style="display:flex;align-items:center;">
+      <span class="header-brand">KenFinch.ca</span>
+      <span class="header-sub">Performance Dashboard</span>
+    </div>
+    <div class="header-right">
+      <span class="header-time">Updated 8:42 PM</span>
+      <button class="btn-refresh">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+        Refresh
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Live Activity -->
+  <div class="section-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    <h2 class="font-headline">Live Activity</h2>
+  </div>
+
+  <div class="grid-4">
+    <div class="card accent">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+      </div>
+      <div class="stat-value">3</div>
+      <div class="stat-sub">Users on site right now</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <span class="stat-trend up">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          12%
+        </span>
+      </div>
+      <div class="stat-value">847</div>
+      <div class="stat-sub">Unique visitors (30d)</div>
+      <div class="spark-bars">
+        <div class="spark-bar" style="height:45%;opacity:0.5"></div>
+        <div class="spark-bar" style="height:62%;opacity:0.6"></div>
+        <div class="spark-bar" style="height:38%;opacity:0.45"></div>
+        <div class="spark-bar" style="height:85%;opacity:0.8"></div>
+        <div class="spark-bar" style="height:72%;opacity:0.7"></div>
+        <div class="spark-bar" style="height:95%;opacity:0.9"></div>
+        <div class="spark-bar" style="height:100%;opacity:1"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <span class="stat-trend up">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          8%
+        </span>
+      </div>
+      <div class="stat-value">2,341</div>
+      <div class="stat-sub">Page views (30d)</div>
+      <div class="spark-bars">
+        <div class="spark-bar" style="height:55%;opacity:0.55"></div>
+        <div class="spark-bar" style="height:70%;opacity:0.65"></div>
+        <div class="spark-bar" style="height:48%;opacity:0.5"></div>
+        <div class="spark-bar" style="height:90%;opacity:0.85"></div>
+        <div class="spark-bar" style="height:65%;opacity:0.6"></div>
+        <div class="spark-bar" style="height:80%;opacity:0.75"></div>
+        <div class="spark-bar" style="height:100%;opacity:1"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+      </div>
+      <div class="stat-value">2m 34s</div>
+      <div class="stat-sub">Avg session &middot; 38% bounce rate</div>
+    </div>
+  </div>
+
+  <!-- Lead Generation -->
+  <div class="section-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 18a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2"/><rect width="18" height="18" x="3" y="4" rx="2"/><circle cx="12" cy="10" r="2"/><line x1="8" x2="8" y1="2" y2="4"/><line x1="16" x2="16" y1="2" y2="4"/></svg>
+    <h2 class="font-headline">Lead Generation</h2>
+  </div>
+
+  <div class="grid-4">
+    <div class="card accent">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        </div>
+        <span class="stat-trend up">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+          24%
+        </span>
+      </div>
+      <div class="stat-value">18</div>
+      <div class="stat-sub">Total leads (30d) &middot; 5 this week</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        </div>
+      </div>
+      <div class="stat-value">11</div>
+      <div class="stat-sub">Contact forms (30d) &middot; 34 all time</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+      </div>
+      <div class="stat-value">7</div>
+      <div class="stat-sub">AI valuations (30d) &middot; 22 all time</div>
+    </div>
+
+    <div class="card">
+      <div class="stat-top">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+      </div>
+      <div class="stat-value">1,203</div>
+      <div class="stat-sub">Total sessions (30d)</div>
+    </div>
+  </div>
+
+  <!-- Details Row -->
+  <div class="grid-2">
+    <!-- Intent Breakdown -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4962C" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        <h3 class="font-headline" style="font-size:18px;">Lead Intent Breakdown (30d)</h3>
+      </div>
+      <div class="intent-row">
+        <div class="intent-label"><span>Ready to list my home</span><span>4</span></div>
+        <div class="intent-track"><div class="intent-fill" style="width:36%"></div></div>
+      </div>
+      <div class="intent-row">
+        <div class="intent-label"><span>Curious about my home value</span><span>3</span></div>
+        <div class="intent-track"><div class="intent-fill" style="width:27%"></div></div>
+      </div>
+      <div class="intent-row">
+        <div class="intent-label"><span>Thinking of selling in 3-6 months</span><span>2</span></div>
+        <div class="intent-track"><div class="intent-fill" style="width:18%"></div></div>
+      </div>
+      <div class="intent-row">
+        <div class="intent-label"><span>Want a market update</span><span>1</span></div>
+        <div class="intent-track"><div class="intent-fill" style="width:9%"></div></div>
+      </div>
+      <div class="intent-row">
+        <div class="intent-label"><span>Other question</span><span>1</span></div>
+        <div class="intent-track"><div class="intent-fill" style="width:9%"></div></div>
+      </div>
+    </div>
+
+    <!-- Top Pages -->
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4962C" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+        <h3 class="font-headline" style="font-size:18px;">Top Pages (30d)</h3>
+      </div>
+      <div class="page-row"><span class="page-rank">1.</span><span class="page-path">/</span><span class="page-views">612</span><span class="page-users">423 users</span></div>
+      <div class="page-row"><span class="page-rank">2.</span><span class="page-path">/contact</span><span class="page-views">287</span><span class="page-users">198 users</span></div>
+      <div class="page-row"><span class="page-rank">3.</span><span class="page-path">/neighborhoods/glen-abbey</span><span class="page-views">156</span><span class="page-users">134 users</span></div>
+      <div class="page-row"><span class="page-rank">4.</span><span class="page-path">/blog/how-to-price-your-oakville-home-2026</span><span class="page-views">143</span><span class="page-users">121 users</span></div>
+      <div class="page-row"><span class="page-rank">5.</span><span class="page-path">/neighborhoods/old-oakville</span><span class="page-views">128</span><span class="page-users">109 users</span></div>
+      <div class="page-row"><span class="page-rank">6.</span><span class="page-path">/neighborhoods/west-oak-trails</span><span class="page-views">97</span><span class="page-users">82 users</span></div>
+      <div class="page-row"><span class="page-rank">7.</span><span class="page-path">/blog/staging-tips-oakville-homes</span><span class="page-views">89</span><span class="page-users">76 users</span></div>
+    </div>
+  </div>
+
+  <!-- Recent Leads -->
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C4962C" stroke-width="2"><path d="M17 18a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2"/><rect width="18" height="18" x="3" y="4" rx="2"/><circle cx="12" cy="10" r="2"/><line x1="8" x2="8" y1="2" y2="4"/><line x1="16" x2="16" y1="2" y2="4"/></svg>
+      <h3 class="font-headline" style="font-size:18px;">Recent Leads</h3>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Intent</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="lead-name">Sarah Mitchell</td>
+          <td class="lead-email">sarah.m@gmail.com</td>
+          <td><span class="lead-badge">Ready to list my home</span></td>
+          <td class="lead-date">Mar 21, 2026</td>
+        </tr>
+        <tr>
+          <td class="lead-name">James Wong</td>
+          <td class="lead-email">jwong@outlook.com</td>
+          <td><span class="lead-badge">Curious about my home value</span></td>
+          <td class="lead-date">Mar 20, 2026</td>
+        </tr>
+        <tr>
+          <td class="lead-name">Priya Sharma</td>
+          <td class="lead-email">priya.s@hotmail.com</td>
+          <td><span class="lead-badge">Thinking of selling in 3-6 months</span></td>
+          <td class="lead-date">Mar 19, 2026</td>
+        </tr>
+        <tr>
+          <td class="lead-name">David Chen</td>
+          <td class="lead-email">dchen@gmail.com</td>
+          <td><span class="lead-badge">Ready to list my home</span></td>
+          <td class="lead-date">Mar 18, 2026</td>
+        </tr>
+        <tr>
+          <td class="lead-name">Lisa Park</td>
+          <td class="lead-email">lisa.park@yahoo.ca</td>
+          <td><span class="lead-badge">Want a market update</span></td>
+          <td class="lead-date">Mar 17, 2026</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <p>KenFinch.ca Performance Dashboard</p>
+    <p style="margin-top:4px;">Data sources: Google Analytics 4 &middot; Firebase Firestore &middot; Meta Ads &middot; Google Ads &middot; TikTok Ads</p>
+  </div>
+
+</div>
+</body>
+</html>

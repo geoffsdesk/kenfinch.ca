@@ -38,3 +38,5 @@ env:
     secret: SENDGRID_API_KEY
   - variable: GEMINI_API_KEY
     secret: GEMINI_API_KEY
+  - variable: DASHBOARD_PASSWORD
+    secret: DASHBOARD_PASSWORD
