@@ -1,7 +1,7 @@
 ---
 title: 'Selling in Oakville vs. Burlington in 2026: What Homeowners Should Know'
 date: '2026-02-20'
-image: '/hero_house.png'
+image: '/burlington_vs_oakville.jpg'
 excerpt: 'Thinking about selling in Halton Region? Here''s how the Oakville and Burlington real estate markets compare in 2026, and what it means for your home''s value.'
 ---
 

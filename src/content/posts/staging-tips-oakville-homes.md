@@ -1,7 +1,7 @@
 ---
 title: '7 Staging Tips That Sell Oakville Homes Faster'
 date: '2026-03-08'
-image: '/hero_house.png'
+image: '/staging-tips-oakville.jpg'
 excerpt: 'Professional staging can increase your sale price by up to 10%. Here are seven proven staging strategies that work specifically for Oakville homes and buyers.'
 ---
 

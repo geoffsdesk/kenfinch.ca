@@ -1,7 +1,7 @@
 ---
 title: 'How to Price Your Oakville Home in 2026: A Data-Driven Approach'
 date: '2026-03-15'
-image: '/hero_house.png'
+image: '/how_to_price_2026.jpg'
 excerpt: 'Pricing your Oakville home correctly from day one is the single most important factor in a successful sale. Learn the data-driven strategies top agents use to find your home''s sweet spot.'
 ---
 
