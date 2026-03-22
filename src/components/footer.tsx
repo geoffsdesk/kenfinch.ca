@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { GuideLink } from "@/components/guide-link";
 
 export function Footer() {
   return (
@@ -29,7 +30,7 @@ export function Footer() {
               <Link href="/neighborhoods" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Oakville Neighborhoods</Link>
               <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Market Insights Blog</Link>
               <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact Ken</Link>
-              <a href="/oakville-sellers-guide.pdf" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Free Seller&apos;s Guide (PDF)</a>
+              <GuideLink className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left">Free Seller&apos;s Guide (PDF)</GuideLink>
             </nav>
           </div>
 

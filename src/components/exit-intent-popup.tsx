@@ -26,6 +26,15 @@ export function ExitIntentPopup() {
     }
   }, [show]);
 
+  // Listen for manual trigger (e.g. footer "Free Seller's Guide" link)
+  useEffect(() => {
+    const handleManualOpen = () => {
+      setShow(true);
+    };
+    window.addEventListener('openLeadPopup', handleManualOpen);
+    return () => window.removeEventListener('openLeadPopup', handleManualOpen);
+  }, []);
+
   useEffect(() => {
     // Only add listener on desktop (no exit intent on mobile)
     if (window.innerWidth < 768) return;
