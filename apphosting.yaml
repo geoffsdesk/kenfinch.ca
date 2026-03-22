@@ -30,6 +30,8 @@ env:
     secret: NEXT_PUBLIC_META_PIXEL_ID
   - variable: NEXT_PUBLIC_TIKTOK_PIXEL_ID
     secret: NEXT_PUBLIC_TIKTOK_PIXEL_ID
+  - variable: NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID
+    secret: NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID
 
   # Server-side secrets
   - variable: SENDGRID_API_KEY
