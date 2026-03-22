@@ -1,26 +1,70 @@
 import Link from "next/link";
-import { Mail } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="w-full border-t">
-      <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
-        <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            © {new Date().getFullYear()} Ken Finch Real Estate. All rights reserved.
-          </p>
+    <footer className="w-full border-t bg-secondary/30">
+      <div className="container px-4 md:px-6 py-12 md:py-16">
+        <div className="grid gap-8 md:grid-cols-3">
+          {/* Brand */}
+          <div className="space-y-4">
+            <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Your trusted Oakville real estate expert. Helping families sell their homes with confidence for over 20 years.
+            </p>
+            <img
+              src="/royal_lepage_logo.png"
+              alt="Royal LePage Signature Realty"
+              width="130"
+              height="30"
+              style={{ height: 'auto' }}
+            />
+          </div>
+
+          {/* Quick Links */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-sm uppercase tracking-widest text-primary">Quick Links</h3>
+            <nav className="flex flex-col gap-2">
+              <Link href="/#valuation-tool" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI Home Valuation</Link>
+              <Link href="/neighborhoods" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Oakville Neighborhoods</Link>
+              <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Market Insights Blog</Link>
+              <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact Ken</Link>
+            </nav>
+          </div>
+
+          {/* Contact */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-sm uppercase tracking-widest text-primary">Get in Touch</h3>
+            <div className="flex flex-col gap-3">
+              <a href="tel:+19055103642" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors">
+                <Phone className="h-4 w-4 shrink-0" />
+                (905) 510-3642
+              </a>
+              <a href="mailto:ken@kenfinch.ca" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors">
+                <Mail className="h-4 w-4 shrink-0" />
+                ken@kenfinch.ca
+              </a>
+              <div className="text-sm text-muted-foreground flex items-start gap-2">
+                <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                Oakville, Ontario, Canada
+              </div>
+            </div>
+            <div className="flex items-center gap-3 pt-2">
+              <a href="https://www.facebook.com/KenFinchRealEstate/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <FacebookIcon className="h-5 w-5" />
+              </a>
+              <a href="https://www.linkedin.com/in/kenfinchrealtor/?originalSubdomain=ca" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <LinkedinIcon className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-           <a href="mailto:ken@kenfinch.ca" className="text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm">
-            <Mail className="h-4 w-4" />
-            ken@kenfinch.ca
-          </a>
-          <Link href="https://www.facebook.com/KenFinchRealEstate/" className="text-muted-foreground hover:text-foreground">
-            <FacebookIcon className="h-5 w-5" />
-          </Link>
-          <Link href="https://www.linkedin.com/in/kenfinchrealtor/?originalSubdomain=ca" className="text-muted-foreground hover:text-foreground">
-            <LinkedinIcon className="h-5 w-5" />
-          </Link>
+      </div>
+      <div className="border-t">
+        <div className="container px-4 md:px-6 flex flex-col items-center justify-between gap-4 py-6 md:flex-row">
+          <p className="text-center text-xs text-muted-foreground md:text-left">
+            &copy; {new Date().getFullYear()} Ken Finch Real Estate. All rights reserved. Royal LePage Signature Realty, Brokerage.
+          </p>
         </div>
       </div>
     </footer>
