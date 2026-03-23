@@ -21,7 +21,7 @@ export default function SellLandingPage() {
           <Link href="/" className="flex items-center gap-3">
             <Image src="/kf_logo.png" alt="Ken Finch Real Estate" width={160} height={45} className="h-10 w-auto" />
             <span className="hidden sm:inline-block h-6 w-px bg-border" />
-            <span className="hidden sm:inline-block text-xs text-muted-foreground leading-tight">Royal LePage<br />Signature Realty</span>
+            <img src="/logo_rlp.png" alt="Royal LePage Signature" className="hidden sm:inline-block" style={{ height: '28px', width: 'auto' }} />
           </Link>
           <a href="tel:+14165205544" className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm">
             <Phone className="h-4 w-4" />

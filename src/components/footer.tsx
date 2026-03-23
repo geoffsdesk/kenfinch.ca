@@ -14,11 +14,10 @@ export function Footer() {
               Your trusted Oakville real estate expert. Helping families sell their homes with confidence for over 20 years.
             </p>
             <img
-              src="/royal_lepage_logo.png"
-              alt="Royal LePage Signature Realty, Brokerage"
-              width="130"
+              src="/logo_rlp.png"
+              alt="Royal LePage Signature — Independently Owned &amp; Operated Real Estate Brokerage"
               height="30"
-              style={{ height: 'auto' }}
+              style={{ height: '30px', width: 'auto' }}
             />
           </div>
 
