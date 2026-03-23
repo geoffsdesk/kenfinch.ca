@@ -23,7 +23,7 @@ export default function Home() {
     "url": "https://www.kenfinch.ca",
     "logo": "https://www.kenfinch.ca/kf_logo.png",
     "image": "https://www.kenfinch.ca/ken_headshot_professional.jpg",
-    "telephone": "+1-905-510-3642",
+    "telephone": "+1-416-520-5544",
     "email": "ken@kenfinch.ca",
     "address": {
       "@type": "PostalAddress",

@@ -38,9 +38,9 @@ export function Footer() {
           <div className="space-y-4">
             <h3 className="font-semibold text-sm uppercase tracking-widest text-primary">Get in Touch</h3>
             <div className="flex flex-col gap-3">
-              <a href="tel:+19055103642" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors">
+              <a href="tel:+14165205544" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors">
                 <Phone className="h-4 w-4 shrink-0" />
-                (905) 510-3642
+                (416) 520-5544
               </a>
               <a href="mailto:ken@kenfinch.ca" className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors">
                 <Mail className="h-4 w-4 shrink-0" />

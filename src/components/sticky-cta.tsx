@@ -40,14 +40,14 @@ export function StickyCTA() {
                   <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
               </Link>
-              <a href="tel:+19055103642">
+              <a href="tel:+14165205544">
                 <Button
                   size="sm"
                   variant="secondary"
                   className="font-semibold shadow-md text-xs sm:text-sm"
                 >
                   <Phone className="mr-1.5 h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Call (905) 510-3642</span>
+                  <span className="hidden sm:inline">Call (416) 520-5544</span>
                   <span className="sm:hidden">Call Ken</span>
                 </Button>
               </a>

@@ -23,9 +23,9 @@ export default function SellLandingPage() {
             <span className="hidden sm:inline-block h-6 w-px bg-border" />
             <span className="hidden sm:inline-block text-xs text-muted-foreground leading-tight">Royal LePage<br />Signature Realty</span>
           </Link>
-          <a href="tel:+19055103642" className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm">
+          <a href="tel:+14165205544" className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm">
             <Phone className="h-4 w-4" />
-            (905) 510-3642
+            (416) 520-5544
           </a>
         </div>
       </header>
@@ -175,7 +175,7 @@ export default function SellLandingPage() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </a>
-              <a href="tel:+19055103642">
+              <a href="tel:+14165205544">
                 <Button size="lg" variant="secondary" className="font-semibold text-base px-8 shadow-lg">
                   <Phone className="mr-2 h-4 w-4" />
                   Call Ken Directly
