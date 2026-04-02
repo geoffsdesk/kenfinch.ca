@@ -19,7 +19,7 @@ const HomeValuationInputSchema = z.object({
   bedroomsBelowGrade: z.number().int().min(0).describe('The number of bedrooms below grade in the home.'),
   bathrooms: z.number().min(1).describe('The number of bathrooms in the home.'),
   squareFootage: z.number().int().min(500).describe('The square footage of the home.'),
-  yearBuilt: z.number().int().min(1900).max(2024).describe('The year the home was built.'),
+  yearBuilt: z.number().int().min(1900).max(2030).describe('The year the home was built.'),
   renovated: z.boolean().describe('Whether the home has been recently renovated.'),
   finishedBasement: z.boolean().describe('Whether the basement is finished.'),
   garageSpaces: z.number().int().min(0).describe('The number of garage parking spaces.'),
