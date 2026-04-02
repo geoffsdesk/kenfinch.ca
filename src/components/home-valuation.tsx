@@ -1,14 +1,13 @@
 
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { useJsApiLoader } from '@react-google-maps/api';
-import usePlacesAutocomplete, { getGeocode, getLatLng } from 'use-places-autocomplete';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 import { sendEmail } from '@/ai/flows/send-email-flow';
@@ -110,18 +109,35 @@ function HomeValuationInternal() {
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const { toast } = useToast();
 
-  const {
-    ready,
-    value,
-    suggestions: { status, data },
-    setValue,
-    clearSuggestions,
-  } = usePlacesAutocomplete({
-    requestOptions: { 
-      componentRestrictions: { country: "ca" },
-    },
-    debounce: 300,
-  });
+  // New Places API autocomplete state
+  const [addressInput, setAddressInput] = useState('');
+  const [suggestions, setSuggestions] = useState<google.maps.places.PlacePrediction[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const fetchSuggestions = useCallback(async (input: string) => {
+    if (input.length < 3) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+    try {
+      const { suggestions: results } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+        input,
+        includedRegionCodes: ['ca'],
+        language: 'en',
+      });
+      const placePredictions = results
+        .map(s => s.placePrediction)
+        .filter((p): p is google.maps.places.PlacePrediction => p != null);
+      setSuggestions(placePredictions);
+      setShowSuggestions(placePredictions.length > 0);
+    } catch (err) {
+      console.error('Autocomplete error:', err);
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }, []);
 
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -143,8 +159,8 @@ function HomeValuationInternal() {
   });
 
   useEffect(() => {
-    form.setValue('address', value);
-  }, [value, form]);
+    form.setValue('address', addressInput);
+  }, [addressInput, form]);
 
   const contactForm = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
@@ -260,52 +276,66 @@ function HomeValuationInternal() {
   }
   
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
+    const val = e.target.value;
+    setAddressInput(val);
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => fetchSuggestions(val), 300);
   };
 
-  const handleSelect = ({ description }: { description: string }) => async () => {
-    setValue(description, false);
-    clearSuggestions();
-    
+  const handleSelect = (prediction: google.maps.places.PlacePrediction) => async () => {
+    const description = prediction.text.text;
+    setAddressInput(description);
+    setSuggestions([]);
+    setShowSuggestions(false);
+
     try {
-        const results = await getGeocode({ address: description });
-        const { lat, lng } = await getLatLng(results[0]);
-        
-        const map = new google.maps.Map(document.createElement('div'));
-        const service = new google.maps.places.PlacesService(map);
+      // Get place details (location) using new Places API
+      const place = prediction.toPlace();
+      await place.fetchFields({ fields: ['location', 'formattedAddress'] });
+      const location = place.location;
 
-        const request = {
-            location: { lat, lng },
-            radius: 2000, // 2km radius
-            type: 'school',
-            rankBy: google.maps.places.RankBy.PROMINENCE,
-        };
+      if (location) {
+        // Use new Nearby Search to find schools
+        try {
+          const { places: nearbyPlaces } = await google.maps.places.Place.searchNearby({
+            fields: ['displayName'],
+            locationRestriction: {
+              center: { lat: location.lat(), lng: location.lng() },
+              radius: 2000,
+            },
+            includedPrimaryTypes: ['school'],
+            maxResultCount: 5,
+            rankPreference: google.maps.places.SearchNearbyRankPreference.POPULARITY,
+          });
 
-        service.nearbySearch(request, (results, status) => {
-            if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-                const schoolNames = results.slice(0, 5).map(place => place.name).join(', ');
-                form.setValue('nearbySchools', schoolNames);
-            }
-        });
+          if (nearbyPlaces && nearbyPlaces.length > 0) {
+            const schoolNames = nearbyPlaces
+              .map(p => p.displayName)
+              .filter(Boolean)
+              .join(', ');
+            form.setValue('nearbySchools', schoolNames);
+          }
+        } catch (schoolError) {
+          console.error("Error fetching nearby schools:", schoolError);
+        }
+      }
     } catch (error) {
-        console.error("Error fetching schools: ", error);
+      console.error("Error fetching place details:", error);
     }
   };
 
   const renderSuggestions = () => (
     <div className="absolute z-10 w-full bg-white rounded-md shadow-lg mt-1">
-      {data.map((suggestion) => {
-        const {
-          place_id,
-          structured_formatting: { main_text, secondary_text },
-        } = suggestion;
+      {suggestions.map((prediction, index) => {
+        const mainText = prediction.mainText?.text || '';
+        const secondaryText = prediction.secondaryText?.text || '';
         return (
           <div
-            key={place_id}
-            onClick={handleSelect(suggestion)}
+            key={prediction.placeId || index}
+            onClick={handleSelect(prediction)}
             className="p-2 hover:bg-gray-100 cursor-pointer"
           >
-            <strong>{main_text}</strong> <small>{secondary_text}</small>
+            <strong>{mainText}</strong> <small>{secondaryText}</small>
           </div>
         );
       })}
@@ -489,15 +519,14 @@ function HomeValuationInternal() {
                   <FormControl>
                       <div className="relative">
                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                           <Input 
+                           <Input
                               {...field}
-                              value={value}
+                              value={addressInput}
                               onChange={handleInput}
-                              disabled={!ready}
-                              placeholder="e.g., 123 Maple Street, Oakville, ON" 
+                              placeholder="e.g., 123 Maple Street, Oakville, ON"
                               className="pl-10"
                           />
-                           {status === 'OK' && renderSuggestions()}
+                           {showSuggestions && renderSuggestions()}
                       </div>
                   </FormControl>
                   <FormMessage />
@@ -715,7 +744,7 @@ function HomeValuationInternal() {
               )}
             />
 
-            <Button type="submit" size="lg" className="w-full" disabled={isLoading || !ready}>
+            <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Generate My Home Valuation
             </Button>
