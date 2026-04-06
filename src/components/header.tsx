@@ -17,7 +17,7 @@ export function Header() {
     },
     {
         href: "/neighborhoods",
-        label: "Neighborhoods",
+        label: "Neighbourhoods",
     },
     {
         href: "/contact",

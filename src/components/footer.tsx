@@ -26,7 +26,7 @@ export function Footer() {
             <h3 className="font-semibold text-sm uppercase tracking-widest text-primary">Quick Links</h3>
             <nav className="flex flex-col gap-2">
               <Link href="/#valuation-tool" className="text-sm text-muted-foreground hover:text-foreground transition-colors">AI Home Valuation</Link>
-              <Link href="/neighborhoods" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Oakville Neighborhoods</Link>
+              <Link href="/neighborhoods" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Oakville Neighbourhoods</Link>
               <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Market Insights Blog</Link>
               <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contact Ken</Link>
               <GuideLink className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left">Free Seller&apos;s Guide (PDF)</GuideLink>

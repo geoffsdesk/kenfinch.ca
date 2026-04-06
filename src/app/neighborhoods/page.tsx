@@ -9,11 +9,11 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Home, MapPin, TrendingUp, Star } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Oakville Neighborhoods Guide — Sell Your Home With Confidence',
+  title: 'Oakville Neighbourhoods Guide — Sell Your Home With Confidence',
   description:
-    'Explore Oakville\'s top neighborhoods with expert insights on home values, market trends, and selling strategies. Find your neighborhood and get a free home valuation from Ken Finch.',
+    'Explore Oakville\'s top neighbourhoods with expert insights on home values, market trends, and selling strategies. Find your neighbourhood and get a free home valuation from Ken Finch.',
   keywords: [
-    'Oakville neighborhoods',
+    'Oakville neighbourhoods',
     'sell home Oakville',
     'Old Oakville real estate',
     'Bronte homes for sale',
@@ -33,13 +33,13 @@ export default function NeighborhoodsPage() {
         <section className="relative bg-secondary/30 py-16 md:py-24 overflow-hidden">
           <div className="container mx-auto max-w-5xl px-4 text-center relative z-10">
             <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-3">
-              Oakville Neighborhood Guides
+              Oakville Neighbourhood Guides
             </p>
             <h1 className="font-heading text-4xl font-bold md:text-5xl">
-              Know Your Neighborhood. Sell With Confidence.
+              Know Your Neighbourhood. Sell With Confidence.
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-              Every Oakville neighborhood has its own story, buyer profile, and pricing dynamics.
+              Every Oakville neighbourhood has its own story, buyer profile, and pricing dynamics.
               Understanding yours is the first step to a faster sale at the best possible price.
             </p>
 
@@ -47,7 +47,7 @@ export default function NeighborhoodsPage() {
             <div className="flex flex-wrap justify-center gap-8 mt-8 pt-8 border-t border-border/50">
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary font-headline">{neighborhoods.length}</p>
-                <p className="text-xs text-muted-foreground">Neighborhoods</p>
+                <p className="text-xs text-muted-foreground">Neighbourhoods</p>
               </div>
               <div className="text-center">
                 <p className="text-2xl font-bold text-primary font-headline">20+</p>
@@ -73,7 +73,7 @@ export default function NeighborhoodsPage() {
         <section className="container mx-auto max-w-6xl px-4 py-12">
           <div className="text-center mb-8">
             <h2 className="font-heading text-2xl font-bold">Explore Oakville</h2>
-            <p className="text-sm text-muted-foreground mt-2">Click a neighborhood below or browse the map</p>
+            <p className="text-sm text-muted-foreground mt-2">Click a neighbourhood below or browse the map</p>
           </div>
           <div className="rounded-2xl overflow-hidden shadow-lg border h-[350px] md:h-[400px]">
             <iframe
@@ -84,7 +84,7 @@ export default function NeighborhoodsPage() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="Oakville neighborhoods map"
+              title="Oakville neighbourhoods map"
             />
           </div>
         </section>

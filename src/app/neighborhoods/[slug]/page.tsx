@@ -94,7 +94,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 className="mb-4 inline-flex items-center gap-1.5 text-sm text-white/80 transition-colors hover:text-white"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
-                All Neighborhoods
+                All Neighbourhoods
               </Link>
               <div className="flex items-center gap-2 text-primary">
                 <MapPin className="h-5 w-5" />

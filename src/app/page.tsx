@@ -123,8 +123,8 @@ export default function Home() {
                 <p className="text-sm text-muted-foreground mt-1">Client Reviews</p>
               </div>
               <div>
-                <p className="text-3xl font-bold font-headline text-primary">10</p>
-                <p className="text-sm text-muted-foreground mt-1">Oakville Neighborhoods</p>
+                <p className="text-3xl font-bold font-headline text-primary">12</p>
+                <p className="text-sm text-muted-foreground mt-1">Oakville Neighbourhoods</p>
               </div>
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function Home() {
                   <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Your Broker</p>
                   <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Why Sellers Choose Ken Finch</h2>
                   <p className="text-lg text-muted-foreground leading-relaxed">
-                   Sell smarter. Sell faster. With a broker who truly knows Oakville. I&apos;ve been helping families sell their homes in this community for over two decades. I understand the nuances of each neighborhood, the right timing, and how to make your home stand out.
+                   Sell smarter. Sell faster. With a broker who truly knows Oakville. I&apos;ve been helping families sell their homes in this community for over two decades. I understand the nuances of each neighbourhood, the right timing, and how to make your home stand out.
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
                     Every property I list is presented with professional photography, drone video, and sharp marketing that reaches qualified buyers online and within the community. My clients trust me to deliver results with data-driven pricing, strong negotiation, and a personal commitment to a smooth process.
@@ -175,7 +175,7 @@ export default function Home() {
                     <Link href="/neighborhoods">
                       <Button size="lg" variant="outline" className="px-8">
                         <MapPin className="mr-2 h-4 w-4" />
-                        Explore Neighborhoods
+                        Explore Neighbourhoods
                       </Button>
                     </Link>
                   </div>
@@ -351,23 +351,40 @@ export default function Home() {
                     </div>
                 </CardContent>
               </Card>
+              <Card className="border-0 shadow-lg lg:col-span-2 lg:max-w-3xl lg:mx-auto">
+                <CardContent className="p-8">
+                    <div className="grid gap-3">
+                        <div className="flex items-center gap-1 text-primary">
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                            <Star className="h-5 w-5 fill-current" />
+                        </div>
+                        <blockquote className="text-base text-muted-foreground leading-relaxed italic">
+                            &ldquo;Mr. Finch demonstrated proactive involvement in conducting thorough research to provide us with a comprehensive understanding of the current market conditions in our neighbourhood, Glen Abbey. His instrumental role in orchestrating all stages of our marketing plan, including advertising, house staging, and utilizing aerial photography to showcase our ravine setting&apos;s unique features, was crucial in achieving our success. His meticulous planning and execution of well-timed open houses resulted in the receipt of offers within a few days. His prudent advice against accepting the initial offer proved highly insightful, helping us secure the maximum sales price for our home. Throughout the transaction, he consistently maintained a professional demeanour and collaborated effectively with us to expedite the sale within record time.&rdquo;
+                        </blockquote>
+                        <p className="font-semibold text-right w-full">&mdash; Peter &amp; Elizabeth S.</p>
+                    </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
-        {/* Neighborhoods CTA Section */}
+        {/* Neighbourhoods CTA Section */}
         <section className="w-full py-16 md:py-20 bg-card">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-6 text-center max-w-3xl mx-auto">
               <p className="text-sm font-semibold uppercase tracking-widest text-primary">Local Expertise</p>
-              <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Know Your Oakville Neighborhood</h2>
+              <h2 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Know Your Oakville Neighbourhood</h2>
               <p className="text-lg text-muted-foreground">
                 From Old Oakville&apos;s charming streets to West Oak Trails&apos; family-friendly communities, explore market insights for every corner of Oakville.
               </p>
               <Link href="/neighborhoods">
                 <Button size="lg" variant="outline" className="text-base px-8 py-6 mt-2">
                   <MapPin className="mr-2 h-5 w-5" />
-                  Explore All 10 Neighborhoods
+                  Explore All 12 Neighbourhoods
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
