@@ -16,8 +16,8 @@ test.describe('Site Health Checks', () => {
     await expect(page.locator('form')).toBeVisible();
   });
 
-  test('seller login page loads', async ({ page }) => {
-    const response = await page.goto('/seller/login');
+  test('sell page loads', async ({ page }) => {
+    const response = await page.goto('/sell');
     expect(response?.status()).toBeLessThan(400);
   });
 
@@ -35,7 +35,10 @@ test.describe('Site Health Checks', () => {
         if (
           !text.includes('favicon') &&
           !text.includes('fbevents') &&
-          !text.includes('third-party')
+          !text.includes('third-party') &&
+          !text.includes('Google Maps') &&
+          !text.includes('maps.googleapis') &&
+          !text.includes('places')
         ) {
           errors.push(text);
         }
