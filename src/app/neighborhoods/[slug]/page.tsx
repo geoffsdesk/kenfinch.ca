@@ -31,8 +31,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const neighborhood = neighborhoods.find((n) => n.slug === slug);
   if (!neighborhood) return {};
 
+  const canonicalPath = `/neighborhoods/${slug}`;
   return {
-    title: `Sell Your Home in ${neighborhood.name} | Ken Finch Real Estate`,
+    title: `Sell Your Home in ${neighborhood.name}`,
     description: `Expert guide to selling your home in ${neighborhood.name}, Oakville. Average home price: ${neighborhood.avgPrice}. ${neighborhood.description.slice(0, 120)}...`,
     keywords: [
       `${neighborhood.name} Oakville`,
@@ -42,10 +43,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       'Oakville real estate',
       'Ken Finch realtor',
     ],
+    alternates: { canonical: canonicalPath },
     openGraph: {
       title: neighborhood.headline,
       description: neighborhood.description.slice(0, 200),
       type: 'article',
+      url: `https://www.kenfinch.ca${canonicalPath}`,
     },
   };
 }
@@ -58,18 +61,32 @@ export default async function NeighborhoodPage({ params }: PageProps) {
     notFound();
   }
 
-  // JSON-LD structured data for this neighborhood
+  // JSON-LD structured data for this neighborhood — includes RealEstateAgent
+  // plus a BreadcrumbList so Google renders the path in SERPs.
+  const canonicalUrl = `https://www.kenfinch.ca/neighborhoods/${neighborhood.slug}`;
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'RealEstateAgent',
-    name: 'Ken Finch, Broker — Royal LePage Signature Realty',
-    url: `https://www.kenfinch.ca/neighborhoods/${neighborhood.slug}`,
-    description: neighborhood.description,
-    areaServed: {
-      '@type': 'Place',
-      name: `${neighborhood.name}, Oakville, Ontario`,
-    },
-    priceRange: neighborhood.priceRange,
+    '@graph': [
+      {
+        '@type': 'RealEstateAgent',
+        name: 'Ken Finch, Broker — Royal LePage Signature Realty',
+        url: canonicalUrl,
+        description: neighborhood.description,
+        areaServed: {
+          '@type': 'Place',
+          name: `${neighborhood.name}, Oakville, Ontario`,
+        },
+        priceRange: neighborhood.priceRange,
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.kenfinch.ca/' },
+          { '@type': 'ListItem', position: 2, name: 'Neighbourhoods', item: 'https://www.kenfinch.ca/neighborhoods' },
+          { '@type': 'ListItem', position: 3, name: neighborhood.name, item: canonicalUrl },
+        ],
+      },
+    ],
   };
 
   return (

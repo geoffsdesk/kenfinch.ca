@@ -11,6 +11,12 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'Oakville Real Estate Blog',
     description: 'Expert insights, tips, and market updates for home sellers in Oakville, Ontario. Stay informed with Ken Finch Real Estate.',
+    alternates: { canonical: '/blog' },
+    openGraph: {
+        title: 'Oakville Real Estate Blog | Ken Finch',
+        description: 'Expert insights and market updates for Oakville home sellers.',
+        url: 'https://www.kenfinch.ca/blog',
+    },
 };
 
 export default function BlogIndexPage() {

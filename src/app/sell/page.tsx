@@ -6,10 +6,15 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'What Is Your Oakville Home Worth? | Free AI Valuation',
+  title: 'Free Oakville Home Valuation',
   description: 'Get a free, instant AI-powered home valuation for your Oakville property. See what your home is worth in today\'s market. No obligation.',
   keywords: ['home valuation Oakville', 'what is my home worth', 'sell home Oakville', 'Oakville house value', 'free home appraisal Oakville'],
-  robots: { index: false, follow: false }, // Don't index paid landing pages
+  alternates: { canonical: '/sell' },
+  openGraph: {
+    title: 'Free Oakville Home Valuation | Ken Finch',
+    description: 'Get a free, instant AI-powered home valuation for your Oakville property.',
+    url: 'https://www.kenfinch.ca/sell',
+  },
 };
 
 export default function SellLandingPage() {

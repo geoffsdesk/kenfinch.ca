@@ -7,6 +7,12 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'Contact Ken Finch',
     description: 'Have questions or ready to get started with selling your Oakville home? Contact Ken Finch today for expert real estate advice.',
+    alternates: { canonical: '/contact' },
+    openGraph: {
+        title: 'Contact Ken Finch | Oakville Real Estate',
+        description: 'Reach out to Ken Finch for expert Oakville real estate advice.',
+        url: 'https://www.kenfinch.ca/contact',
+    },
 };
 
 export default function ContactPage() {
@@ -27,7 +33,7 @@ export default function ContactPage() {
                     />
                 </div>
               <div className="space-y-2 pt-8">
-                <h2 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">Contact Ken</h2>
+                <h1 className="font-headline text-3xl font-bold tracking-tighter sm:text-5xl">Contact Ken</h1>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Have questions or ready to get started? Reach out today.
                 </p>

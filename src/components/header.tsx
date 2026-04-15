@@ -20,6 +20,10 @@ export function Header() {
         label: "Neighbourhoods",
     },
     {
+        href: "/about",
+        label: "About Ken",
+    },
+    {
         href: "/contact",
         label: "Contact Ken",
     },

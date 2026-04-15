@@ -9,9 +9,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Home, MapPin, TrendingUp, Star } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Oakville Neighbourhoods Guide — Sell Your Home With Confidence',
+  title: 'Oakville Neighbourhoods Guide',
   description:
-    'Explore Oakville\'s top neighbourhoods with expert insights on home values, market trends, and selling strategies. Find your neighbourhood and get a free home valuation from Ken Finch.',
+    'Explore Oakville\'s top neighbourhoods with expert insights on home values, market trends, and selling strategies. Get a free home valuation from Ken Finch.',
   keywords: [
     'Oakville neighbourhoods',
     'sell home Oakville',
@@ -21,6 +21,12 @@ export const metadata: Metadata = {
     'River Oaks Oakville',
     'Oakville home values',
   ],
+  alternates: { canonical: '/neighborhoods' },
+  openGraph: {
+    title: 'Oakville Neighbourhoods Guide | Ken Finch',
+    description: 'Explore Oakville\'s top neighbourhoods with expert insights on home values and selling strategies.',
+    url: 'https://www.kenfinch.ca/neighborhoods',
+  },
 };
 
 

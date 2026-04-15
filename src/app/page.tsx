@@ -10,37 +10,101 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
     title: 'Sell Your Home in Oakville | Ken Finch Real Estate',
-    description: 'Partner with Ken Finch, your trusted Oakville real estate agent, for a seamless and successful home selling experience. Get an AI-powered home valuation and expert market analysis for your Oakville property.',
+    description: 'Partner with Ken Finch, Oakville\'s trusted real estate agent. Get a free AI-powered home valuation and expert market analysis today.',
     keywords: ['sell home Oakville', 'Oakville real estate agent', 'home valuation Oakville', 'Ken Finch realtor', 'real estate listings Oakville'],
+    alternates: { canonical: '/' },
+    openGraph: {
+        title: 'Sell Your Home in Oakville | Ken Finch Real Estate',
+        description: 'Partner with Ken Finch, Oakville\'s trusted real estate agent. Get a free AI-powered home valuation and expert market analysis today.',
+        url: 'https://www.kenfinch.ca/',
+    },
 };
 
 
 export default function Home() {
+  // Combined structured data: RealEstateAgent entity for Ken + Person entity
+  // with `sameAs` to every off-site profile. `sameAs` is how search engines and
+  // LLMs that consume structured data collapse multiple profiles into a single
+  // entity — essential for getting Ken surfaced in AI answers about Oakville
+  // real estate agents.
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "RealEstateAgent",
-    "name": "Ken Finch, Broker",
-    "url": "https://www.kenfinch.ca",
-    "logo": "https://www.kenfinch.ca/kf_logo.png",
-    "image": "https://www.kenfinch.ca/ken_headshot_professional.jpg",
-    "telephone": "+1-416-520-5544",
-    "email": "ken@kenfinch.ca",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Oakville",
-      "addressRegion": "ON",
-      "addressCountry": "CA"
-    },
-    "description": "Ken Finch is a real estate Broker with Royal LePage Signature Realty, Brokerage, specializing in helping clients sell their homes in Oakville, Ontario. Offering expert market analysis, digital marketing tools, and personalized service.",
-    "areaServed": {
-      "@type": "Place",
-      "name": "Oakville, ON"
-    },
-    "memberOf": {
-      "@type": "Organization",
-      "name": "Royal LePage Signature Realty, Brokerage"
-    },
-    "priceRange" : "$$$"
+    "@graph": [
+      {
+        "@type": "RealEstateAgent",
+        "@id": "https://www.kenfinch.ca/#agent",
+        "name": "Ken Finch, Broker",
+        "url": "https://www.kenfinch.ca",
+        "logo": "https://www.kenfinch.ca/kf_logo.png",
+        "image": "https://www.kenfinch.ca/ken_headshot_professional.jpg",
+        "telephone": "+1-416-520-5544",
+        "email": "ken@kenfinch.ca",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Oakville",
+          "addressRegion": "ON",
+          "addressCountry": "CA"
+        },
+        "description": "Ken Finch is a real estate Broker with Royal LePage Signature Realty, Brokerage, specializing in helping clients sell their homes in Oakville, Ontario. Offering expert market analysis, digital marketing tools, and personalized service.",
+        "areaServed": [
+          { "@type": "Place", "name": "Oakville, ON" },
+          { "@type": "Place", "name": "Old Oakville" },
+          { "@type": "Place", "name": "Bronte, Oakville" },
+          { "@type": "Place", "name": "Glen Abbey, Oakville" },
+          { "@type": "Place", "name": "River Oaks, Oakville" },
+          { "@type": "Place", "name": "West Oak Trails, Oakville" },
+          { "@type": "Place", "name": "Eastlake, Oakville" },
+          { "@type": "Place", "name": "Morrison, Oakville" },
+          { "@type": "Place", "name": "Palermo, Oakville" }
+        ],
+        "memberOf": {
+          "@type": "Organization",
+          "name": "Royal LePage Signature Realty, Brokerage",
+          "url": "https://www.royallepage.ca/"
+        },
+        "priceRange": "$$$",
+        "knowsAbout": [
+          "Oakville real estate",
+          "Home valuation",
+          "Residential property sales",
+          "Luxury home sales",
+          "Real estate marketing",
+          "Home staging strategy",
+          "Comparative market analysis"
+        ],
+        "sameAs": [
+          "https://www.royallepage.ca/en/agent/ontario/toronto/ken-finch/31668/",
+          "https://www.linkedin.com/in/kenfinchrealtor/",
+          "https://www.facebook.com/KenFinchRealEstate/"
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://www.kenfinch.ca/#person",
+        "name": "Ken Finch",
+        "givenName": "Ken",
+        "familyName": "Finch",
+        "jobTitle": "Real Estate Broker",
+        "image": "https://www.kenfinch.ca/ken_headshot_professional.jpg",
+        "url": "https://www.kenfinch.ca",
+        "worksFor": { "@id": "https://www.kenfinch.ca/#agent" },
+        "workLocation": { "@type": "Place", "name": "Oakville, Ontario, Canada" },
+        "description": "Ken Finch is an Oakville, Ontario real estate broker with Royal LePage Signature Realty, Brokerage, helping homeowners sell their properties across Halton Region since 2004.",
+        "sameAs": [
+          "https://www.royallepage.ca/en/agent/ontario/toronto/ken-finch/31668/",
+          "https://www.linkedin.com/in/kenfinchrealtor/",
+          "https://www.facebook.com/KenFinchRealEstate/"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.kenfinch.ca/#website",
+        "url": "https://www.kenfinch.ca",
+        "name": "Ken Finch Real Estate — Oakville Home Seller Success",
+        "publisher": { "@id": "https://www.kenfinch.ca/#agent" },
+        "inLanguage": "en-CA"
+      }
+    ]
   };
 
   return (

@@ -18,9 +18,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!post) {
     return {};
   }
+  const canonicalPath = `/blog/${slug}`;
+  const canonicalUrl = `https://www.kenfinch.ca${canonicalPath}`;
   return {
     title: post.title,
     description: post.excerpt,
+    alternates: { canonical: canonicalPath },
+    openGraph: {
+      type: 'article',
+      title: post.title,
+      description: post.excerpt,
+      url: canonicalUrl,
+      images: post.image ? [post.image] : undefined,
+      publishedTime: post.date,
+    },
   };
 }
 
@@ -39,8 +50,41 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
+  const canonicalUrl = `https://www.kenfinch.ca/blog/${slug}`;
+  const imageUrl = post.image ? (post.image.startsWith('http') ? post.image : `https://www.kenfinch.ca${post.image}`) : undefined;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
+    url: canonicalUrl,
+    image: imageUrl,
+    author: {
+      '@type': 'Person',
+      name: 'Ken Finch',
+      url: 'https://www.kenfinch.ca',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Ken Finch Real Estate',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://www.kenfinch.ca/kf_logo.png',
+      },
+    },
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
+      <Script
+        id="blog-jsonld"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <main className="flex-1">
         <article className="container max-w-4xl py-12 md:py-16 lg:py-20">
