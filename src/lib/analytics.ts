@@ -254,3 +254,16 @@ export function trackFinmoHandoff(leadId?: string) {
   fbq('trackCustom', 'MortgageApplicationClick', { lead_id: leadId ?? '' });
   ttq('ClickButton', { content_name: 'Express Mortgage Application' });
 }
+
+/**
+ * Track a click on the floating WhatsApp button.
+ */
+export function trackWhatsAppClick(page: string) {
+  gtag('event', 'whatsapp_click', {
+    event_category: 'Contact',
+    event_label: 'WhatsApp Button',
+    page_path: page,
+  });
+  fbq('track', 'Contact', { content_name: 'WhatsApp Button' });
+  ttq('Contact', { content_name: 'WhatsApp Button' });
+}

@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { TrackingScripts } from '@/components/tracking-scripts';
 import { StickyCTA } from '@/components/sticky-cta';
 import { ExitIntentPopup } from '@/components/exit-intent-popup';
+import { WhatsAppButton } from '@/components/whatsapp-button';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -55,6 +56,7 @@ export default function RootLayout({
         {children}
         <StickyCTA />
         <ExitIntentPopup />
+        <WhatsAppButton />
         <Toaster />
         <TrackingScripts />
       </body>

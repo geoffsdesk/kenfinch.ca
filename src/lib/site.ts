@@ -12,6 +12,8 @@ export const CONTACT = {
   name: 'Ken Finch',
   phoneDisplay: '(416) 520-5544',
   phoneHref: 'tel:+14165205544',
+  /** E.164 digits only, for wa.me deep links. */
+  whatsappNumber: '14165205544',
   email: 'ken@kenfinch.ca',
   leadInbox: 'realtor@kenfinch.ca',
   city: 'Oakville, Ontario',
