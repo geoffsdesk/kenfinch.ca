@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import admin from 'firebase-admin';
+import { listLeads } from '@/lib/leads/store';
 
 // Simple password check
 const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || 'kenfinch2026';
@@ -126,76 +127,51 @@ async function getGA4Data() {
 
 async function getFirestoreData() {
   try {
-    const now = new Date();
-    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const now = Date.now();
+    const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    // Get contacts
-    const contactsRef = adminDb.collection('contacts');
-    const [allContacts, recentContacts, weekContacts] = await Promise.all([
-      contactsRef.orderBy('submittedAt', 'desc').limit(100).get(),
-      contactsRef.where('submittedAt', '>=', thirtyDaysAgo).get(),
-      contactsRef.where('submittedAt', '>=', sevenDaysAgo).get(),
-    ]);
+    // Unified pipeline: every form writes to `leads` with a `type`.
+    const leads = await listLeads(500);
+    const count = (type: string, since?: string) =>
+      leads.filter((l) => l.type === type && (!since || l.createdAt >= since)).length;
 
-    // Get valuations
-    const valuationsRef = adminDb.collection('valuations');
-    const [allValuations, recentValuations, weekValuations] = await Promise.all([
-      valuationsRef.orderBy('createdAt', 'desc').limit(100).get(),
-      valuationsRef.where('createdAt', '>=', thirtyDaysAgo).get(),
-      valuationsRef.where('createdAt', '>=', sevenDaysAgo).get(),
-    ]);
-
-    // Get buyer / mortgage leads (written server-side by the pre-approval form)
-    const buyerRef = adminDb.collection('buyer_leads');
-    const [allBuyer, recentBuyer, weekBuyer] = await Promise.all([
-      buyerRef.orderBy('submittedAt', 'desc').limit(100).get().catch(() => null),
-      buyerRef.where('submittedAt', '>=', thirtyDaysAgo).get().catch(() => null),
-      buyerRef.where('submittedAt', '>=', sevenDaysAgo).get().catch(() => null),
-    ]);
-
-    // Parse intent breakdown
     const intentCounts: Record<string, number> = {};
-    recentContacts.docs.forEach((d) => {
-      const intent = d.data().intent || 'Not specified';
-      intentCounts[intent] = (intentCounts[intent] || 0) + 1;
-    });
+    leads
+      .filter((l) => l.createdAt >= thirtyDaysAgo)
+      .forEach((l) => {
+        const intent =
+          l.type === 'contact'
+            ? ((l.details as Record<string, string>).intent || 'Not specified')
+            : l.type === 'buyer'
+              ? `Mortgage: ${(l.details as Record<string, string>).goal || 'buyer'}`
+              : l.type === 'valuation'
+                ? 'Valuation expert opinion'
+                : 'Email capture';
+        intentCounts[intent] = (intentCounts[intent] || 0) + 1;
+      });
 
-    // Recent leads: merge contact-form and buyer/mortgage leads, newest first
-    const contactLeads = allContacts.docs.map((d) => {
-      const data = d.data();
-      return {
-        name: data.name,
-        email: data.email,
-        intent: data.intent || 'Not specified',
-        type: 'contact',
-        date: data.submittedAt?.toDate?.()?.toISOString() || '',
-      };
-    });
-    const buyerLeads = (allBuyer?.docs || []).map((d) => {
-      const data = d.data();
-      return {
-        name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
-        email: data.email,
-        intent: `Mortgage: ${data.goal || 'buyer'} (${data.timeline || '?'})`,
-        type: 'mortgage',
-        date: data.submittedAt?.toDate?.()?.toISOString() || '',
-      };
-    });
-    const recentLeads = [...contactLeads, ...buyerLeads]
-      .sort((a, b) => (a.date < b.date ? 1 : -1))
-      .slice(0, 8);
+    const recentLeads = leads.slice(0, 8).map((l) => ({
+      name: l.name,
+      email: l.email,
+      intent: l.summary || l.type,
+      type: l.type,
+      status: l.status,
+      date: l.createdAt,
+    }));
 
     return {
-      totalContacts: allContacts.size,
-      contacts30: recentContacts.size,
-      contacts7: weekContacts.size,
-      totalValuations: allValuations.size,
-      valuations30: recentValuations.size,
-      valuations7: weekValuations.size,
-      totalBuyerLeads: allBuyer?.size ?? 0,
-      buyerLeads30: recentBuyer?.size ?? 0,
-      buyerLeads7: weekBuyer?.size ?? 0,
+      totalContacts: count('contact'),
+      contacts30: count('contact', thirtyDaysAgo),
+      contacts7: count('contact', sevenDaysAgo),
+      totalValuations: count('valuation'),
+      valuations30: count('valuation', thirtyDaysAgo),
+      valuations7: count('valuation', sevenDaysAgo),
+      totalBuyerLeads: count('buyer'),
+      buyerLeads30: count('buyer', thirtyDaysAgo),
+      buyerLeads7: count('buyer', sevenDaysAgo),
+      totalPopups: count('popup'),
+      popups30: count('popup', thirtyDaysAgo),
       intentBreakdown: intentCounts,
       recentLeads,
     };

@@ -32,6 +32,7 @@ export function Footer() {
               <Link href="/mortgage" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Mortgage pre-approval</Link>
               <Link href="/blog/first-time-home-buyer-guide-oakville-gta-2026" className="text-sm text-muted-foreground hover:text-foreground transition-colors">First-time buyer guide</Link>
               <Link href="/blog/closing-costs-buying-home-ontario-2026" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Closing costs in Ontario</Link>
+              <Link href="/blog/new-to-canada-first-home-mortgage-guide" className="text-sm text-muted-foreground hover:text-foreground transition-colors">New to Canada? First home &amp; credit guide</Link>
               <Link href="/neighborhoods" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Oakville neighbourhood guides</Link>
             </nav>
           </div>

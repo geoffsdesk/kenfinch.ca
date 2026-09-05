@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LeadInbox } from '@/components/lead-inbox';
 import {
   Eye, Users, FileText, TrendingUp, Globe, BarChart3,
   Lock, Loader2, RefreshCw, ArrowUpRight, ArrowDownRight,
@@ -34,7 +35,7 @@ interface FirestoreData {
   buyerLeads30?: number;
   buyerLeads7?: number;
   intentBreakdown: Record<string, number>;
-  recentLeads: { name: string; email: string; intent: string; type?: string; date: string }[];
+  recentLeads: { name: string; email: string; intent: string; type?: string; status?: string; date: string }[];
 }
 
 interface DashboardData {
@@ -459,6 +460,8 @@ export default function KenDashboard() {
                 )}
               </CardContent>
             </Card>
+
+            <LeadInbox password={password} />
 
             {/* ─── Footer ─────────────────────────────────────────── */}
             <div className="text-center text-xs text-muted-foreground pt-4 pb-8">

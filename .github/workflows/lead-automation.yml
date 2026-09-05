@@ -1,0 +1,30 @@
+name: "Lead automation - check-ins & daily digest"
+
+# Hourly. The endpoint decides what is due: 48h check-ins (09:00-20:00 Toronto)
+# and the daily digest (first run after 08:00 Toronto).
+on:
+  schedule:
+    - cron: "5 * * * *"
+  workflow_dispatch:
+    inputs:
+      force_digest:
+        description: "Send the digest now regardless of schedule"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call lead automation endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          FORCE: ${{ inputs.force_digest }}
+        run: |
+          URL="https://www.kenfinch.ca/api/cron/leads"
+          if [ "$FORCE" = "true" ]; then URL="$URL?digest=force"; fi
+          curl --fail-with-body -sS -H "Authorization: Bearer $CRON_SECRET" "$URL"

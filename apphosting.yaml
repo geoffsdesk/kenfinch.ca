@@ -40,3 +40,19 @@ env:
     secret: GEMINI_API_KEY
   - variable: DASHBOARD_PASSWORD
     secret: DASHBOARD_PASSWORD
+
+  # Lead automation (hourly job in .github/workflows/lead-automation.yml)
+  - variable: CRON_SECRET
+    secret: CRON_SECRET
+
+  # Optional SMS for the lead pipeline. Create each secret with
+  #   firebase apphosting:secrets:set <NAME>
+  # then uncomment. Without them, SMS steps are skipped and email still works.
+  # - variable: TWILIO_ACCOUNT_SID
+  #   secret: TWILIO_ACCOUNT_SID
+  # - variable: TWILIO_AUTH_TOKEN
+  #   secret: TWILIO_AUTH_TOKEN
+  # - variable: TWILIO_PHONE_FROM
+  #   secret: TWILIO_PHONE_FROM
+  # - variable: KEN_MOBILE_NUMBER
+  #   secret: KEN_MOBILE_NUMBER

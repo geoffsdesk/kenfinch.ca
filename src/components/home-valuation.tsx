@@ -5,12 +5,11 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { db } from '@/lib/firebase';
 import { useToast } from '@/hooks/use-toast';
 import { useJsApiLoader } from '@react-google-maps/api';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
-import { sendEmail } from '@/ai/flows/send-email-flow';
+import { createLead } from '@/app/actions/leads';
 import { trackValuationSubmission, trackExpertOpinionRequest } from '@/lib/analytics';
 
 import { Button } from '@/components/ui/button';
@@ -215,43 +214,31 @@ function HomeValuationInternal() {
         const yearBuiltLabel = yearBuiltOptions.find(opt => opt.value === formValues.yearBuilt)?.label;
         const finishedBasementLabel = finishedBasementOptions.find(opt => opt.value === formValues.finishedBasement)?.label;
 
-        await sendEmail({
-            to: 'realtor@kenfinch.ca',
-            from: 'realtor@kenfinch.ca',
-            replyTo: values.email,
-            subject: `Expert Opinion Request for: ${formValues.address}`,
-            html: `
-                <p>You have a new request for an expert opinion following an AI valuation.</p>
-                <h3>Contact Details:</h3>
-                <ul>
-                    <li><strong>Name:</strong> ${values.name}</li>
-                    <li><strong>Email:</strong> ${values.email}</li>
-                    <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
-                </ul>
-                <hr>
-                <h3>AI Valuation Result:</h3>
-                <ul>
-                    <li><strong>Estimated Value:</strong> $${result?.valuation.toLocaleString()}</li>
-                    <li><strong>Confidence Score:</strong> ${result ? Math.round(result.confidenceScore * 100) : 'N/A'}%</li>
-                </ul>
-                 <hr>
-                <h3>User-Provided Property Details:</h3>
-                 <ul>
-                    <li><strong>Address:</strong> ${formValues.address}</li>
-                    <li><strong>Home Type:</strong> ${formValues.homeType}</li>
-                    <li><strong>Bedrooms (Above Grade):</strong> ${formValues.bedroomsAboveGrade}</li>
-                    <li><strong>Bedrooms (Below Grade):</strong> ${formValues.bedroomsBelowGrade}</li>
-                    <li><strong>Bathrooms:</strong> ${formValues.bathrooms}</li>
-                    <li><strong>Square Footage:</strong> ${squareFootageLabel}</li>
-                    <li><strong>Age of Home:</strong> ${yearBuiltLabel}</li>
-                    <li><strong>Recently Renovated:</strong> ${formValues.renovated ? 'Yes' : 'No'}</li>
-                    <li><strong>Finished Basement:</strong> ${finishedBasementLabel}</li>
-                    <li><strong>Garage Spaces:</strong> ${formValues.garageSpaces}</li>
-                    <li><strong>Total Parking Spaces:</strong> ${formValues.parkingSpaces}</li>
-                    <li><strong>Nearby Schools:</strong> ${formValues.nearbySchools}</li>
-                </ul>
-            `,
+        const res = await createLead({
+            type: 'valuation',
+            name: values.name,
+            email: values.email,
+            phone: values.phone || undefined,
+            address: formValues.address,
+            estimate: result?.valuation,
+            confidence: result?.confidenceScore,
+            property: {
+                'Home type': formValues.homeType,
+                'Bedrooms (above grade)': formValues.bedroomsAboveGrade,
+                'Bedrooms (below grade)': formValues.bedroomsBelowGrade,
+                'Bathrooms': formValues.bathrooms,
+                'Square footage': squareFootageLabel ?? '',
+                'Age of home': yearBuiltLabel ?? '',
+                'Recently renovated': formValues.renovated ? 'Yes' : 'No',
+                'Finished basement': finishedBasementLabel ?? '',
+                'Garage spaces': formValues.garageSpaces,
+                'Parking spaces': formValues.parkingSpaces,
+                'Nearby schools': formValues.nearbySchools || '',
+            },
+            source: 'valuation-expert-opinion',
+            page: typeof window !== 'undefined' ? window.location.pathname : undefined,
         });
+        if (!res.ok) throw new Error(res.error);
 
         // Fire expert opinion tracking across all pixels
         trackExpertOpinionRequest({

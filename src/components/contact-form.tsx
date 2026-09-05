@@ -5,10 +5,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { sendEmail } from '@/ai/flows/send-email-flow';
+import { createLead } from '@/app/actions/leads';
 import { trackContactFormSubmission } from '@/lib/analytics';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -57,34 +55,19 @@ export function ContactForm() {
   async function onContactSubmit(values: z.infer<typeof contactSchema>) {
     form.clearErrors();
     try {
-        // 1. Send the email notification
-        await sendEmail({
-            to: 'realtor@kenfinch.ca',
-            from: 'realtor@kenfinch.ca',
-            replyTo: values.email,
-            subject: `New Contact Form Submission from ${values.name}${values.intent ? ` — ${values.intent}` : ''}`,
-            html: `
-                <p>You have a new contact form submission:</p>
-                <ul>
-                    <li><strong>Name:</strong> ${values.name}</li>
-                    <li><strong>Email:</strong> ${values.email}</li>
-                    <li><strong>Phone:</strong> ${values.phone || 'Not provided'}</li>
-                    <li><strong>Interest:</strong> ${values.intent || 'Not specified'}</li>
-                </ul>
-                ${values.message ? `<p><strong>Message:</strong></p><p>${values.message}</p>` : ''}
-            `,
-        });
-
-        // 2. Save the contact to Firestore
-        await addDoc(collection(db, "contacts"), {
+        // Unified lead pipeline: Firestore + Ken email (BCC oversight) +
+        // confirmation to the sender + 48h check-in scheduling.
+        const res = await createLead({
+            type: 'contact',
             name: values.name,
             email: values.email,
-            phone: values.phone || '',
-            intent: values.intent || '',
-            message: values.message || '',
-            submittedAt: serverTimestamp(),
+            phone: values.phone || undefined,
+            intent: values.intent || undefined,
+            message: values.message || undefined,
+            source: 'contact-form',
+            page: typeof window !== 'undefined' ? window.location.pathname : undefined,
         });
-
+        if (!res.ok) throw new Error(res.error);
 
         // 3. Fire conversion tracking across all pixels
         trackContactFormSubmission({

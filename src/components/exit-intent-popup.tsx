@@ -5,8 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Download, ArrowRight, Landmark, Phone } from 'lucide-react';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { createLead } from '@/app/actions/leads';
 import { CONTACT } from '@/lib/site';
 import Link from 'next/link';
 
@@ -68,13 +67,13 @@ export function ExitIntentPopup() {
     if (!email) return;
     setLoading(true);
     try {
-      await addDoc(collection(db, 'leads'), {
-        name: name || 'Not provided',
+      await createLead({
+        type: 'popup',
+        name: name || undefined,
         email,
-        source: 'exit-intent-popup',
         asset: mode === 'seller' ? 'oakville-seller-guide' : 'buyer-affordability-check',
+        source: 'exit-intent-popup',
         page: pathname || '',
-        submittedAt: serverTimestamp(),
       });
     } catch (err) {
       console.error('Failed to save lead:', err);

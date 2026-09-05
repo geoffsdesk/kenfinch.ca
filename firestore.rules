@@ -22,9 +22,8 @@ service cloud.firestore {
       allow read: if request.auth != null;
     }
 
-    // Exit-intent / lightweight email captures (client-written)
+    // Unified lead pipeline. Written server-side only (Admin SDK); admins may read.
     match /leads/{leadId} {
-      allow create: if true;
       allow read: if request.auth != null;
     }
 
