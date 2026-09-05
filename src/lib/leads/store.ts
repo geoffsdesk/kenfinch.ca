@@ -58,9 +58,14 @@ export async function insertLead(doc: LeadDoc): Promise<string> {
   return ref.id;
 }
 
+/**
+ * Partial update. Uses `update()` (not merge-set) so dotted keys such as
+ * "followUp.checkinSentAt" are treated as field paths rather than literal
+ * field names.
+ */
 export async function patchLead(id: string, patch: Record<string, unknown>) {
   const db = getAdminDb();
-  await db.collection(LEADS_COLLECTION).doc(id).set({ ...patch, updatedAt: nowIso() }, { merge: true });
+  await db.collection(LEADS_COLLECTION).doc(id).update({ ...patch, updatedAt: nowIso() });
 }
 
 export async function getLead(id: string): Promise<LeadRecord | null> {
