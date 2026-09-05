@@ -11,7 +11,7 @@ import {
   OVERSIGHT_EMAIL,
   TORONTO_TZ,
 } from '@/lib/leads/notify';
-import { STATUS_LABELS, type LeadRecord } from '@/lib/leads/types';
+import { STATUS_LABELS, isTestSubmission, type LeadRecord } from '@/lib/leads/types';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -60,6 +60,21 @@ function authorized(req: NextRequest) {
   const header = req.headers.get('authorization') ?? '';
   const key = req.nextUrl.searchParams.get('key') ?? '';
   return header === `Bearer ${secret}` || key === secret;
+}
+
+/** Quarantine any test submissions that slipped in before the filter existed. */
+async function quarantineTestLeads(leads: LeadRecord[]) {
+  const stale = leads.filter((l) => l.status !== 'spam' && isTestSubmission(l.name, l.email));
+  for (const l of stale) {
+    await patchLead(l.id, {
+      status: 'spam',
+      statusUpdatedAt: nowIso(),
+      'followUp.checkinSentAt': l.followUp?.checkinSentAt ?? nowIso(),
+      notes: [...(l.notes ?? []), { at: nowIso(), text: 'Marked spam automatically: test submission.', by: 'system' }],
+    });
+    l.status = 'spam';
+  }
+  return stale.length;
 }
 
 async function runCheckins(leads: LeadRecord[], now: Date) {
@@ -132,10 +147,11 @@ export async function GET(req: NextRequest) {
   const force = req.nextUrl.searchParams.get('digest') === 'force';
   try {
     const leads = await listLeads(500);
+    const quarantined = await quarantineTestLeads(leads);
     const checkins = await runCheckins(leads, now);
     const digest = await runDigest(leads, now, force);
     await setSystemState({ lastRunAt: nowIso() });
-    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, checkins, digest });
+    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, quarantined, checkins, digest });
   } catch (err) {
     console.error('lead automation failed:', err);
     return NextResponse.json({ ok: false, error: (err as Error).message }, { status: 500 });

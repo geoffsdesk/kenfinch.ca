@@ -15,7 +15,7 @@
  * never blocks the visitor from seeing the success state.
  */
 
-import { leadInput, type LeadDoc, type LeadInput, type LeadRecord, buyerLabel } from '@/lib/leads/types';
+import { leadInput, isTestSubmission, type LeadDoc, type LeadInput, type LeadRecord, buyerLabel } from '@/lib/leads/types';
 import { insertLead, patchLead, newToken, nowIso } from '@/lib/leads/store';
 import {
   sendMail,
@@ -111,12 +111,30 @@ function buildDoc(input: LeadInput): LeadDoc {
   }
 }
 
+function isTestLead(input: LeadInput): boolean {
+  const name = input.type === 'buyer' ? `${input.firstName} ${input.lastName}` : input.name ?? '';
+  return isTestSubmission(name, input.email);
+}
+
 export async function createLead(raw: unknown): Promise<CreateLeadResult> {
   const parsed = leadInput.safeParse(raw);
   if (!parsed.success) {
     return { ok: false, error: parsed.error.issues[0]?.message ?? 'Please check the form and try again.' };
   }
   const doc = buildDoc(parsed.data);
+
+  if (isTestLead(parsed.data)) {
+    doc.status = 'spam';
+    doc.notes = [{ at: doc.createdAt, text: 'Automated test submission: notifications and check-in skipped.', by: 'system' }];
+    doc.followUp.checkinSentAt = doc.createdAt;
+    try {
+      const id = await insertLead(doc);
+      return { ok: true, leadId: id };
+    } catch (err) {
+      console.error('test lead insert failed:', err);
+      return { ok: true, leadId: '' };
+    }
+  }
 
   // 1. Persist. Without a lead ID we still notify Ken so nothing is lost.
   let leadId = '';
