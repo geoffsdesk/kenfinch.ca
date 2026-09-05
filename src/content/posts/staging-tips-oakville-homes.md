@@ -1,4 +1,5 @@
 ---
+category: selling
 title: '7 Staging Tips That Sell Oakville Homes Faster'
 date: '2026-03-08'
 image: '/staging-tips-oakville.jpg'

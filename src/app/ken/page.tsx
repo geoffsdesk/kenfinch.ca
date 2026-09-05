@@ -30,8 +30,11 @@ interface FirestoreData {
   totalValuations: number;
   valuations30: number;
   valuations7: number;
+  totalBuyerLeads?: number;
+  buyerLeads30?: number;
+  buyerLeads7?: number;
   intentBreakdown: Record<string, number>;
-  recentLeads: { name: string; email: string; intent: string; date: string }[];
+  recentLeads: { name: string; email: string; intent: string; type?: string; date: string }[];
 }
 
 interface DashboardData {
@@ -224,8 +227,8 @@ export default function KenDashboard() {
   const sessionSpark = ga4?.dailyData?.map(d => d.sessions) || [];
 
   // Total leads
-  const totalLeads30 = (fs?.contacts30 || 0) + (fs?.valuations30 || 0);
-  const totalLeads7 = (fs?.contacts7 || 0) + (fs?.valuations7 || 0);
+  const totalLeads30 = (fs?.contacts30 || 0) + (fs?.valuations30 || 0) + (fs?.buyerLeads30 || 0);
+  const totalLeads7 = (fs?.contacts7 || 0) + (fs?.valuations7 || 0) + (fs?.buyerLeads7 || 0);
 
   // Intent breakdown total
   const intentTotal = Object.values(fs?.intentBreakdown || {}).reduce((a, b) => a + b, 0);
@@ -323,7 +326,7 @@ export default function KenDashboard() {
                 <Contact className="h-5 w-5 text-primary" />
                 <h2 className="font-headline text-xl font-bold">Lead Generation</h2>
               </div>
-              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 grid-cols-2 lg:grid-cols-5">
                 <StatCard
                   title="Total Leads (30d)"
                   value={totalLeads30}
@@ -336,6 +339,13 @@ export default function KenDashboard() {
                   value={fs?.contacts30 ?? '—'}
                   subtitle={`${fs?.totalContacts ?? 0} all time`}
                   icon={MessageSquare}
+                />
+                <StatCard
+                  title="Mortgage Leads (30d)"
+                  value={fs?.buyerLeads30 ?? '—'}
+                  subtitle={`${fs?.totalBuyerLeads ?? 0} all time`}
+                  icon={Zap}
+                  accent
                 />
                 <StatCard
                   title="AI Valuations (30d)"

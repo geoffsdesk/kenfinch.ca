@@ -1,10 +1,18 @@
-
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { format } from 'date-fns';
 
 const postsDirectory = path.join(process.cwd(), 'src/content/posts');
+
+export type PostCategory = 'buying' | 'mortgage' | 'selling' | 'market';
+
+export const CATEGORY_LABELS: Record<PostCategory, string> = {
+  buying: 'Buying',
+  mortgage: 'Mortgages',
+  selling: 'Selling',
+  market: 'Market',
+};
 
 export interface PostData {
   slug: string;
@@ -13,64 +21,68 @@ export interface PostData {
   formattedDate: string;
   excerpt: string;
   image?: string;
+  category: PostCategory;
   content: string;
 }
 
-export function getSortedPostsData(): Omit<PostData, 'content'>[] {
-  // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames.map((fileName) => {
-    // Remove ".md" from file name to get slug
-    const slug = fileName.replace(/\.md$/, '');
+interface FrontMatter {
+  title: string;
+  date: string;
+  excerpt: string;
+  image?: string;
+  category?: PostCategory;
+}
 
-    // Read markdown file as string
+function normalizeCategory(raw?: string): PostCategory {
+  if (raw === 'buying' || raw === 'mortgage' || raw === 'selling' || raw === 'market') return raw;
+  // Older posts pre-date the category field and are all seller content.
+  return 'selling';
+}
+
+export function getSortedPostsData(): Omit<PostData, 'content'>[] {
+  const fileNames = fs.readdirSync(postsDirectory).filter((f) => f.endsWith('.md'));
+  const allPostsData = fileNames.map((fileName) => {
+    const slug = fileName.replace(/\.md$/, '');
     const fullPath = path.join(postsDirectory, fileName);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-    // Use gray-matter to parse the post metadata section
     const matterResult = matter(fileContents);
-
-    const typedMatterData = matterResult.data as { title: string; date: string; excerpt: string; };
+    const data = matterResult.data as FrontMatter;
 
     return {
       slug,
-      title: typedMatterData.title,
-      date: typedMatterData.date,
-      formattedDate: format(new Date(typedMatterData.date), 'MMMM d, yyyy'),
-      excerpt: typedMatterData.excerpt,
-      image: (typedMatterData as any).image,
+      title: data.title,
+      date: data.date,
+      formattedDate: format(new Date(data.date), 'MMMM d, yyyy'),
+      excerpt: data.excerpt,
+      image: data.image,
+      category: normalizeCategory(data.category),
     };
   });
 
-  // Sort posts by date
-  return allPostsData.sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
+  return allPostsData.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
-export async function getPostData(slug: string): Promise<PostData> {
+/** Buyer-facing posts first (buying + mortgage), newest first. */
+export function getBuyerPosts(limit?: number): Omit<PostData, 'content'>[] {
+  const posts = getSortedPostsData().filter((p) => p.category === 'buying' || p.category === 'mortgage');
+  return typeof limit === 'number' ? posts.slice(0, limit) : posts;
+}
+
+export async function getPostData(slug: string): Promise<PostData | null> {
   const fullPath = path.join(postsDirectory, `${slug}.md`);
+  if (!fs.existsSync(fullPath)) return null;
   const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-  // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents);
-
-  const typedMatterData = matterResult.data as { title: string; date: string; excerpt: string; };
-
-  // You can optionally process the content with a markdown parser here if you want to return HTML
-  const content = matterResult.content;
+  const data = matterResult.data as FrontMatter;
 
   return {
     slug,
-    title: typedMatterData.title,
-    date: typedMatterData.date,
-    formattedDate: format(new Date(typedMatterData.date), 'MMMM d, yyyy'),
-    excerpt: typedMatterData.excerpt,
-    image: (typedMatterData as any).image,
-    content: content,
+    title: data.title,
+    date: data.date,
+    formattedDate: format(new Date(data.date), 'MMMM d, yyyy'),
+    excerpt: data.excerpt,
+    image: data.image,
+    category: normalizeCategory(data.category),
+    content: matterResult.content,
   };
 }

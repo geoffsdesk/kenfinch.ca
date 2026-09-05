@@ -1,6 +1,7 @@
 export interface Neighborhood {
   slug: string;
   name: string;
+  /** Buyer-facing H1 */
   headline: string;
   description: string;
   highlights: string[];
@@ -9,6 +10,13 @@ export interface Neighborhood {
   homeTypes: string[];
   schools: string[];
   nearbyAmenities: string[];
+  /** Who this neighbourhood suits */
+  bestFor: string[];
+  /** Commute reference points */
+  commute: string;
+  /** Ken's buying tip */
+  buyerInsight: string;
+  /** Ken's selling tip (kept for /sell content) */
   sellerInsight: string;
   image: string;
   mapQuery: string;
@@ -18,101 +26,117 @@ export const neighborhoods: Neighborhood[] = [
   {
     slug: 'old-oakville',
     name: 'Old Oakville',
-    headline: 'Sell Your Home in Old Oakville — Heritage Charm Meets Premium Value',
+    headline: 'Buying in Old Oakville: Heritage Streets, Lakefront Living, Blue-Chip Resale',
     description:
-      'Old Oakville is one of the most sought-after neighbourhoods in the GTA. Tree-lined streets, heritage homes, and walkability to Lakeshore Road and the waterfront make this a perennial favourite for buyers willing to pay a premium. Sellers here benefit from high demand, low inventory, and emotional buyer attachment to the neighbourhood\'s character.',
+      'Old Oakville is the most sought-after address in Halton and one of the most recognisable in the GTA. Tree-lined streets, heritage homes, and a walk to Lakeshore Road and the harbour make it the neighbourhood buyers move up to rather than out of. Inventory is thin and competition is real, so buyers here need a firm pre-approval and a clear sense of what character features are worth paying for.',
     highlights: [
       'Walk to Lakeshore Road shops, restaurants, and the lakefront',
       'Heritage architecture with mature trees and deep lots',
-      'Top-rated schools including New Central Public School',
-      'Strong demand from move-up buyers and empty nesters',
+      'Top-rated schools including New Central Public School and Appleby College',
+      'Strongest long-term resale in Oakville',
     ],
     avgPrice: '$2.1M',
     priceRange: '$1.2M – $5M+',
     homeTypes: ['Detached', 'Semi-Detached', 'Heritage Homes', 'Custom Builds'],
     schools: ['New Central Public School', 'Appleby College', 'Elementary School Catholic Sainte-Marie'],
     nearbyAmenities: ['Lakeshore Road', 'Oakville Harbour', 'Centennial Square', 'Oakville GO Station'],
+    bestFor: ['Move-up buyers', 'Downsizers who want walkability', 'Buyers prioritising resale'],
+    commute: 'Oakville GO to Union in about 35 minutes; QEW access in 5 minutes.',
+    buyerInsight:
+      'Two homes on the same street can differ by $1M based on lot depth, heritage designation, and how well a renovation respected the original architecture. Before you fall for the porch, Ken checks heritage status, flood mapping near Sixteen Mile Creek, and what the last five comparable sales actually closed at. Expect to compete, and expect Ken to tell you when to walk.',
     sellerInsight:
-      'Homes in Old Oakville sell fastest when they balance heritage character with modern updates. Buyers here are willing to pay a significant premium for move-in-ready properties with updated kitchens and bathrooms while preserving original architectural details.',
+      'Homes in Old Oakville sell fastest when they balance heritage character with modern updates. Buyers pay a significant premium for move-in-ready properties with updated kitchens and bathrooms while preserving original details.',
     image: '/neighbourhoods/old-oakville.jpg',
     mapQuery: 'Old Oakville, Ontario',
   },
   {
     slug: 'bronte',
     name: 'Bronte',
-    headline: 'Sell Your Home in Bronte — Lakeside Village Living at Its Best',
+    headline: 'Buying in Bronte: Lakeside Village Living at a Range of Price Points',
     description:
-      'Bronte offers a unique village atmosphere with its charming harbour, independent shops, and tight-knit community feel. This lakeside neighbourhood consistently attracts buyers who want a quieter pace without sacrificing access to amenities. Sellers benefit from Bronte\'s strong emotional pull and limited housing supply.',
+      'Bronte has the harbour, the boardwalk, the independent shops, and a small-town rhythm that is rare inside the GTA. What buyers often miss is how wide the price range is: waterfront condos and townhomes in the village core sit a few streets from lakefront estates. It is a favourite for families relocating from Toronto and for downsizers who want to stay near the water without a large lot to maintain.',
     highlights: [
-      'Bronte Harbour and waterfront parks',
-      'Charming village core with local shops and restaurants',
-      'Excellent schools including St. Dominic Catholic School',
-      'Proximity to Bronte Creek Provincial Park',
+      'Bronte Harbour, the pier, and waterfront parks',
+      'Village core with local shops, cafes, and restaurants',
+      'Condos and townhomes make it Oakville’s most accessible lakeside option',
+      'Bronte Creek Provincial Park minutes away',
     ],
     avgPrice: '$1.6M',
     priceRange: '$900K – $3.5M',
     homeTypes: ['Detached', 'Semi-Detached', 'Townhouse', 'Condo'],
     schools: ['St. Dominic Catholic School', 'Blakelock High School', 'St. Joseph Catholic Elementary School'],
     nearbyAmenities: ['Bronte Harbour', 'Bronte Creek Provincial Park', 'Bronte Village Mall', 'Coronation Park'],
+    bestFor: ['Downsizers', 'Families relocating from Toronto', 'Condo buyers who want the lake'],
+    commute: 'Bronte GO to Union in about 45 minutes; QEW at Bronte Road.',
+    buyerInsight:
+      'In the village core, check condo reserve funds and status certificates carefully: some buildings are older and special assessments happen. For freehold, the streets south of Lakeshore carry a premium that holds in every market. Bronte buyers with a pre-approval in hand routinely win against buyers who are still waiting on their bank.',
     sellerInsight:
-      'Bronte buyers are often families moving from Toronto or Milton looking for community feel with lake access. Staging your outdoor spaces and highlighting walkability to the harbour can add significant perceived value to your listing.',
+      'Bronte buyers are often families moving from Toronto or Milton looking for community feel with lake access. Staging outdoor spaces and highlighting walkability to the harbour adds perceived value.',
     image: '/neighbourhoods/bronte.jpg',
     mapQuery: 'Bronte, Oakville, Ontario',
   },
   {
     slug: 'glen-abbey',
     name: 'Glen Abbey',
-    headline: 'Sell Your Home in Glen Abbey — Golf Course Living & Family Appeal',
+    headline: 'Buying in Glen Abbey: Big Lots, Top Schools, and the Golf Course Next Door',
     description:
-      'Glen Abbey is synonymous with the famous golf course and upscale family living. This established neighbourhood features generous lot sizes, excellent schools, and a strong community identity. It\'s a top pick for families relocating to Oakville, making it one of the most liquid markets in town for sellers.',
+      'Glen Abbey is the neighbourhood Toronto families picture when they say they are moving to Oakville: generous lots, mature trees, excellent schools, and a strong community identity built around the famous golf course. Homes are mostly 1980s and 1990s executive builds, many now renovated. It trades briskly, which means good comparables exist and Ken can price your offer with confidence.',
     highlights: [
       'Home of the iconic Glen Abbey Golf Course',
       'Large lots with mature landscaping',
-      'Top-ranked schools and family-friendly community',
-      'Minutes from QEW and major shopping at Upper Oakville Shopping Centre',
+      'Abbey Park High School and strong elementary options',
+      'Minutes to the QEW and Upper Oakville Shopping Centre',
     ],
     avgPrice: '$1.8M',
     priceRange: '$1.1M – $4M+',
     homeTypes: ['Detached', 'Executive Homes', 'Estate Properties'],
     schools: ['Abbey Park High School', 'Pilgrim Wood Public School', 'St. Matthew Catholic Elementary School'],
     nearbyAmenities: ['Glen Abbey Golf Course', 'Upper Oakville Shopping Centre', 'Glen Abbey Recreation Centre', 'Sixteen Mile Creek trails'],
+    bestFor: ['Families relocating from Toronto', 'Move-up buyers who want a lot', 'Golfers'],
+    commute: 'QEW at Dorval in 5 minutes; Oakville GO about 10 minutes by car.',
+    buyerInsight:
+      'Ravine and golf-course-backing lots command a premium of 10 to 20 percent and hold it; interior lots are the value play. Many homes have original 1990s mechanicals, so budget for furnace, roof, and windows in your offer strategy. Ken has sold on most streets here and will tell you which renovations were done well and which were done for the listing photos.',
     sellerInsight:
-      'Glen Abbey homes sell best when marketed to families relocating from Toronto. Highlight school rankings, proximity to the golf course, and the neighbourhood\'s established reputation. Properties near the ravine lots command the highest premiums.',
+      'Glen Abbey homes sell best when marketed to families relocating from Toronto. Highlight school rankings, proximity to the golf course, and the neighbourhood’s established reputation.',
     image: '/neighbourhoods/glen-abbey.jpg',
     mapQuery: 'Glen Abbey, Oakville, Ontario',
   },
   {
     slug: 'river-oaks',
     name: 'River Oaks',
-    headline: 'Sell Your Home in River Oaks — Modern Family Living in North Oakville',
+    headline: 'Buying in River Oaks: Modern Family Homes in North Oakville',
     description:
-      'River Oaks is a newer, master-planned community in North Oakville that has rapidly become one of the most popular neighbourhoods for young families. Modern homes, excellent schools, and abundant green space make it highly attractive to buyers. Sellers here benefit from consistent demand and a large pool of first-time and move-up buyers.',
+      'River Oaks is a master-planned community in North Oakville that has become the default choice for young families and first-time detached buyers. Homes are newer, layouts are open, schools are highly rated, and the trail network is extensive. Because the housing stock is consistent, prices are predictable and competition is steady rather than frantic.',
     highlights: [
-      'Modern homes built in the 2000s-2020s',
+      'Modern homes built from the 2000s to the 2020s',
       'Extensive trail network and parks',
-      'Highly rated new schools',
-      'Easy access to 403/407 highways',
+      'Highly rated newer schools',
+      'Easy access to Highways 403 and 407',
     ],
     avgPrice: '$1.4M',
     priceRange: '$800K – $2.2M',
     homeTypes: ['Detached', 'Semi-Detached', 'Townhouse', 'Stacked Townhouse'],
     schools: ['River Oaks Public School', 'Holy Trinity Catholic Secondary School', 'Rotherglen School'],
     nearbyAmenities: ['River Oaks Community Centre', 'Sixteen Mile Sports Complex', 'North Park', 'SmartCentres Oakville'],
+    bestFor: ['First-time detached buyers', 'Young families', 'Buyers upgrading from a condo'],
+    commute: 'Highway 403 and 407 within minutes; Oakville GO about 15 minutes by car.',
+    buyerInsight:
+      'Townhomes and semis here are where many first-time buyers get into Oakville, and the insured mortgage cap of $1.5 million means most of River Oaks can be bought with less than 20 percent down. Check for freehold versus condo-road townhomes (the monthly fee matters for qualifying), and look at lot exposure: south-facing backyards on the ravine side get the premium.',
     sellerInsight:
-      'River Oaks attracts a younger demographic — many buyers are upgrading from condos or first homes in Mississauga and Burlington. Modern finishes and open-concept layouts are expected, so invest in cosmetic updates if your home has dated fixtures.',
+      'River Oaks attracts a younger demographic upgrading from condos or first homes. Modern finishes and open-concept layouts are expected.',
     image: '/neighbourhoods/river-oaks.jpg',
     mapQuery: 'River Oaks, Oakville, Ontario',
   },
   {
     slug: 'west-oak-trails',
     name: 'West Oak Trails',
-    headline: 'Sell Your Home in West Oak Trails — Oakville\'s Best-Kept Secret',
+    headline: 'Buying in West Oak Trails: Oakville’s Best Value for Families',
     description:
-      'West Oak Trails offers a fantastic balance of value and livability in North Oakville. With a mix of home styles, excellent parks, and strong schools, it appeals to a wide range of buyers. Sellers in this area benefit from relatively high turnover and strong buyer interest from families priced out of South Oakville.',
+      'West Oak Trails is where many buyers priced out of South Oakville land, and most are glad they did. It offers a wide mix of home styles, strong schools, and one of the best trail systems in town, all at a lower entry price than the lakeside neighbourhoods. Turnover is healthy, so there is usually something to see.',
     highlights: [
-      'Diverse housing stock at various price points',
-      'Beautiful trail systems and green spaces',
-      'Strong school ratings',
+      'Diverse housing stock at accessible price points',
+      'Trail systems and green space throughout',
+      'Strong schools including Garth Webb Secondary',
       'Close to Oakville Place and major retail',
     ],
     avgPrice: '$1.3M',
@@ -120,21 +144,25 @@ export const neighborhoods: Neighborhood[] = [
     homeTypes: ['Detached', 'Semi-Detached', 'Townhouse', 'Condo'],
     schools: ['West Oak Public School', 'St. Joan of Arc Catholic School', 'Garth Webb Secondary School'],
     nearbyAmenities: ['West Oak Trails Community Centre', 'Oakville Place Mall', 'Neyagawa Boulevard trails', 'Sixteen Mile Creek'],
+    bestFor: ['First-time buyers', 'Families who want space over prestige', 'Buyers from Mississauga and Milton'],
+    commute: 'QEW via Third Line or Bronte Road; Bronte GO about 10 minutes by car.',
+    buyerInsight:
+      'Well-priced homes here draw multiple offers, so your pre-approval and deposit need to be ready before the listing hits. Ken’s advice: decide your walk-away number on the comparable sales, not the list price, because list prices in West Oak Trails are often set deliberately low to generate offer nights.',
     sellerInsight:
-      'West Oak Trails is where many first-time Oakville buyers start their search. Price competitively and you\'ll often see multiple offers. Highlight proximity to trails and the community centre — these are major selling points for young families.',
+      'West Oak Trails is where many first-time Oakville buyers start their search. Price competitively and you will often see multiple offers.',
     image: '/neighbourhoods/westoak-trails.jpg',
     mapQuery: 'West Oak Trails, Oakville, Ontario',
   },
   {
     slug: 'eastlake',
     name: 'Eastlake',
-    headline: 'Sell Your Home in Eastlake — Established Elegance Near the Lake',
+    headline: 'Buying in Eastlake: Established South Oakville, Steps from the GO',
     description:
-      'Eastlake is a mature, well-established South Oakville neighbourhood known for its proximity to the lake, excellent schools, and tree-lined streets. Properties here are highly desirable, with a mix of original homes and tasteful renovations. Sellers can command strong prices, especially for updated properties on larger lots.',
+      'Eastlake is mature South Oakville: tree-lined streets, mid-century bungalows and side-splits on wide lots, and a growing number of tasteful rebuilds. It is walkable to Oakville GO and downtown, which makes it a favourite of Toronto commuters. Buyers choose between renovated homes at a premium and original homes with renovation upside.',
     highlights: [
       'South Oakville lakeside location',
       'Mature trees and established streetscapes',
-      'Walking distance to Oakville GO and downtown',
+      'Walk to Oakville GO and downtown',
       'Highly ranked public and Catholic schools',
     ],
     avgPrice: '$1.7M',
@@ -142,140 +170,168 @@ export const neighborhoods: Neighborhood[] = [
     homeTypes: ['Detached', 'Semi-Detached', 'Bungalows', 'Custom Renovations'],
     schools: ['E.J. James Public School', 'St. Vincent Catholic Elementary School', 'Linbrook School'],
     nearbyAmenities: ['Oakville GO Station', 'Downtown Oakville', 'Gairloch Gardens', 'Oakville Museum'],
+    bestFor: ['Toronto commuters', 'Renovators and builders', 'Buyers who want a lot near the lake'],
+    commute: 'Walk or short drive to Oakville GO; Union in about 35 minutes.',
+    buyerInsight:
+      'Original bungalows on 60-foot lots are the entry point and the renovation opportunity; make sure your financing plan includes renovation costs, and ask Ken about purchase-plus-improvements mortgages. Verify permits on any renovated home. Homes east of Trafalgar and south of Cornwall carry the strongest premium.',
     sellerInsight:
-      'Eastlake buyers value the walkable lifestyle and proximity to the GO train. If your home has been renovated, make sure to document all upgrades — buyers here pay premiums for quality renovations that respect the neighbourhood\'s character.',
+      'Eastlake buyers value walkability and proximity to the GO train. Document all upgrades; buyers pay premiums for quality renovations that respect the neighbourhood’s character.',
     image: '/neighbourhoods/east-lake.jpg',
     mapQuery: 'Eastlake, Oakville, Ontario',
   },
   {
     slug: 'college-park',
     name: 'College Park',
-    headline: 'Sell Your Home in College Park — Central Oakville Convenience',
+    headline: 'Buying in College Park: Central Oakville Convenience at Every Price Point',
     description:
-      'College Park sits in the heart of Oakville, offering unmatched convenience with its central location near Sheridan College, Oakville Place, and major transit routes. The neighbourhood features a mix of housing styles from condos to detached homes, making it accessible to a broad range of buyers.',
+      'College Park sits in the middle of Oakville, next to Sheridan College, Oakville Place, and the main transit routes. It has the widest spread of housing in town, from condos under $600K to detached homes on large lots, which makes it a practical first stop for first-time buyers, investors, and downsizers alike.',
     highlights: [
       'Central location near Sheridan College',
       'Steps from Oakville Place shopping',
       'Excellent transit connections',
-      'Diverse housing options at various price points',
+      'Condos, townhomes, and detached homes side by side',
     ],
     avgPrice: '$1.1M',
     priceRange: '$500K – $1.8M',
     homeTypes: ['Detached', 'Townhouse', 'Condo', 'Semi-Detached'],
     schools: ['White Oaks Secondary School', 'Sunningdale Public School', 'Gaétan-Gervais Secondary School'],
     nearbyAmenities: ['Sheridan College', 'Oakville Place', 'Oakville Transit Hub', 'QEW Access'],
+    bestFor: ['First-time buyers', 'Investors', 'Downsizers who want to stay central'],
+    commute: 'QEW at Trafalgar; Oakville GO about 8 minutes by car or a short bus ride.',
+    buyerInsight:
+      'This is the best neighbourhood in Oakville to buy a first condo, and rental demand from Sheridan students makes it a sensible investor market. For condos, Ken reviews the status certificate and the building’s fee history before you offer. For detached homes, the 1960s and 1970s stock often has larger lots than newer areas at a lower price per square foot.',
     sellerInsight:
-      'College Park attracts first-time buyers, investors, and downsizers. The condo market here is strong thanks to proximity to Sheridan College. If you\'re selling a detached home, price it right and you\'ll attract families who can\'t afford South Oakville but want central convenience.',
+      'College Park attracts first-time buyers, investors, and downsizers. The condo market is strong thanks to proximity to Sheridan College.',
     image: '/neighbourhoods/college-park.jpg',
     mapQuery: 'College Park, Oakville, Ontario',
   },
   {
     slug: 'morrison',
     name: 'Morrison',
-    headline: 'Sell Your Home in Morrison — South Oakville\'s Hidden Gem',
+    headline: 'Buying in Morrison: South Oakville Living Without the Old Oakville Price Tag',
     description:
-      'Morrison is a quiet, residential neighbourhood in South Oakville that offers excellent value compared to neighbouring Old Oakville and Eastlake. With good schools, mature lots, and easy access to both the QEW and Oakville GO, it\'s increasingly attracting buyers looking for South Oakville living at a more accessible price point.',
+      'Morrison is a quiet South Oakville neighbourhood between the QEW and the lake that offers real value next to its pricier neighbours. Good schools, mature lots, and easy access to both the highway and Oakville GO make it popular with buyers who want a South Oakville address and a realistic budget.',
     highlights: [
       'South Oakville location at accessible prices',
       'Quiet, family-friendly streets',
-      'Easy access to QEW and Oakville GO',
-      'Proximity to South Oakville amenities',
+      'Easy access to the QEW and Oakville GO',
+      'Close to Coronation Park and the waterfront',
     ],
     avgPrice: '$1.4M',
     priceRange: '$900K – $2.5M',
     homeTypes: ['Detached', 'Semi-Detached', 'Bungalows', 'Backsplit'],
-    schools: ['St. Mildred\'s-Lightbourn School', 'Maple Grove Public School', 'Oakville Trafalgar High School'],
+    schools: ['St. Mildred’s-Lightbourn School', 'Maple Grove Public School', 'Oakville Trafalgar High School'],
     nearbyAmenities: ['Coronation Park', 'Shell Park', 'South Oakville Centre', 'Oakville GO Station'],
+    bestFor: ['Buyers priced out of Old Oakville and Eastlake', 'Families targeting Oakville Trafalgar High School', 'Commuters'],
+    commute: 'QEW in minutes; Oakville GO about 8 minutes by car.',
+    buyerInsight:
+      'Morrison has quietly appreciated as buyers look for South Oakville alternatives, so do not assume it is the bargain it was five years ago. Ken watches for original bungalows on large lots, which give you the option to renovate now and build later. Check the school boundary carefully; Oakville Trafalgar High School catchment is a major driver of value here.',
     sellerInsight:
-      'Morrison is gaining momentum as South Oakville buyers seek alternatives to Old Oakville prices. Position your listing as "South Oakville value" and highlight the neighbourhood\'s proximity to the lake, GO train, and established amenities.',
+      'Morrison is gaining momentum as South Oakville buyers seek alternatives to Old Oakville prices. Position your listing as South Oakville value.',
     image: '/neighbourhoods/clearview.jpg',
     mapQuery: 'Morrison, Oakville, Ontario',
   },
   {
     slug: 'palermo',
     name: 'Palermo',
-    headline: 'Sell Your Home in Palermo — Space, Privacy & Rural Charm',
+    headline: 'Buying in Palermo: Space, Privacy, and Room to Grow on Oakville’s Edge',
     description:
-      'Palermo sits on Oakville\'s northern edge, offering larger lots, more privacy, and a semi-rural feel that\'s increasingly rare in the GTA. This area appeals to buyers who want space — whether for a growing family, home office, or hobby farm. Sellers with acreage or estate-style properties can attract a premium buyer pool.',
+      'Palermo sits on Oakville’s northwest edge and delivers what the rest of the GTA cannot: larger lots, privacy, and a semi-rural feel within commuting range. It is the right neighbourhood for buyers who want room for a workshop, a pool, or simply distance from the neighbours, and for those watching the new development along Dundas Street.',
     highlights: [
       'Larger lots and estate-style properties',
       'Semi-rural character with modern conveniences',
-      'Growing area with new development nearby',
-      'Access to 407 ETR and rural trails',
+      'New construction nearby along Dundas Street',
+      'Access to Highway 407 and rural trails',
     ],
     avgPrice: '$1.6M',
     priceRange: '$1M – $4M+',
-    homeTypes: ['Detached', 'Estate Homes', 'Acreage Properties', 'Custom Builds'],
+    homeTypes: ['Detached', 'Estate Homes', 'Acreage Properties', 'Custom Builds', 'New Construction'],
     schools: ['Palermo Public School', 'St. Mary Catholic Elementary School', 'Captain R. Wilson Public School'],
-    nearbyAmenities: ['Bronte Creek Provincial Park', 'Palermo Village', '407 ETR Access', 'Bruce Trail access'],
+    nearbyAmenities: ['Bronte Creek Provincial Park', 'Palermo Village', 'Highway 407 access', 'Bruce Trail access'],
+    bestFor: ['Buyers who want land', 'New-construction buyers', 'Multi-generational households'],
+    commute: 'Highway 407 at Bronte Road; QEW about 12 minutes; Bronte GO about 15 minutes.',
+    buyerInsight:
+      'Rural-lot properties may be on well and septic, which affects both inspection and which lenders will finance them; Ken confirms that before you write. For new builds along Dundas, remember that builder pricing, closing costs, and the HST rebate rules differ from resale, and that first-time buyers of new construction may qualify for a 30-year insured amortization.',
     sellerInsight:
-      'Palermo buyers are often looking for exactly what Toronto can\'t offer — space. Aerial/drone photography is essential for marketing larger properties here. Emphasize lot size, privacy, and the lifestyle appeal of semi-rural living within commuting distance.',
+      'Palermo buyers are looking for space. Aerial photography is essential for marketing larger properties here.',
     image: '/neighbourhoods/falgarwood.jpg',
     mapQuery: 'Palermo, Oakville, Ontario',
   },
   {
     slug: 'uptown-core',
     name: 'Uptown Core',
-    headline: 'Sell Your Home in Uptown Core — Oakville\'s Newest Urban Hub',
+    headline: 'Buying in Uptown Core: Oakville’s Most Affordable Way In',
     description:
-      'The Uptown Core is Oakville\'s rapidly developing urban centre, centred around Trafalgar Road and Dundas Street. With new condos, retail, and transit infrastructure, this area is attracting a new generation of Oakville residents. Sellers of condos and townhomes here benefit from strong demand driven by affordability and convenience.',
+      'The Uptown Core around Trafalgar Road and Dundas Street is Oakville’s urban centre and its most affordable entry point. New condos, stacked towns, and mixed-use buildings sit beside shops, restaurants, and transit. For first-time buyers who want an Oakville address and a walkable lifestyle, this is usually where the search starts.',
     highlights: [
-      'Oakville\'s fastest-growing urban area',
+      'Oakville’s fastest-growing urban area',
       'New condo and mixed-use developments',
-      'Future transit hub potential',
-      'Walking distance to shops and restaurants along Trafalgar',
+      'Walk to shops and restaurants along Trafalgar Road',
+      'Transit hub with regional bus connections',
     ],
     avgPrice: '$750K',
     priceRange: '$450K – $1.2M',
     homeTypes: ['Condo', 'Townhouse', 'Stacked Townhouse', 'New Construction'],
-    schools: ['Iroquois Ridge High School', 'St. Andrew Catholic Elementary School', 'Post\'s Corners Public School'],
-    nearbyAmenities: ['Trafalgar Road retail', 'Dundas Street corridor', 'Town Centre', 'Future transit connections'],
+    schools: ['Iroquois Ridge High School', 'St. Andrew Catholic Elementary School', 'Post’s Corners Public School'],
+    nearbyAmenities: ['Trafalgar Road retail', 'Dundas Street corridor', 'Oakville Town Centre', 'Uptown Core transit terminal'],
+    bestFor: ['First-time buyers', 'Young professionals', 'Investors'],
+    commute: 'Highway 403 and 407 nearby; bus to Oakville GO; Union in about an hour door to door.',
+    buyerInsight:
+      'With prices from the mid-$400Ks, this is where the 5 percent minimum down payment and first-time buyer programs (FHSA, Home Buyers’ Plan, land transfer tax rebate) do the most work. Ken compares resale units against pre-construction on a total-cost basis, including maintenance fees, parking, and locker, because the monthly fee affects how much mortgage you qualify for.',
     sellerInsight:
-      'The Uptown Core market moves fast for well-priced condos and townhomes. Your competition is often new construction, so staging and competitive pricing are critical. Highlight any upgrades over builder-grade finishes and the convenience of the walkable location.',
+      'The Uptown Core market moves fast for well-priced condos and townhomes. Your competition is often new construction, so staging and pricing are critical.',
     image: '/neighbourhoods/iroquois-ridge.jpg',
     mapQuery: 'Uptown Core, Oakville, Ontario',
   },
   {
     slug: 'iroquois-ridge',
     name: 'Iroquois Ridge',
-    headline: 'Sell Your Home in Iroquois Ridge — Established Family Living in Central Oakville',
+    headline: 'Buying in Iroquois Ridge: Top Schools and a Central Address',
     description:
-      'Iroquois Ridge is a well-established neighbourhood in central Oakville known for its excellent schools, mature lots, and family-friendly atmosphere. Nestled between Upper Middle Road and the QEW, residents enjoy easy access to shopping, trails, and transit while living in a quiet, tree-lined community.',
+      'Iroquois Ridge is established central Oakville: mature lots, quiet streets, and some of the most sought-after schools in the region, anchored by Iroquois Ridge High School. Buyers get a location between Upper Middle Road and the QEW with fast access to shopping, trails, and transit, without the premium of the lakeside neighbourhoods.',
     highlights: [
-      'Highly rated schools including Iroquois Ridge High School',
+      'Iroquois Ridge High School and strong feeder schools',
       'Mature lots with established landscaping',
-      'Central location with easy highway access',
-      'Close to Sixteen Mile Creek trails and green spaces',
+      'Central location with quick highway access',
+      'Sixteen Mile Creek trails and parks',
     ],
     avgPrice: '$1.5M',
     priceRange: '$1M – $2.5M',
     homeTypes: ['Detached', 'Semi-Detached', 'Townhouse'],
     schools: ['Iroquois Ridge High School', 'Walden International School', 'Holy Family Catholic Elementary School'],
     nearbyAmenities: ['Iroquois Ridge Community Centre', 'Sixteen Mile Creek trails', 'Upper Oakville Shopping Centre', 'QEW Access'],
+    bestFor: ['Families choosing by school', 'Move-up buyers from townhomes', 'Commuters to Mississauga and Toronto'],
+    commute: 'QEW at Trafalgar or Ford Drive; Oakville GO about 10 minutes.',
+    buyerInsight:
+      'School catchment drives value here, and boundaries do change; Ken verifies the current Halton District School Board boundary for any address before you offer. Homes are largely 1980s to 2000s, so budget for windows and mechanicals on original homes. Townhomes on the east side are the value entry for buyers who want the schools.',
     sellerInsight:
-      'Iroquois Ridge attracts families who want top-tier schools and a central location without the premium of South Oakville. Highlight school rankings and proximity to trails — these are the top two reasons buyers choose this neighbourhood.',
+      'Iroquois Ridge attracts families who want top-tier schools and a central location. Highlight school rankings and proximity to trails.',
     image: '/neighbourhoods/iroquois-ridge.jpg',
     mapQuery: 'Iroquois Ridge, Oakville, Ontario',
   },
   {
     slug: 'sixteen-hollow',
     name: 'Sixteen Hollow',
-    headline: 'Sell Your Home in Sixteen Hollow — Ravine Living in the Heart of Oakville',
+    headline: 'Buying in Sixteen Hollow: Ravine Lots Near Downtown Oakville',
     description:
-      'Sixteen Hollow is a charming, established neighbourhood tucked along the Sixteen Mile Creek ravine system in central-south Oakville. Known for its mature tree canopy, winding streets, and proximity to both downtown Oakville and the creek trails, it offers a peaceful retreat with urban convenience.',
+      'Sixteen Hollow follows the Sixteen Mile Creek ravine in central-south Oakville. Winding streets, a mature tree canopy, and a short trip to downtown make it feel far quieter than its location suggests. Buyers come for the ravine lots and the established character, and they tend to stay for decades, which keeps inventory tight.',
     highlights: [
-      'Stunning ravine lots along Sixteen Mile Creek',
+      'Ravine lots along Sixteen Mile Creek',
       'Mature tree canopy and quiet, winding streets',
-      'Walking distance to downtown Oakville',
-      'Excellent schools and family-friendly community',
+      'Minutes to downtown Oakville',
+      'Excellent schools and a settled community',
     ],
     avgPrice: '$1.6M',
     priceRange: '$1.1M – $3M+',
     homeTypes: ['Detached', 'Semi-Detached', 'Bungalows', 'Custom Renovations'],
     schools: ['St. Gregory the Great Catholic Elementary School', 'Dr. David R. Williams Public School', 'St. Cecilia Catholic Elementary School'],
     nearbyAmenities: ['Sixteen Mile Creek trails', 'Downtown Oakville', 'Lions Valley Park', 'Oakville Centre for the Performing Arts'],
+    bestFor: ['Buyers who want a ravine lot', 'Long-term family buyers', 'Downsizers who want a bungalow near downtown'],
+    commute: 'QEW at Kerr Street or Dorval; Oakville GO about 7 minutes.',
+    buyerInsight:
+      'Ravine lots are the draw, and they come with Conservation Halton setbacks that limit additions and pools; Ken pulls the regulated-area mapping before you offer so there are no surprises. Because homes rarely trade, comparable sales can be a year old. Ken adjusts for the market shift rather than anchoring on a stale number.',
     sellerInsight:
-      'Sixteen Hollow\'s ravine lots are its biggest draw — make sure drone photography captures the natural setting. Buyers here value the neighbourhood\'s established character and proximity to downtown, so emphasize walkability and the unique ravine lifestyle.',
+      'Sixteen Hollow’s ravine lots are its biggest draw; make sure drone photography captures the natural setting.',
     image: '/neighbourhoods/sixteen-hollow.jpg',
     mapQuery: 'Sixteen Hollow, Oakville, Ontario',
   },

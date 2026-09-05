@@ -146,6 +146,14 @@ async function getFirestoreData() {
       valuationsRef.where('createdAt', '>=', sevenDaysAgo).get(),
     ]);
 
+    // Get buyer / mortgage leads (written server-side by the pre-approval form)
+    const buyerRef = adminDb.collection('buyer_leads');
+    const [allBuyer, recentBuyer, weekBuyer] = await Promise.all([
+      buyerRef.orderBy('submittedAt', 'desc').limit(100).get().catch(() => null),
+      buyerRef.where('submittedAt', '>=', thirtyDaysAgo).get().catch(() => null),
+      buyerRef.where('submittedAt', '>=', sevenDaysAgo).get().catch(() => null),
+    ]);
+
     // Parse intent breakdown
     const intentCounts: Record<string, number> = {};
     recentContacts.docs.forEach((d) => {
@@ -153,16 +161,30 @@ async function getFirestoreData() {
       intentCounts[intent] = (intentCounts[intent] || 0) + 1;
     });
 
-    // Recent leads (last 5)
-    const recentLeads = allContacts.docs.slice(0, 5).map((d) => {
+    // Recent leads: merge contact-form and buyer/mortgage leads, newest first
+    const contactLeads = allContacts.docs.map((d) => {
       const data = d.data();
       return {
         name: data.name,
         email: data.email,
         intent: data.intent || 'Not specified',
+        type: 'contact',
         date: data.submittedAt?.toDate?.()?.toISOString() || '',
       };
     });
+    const buyerLeads = (allBuyer?.docs || []).map((d) => {
+      const data = d.data();
+      return {
+        name: `${data.firstName || ''} ${data.lastName || ''}`.trim(),
+        email: data.email,
+        intent: `Mortgage: ${data.goal || 'buyer'} (${data.timeline || '?'})`,
+        type: 'mortgage',
+        date: data.submittedAt?.toDate?.()?.toISOString() || '',
+      };
+    });
+    const recentLeads = [...contactLeads, ...buyerLeads]
+      .sort((a, b) => (a.date < b.date ? 1 : -1))
+      .slice(0, 8);
 
     return {
       totalContacts: allContacts.size,
@@ -171,6 +193,9 @@ async function getFirestoreData() {
       totalValuations: allValuations.size,
       valuations30: recentValuations.size,
       valuations7: weekValuations.size,
+      totalBuyerLeads: allBuyer?.size ?? 0,
+      buyerLeads30: recentBuyer?.size ?? 0,
+      buyerLeads7: weekBuyer?.size ?? 0,
       intentBreakdown: intentCounts,
       recentLeads,
     };

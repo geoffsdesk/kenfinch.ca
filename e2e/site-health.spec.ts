@@ -21,6 +21,24 @@ test.describe('Site Health Checks', () => {
     expect(response?.status()).toBeLessThan(400);
   });
 
+  test('buy page loads with pre-approval form', async ({ page }) => {
+    const response = await page.goto('/buy');
+    expect(response?.status()).toBeLessThan(400);
+    await expect(page.getByTestId('buyer-lead-form')).toBeVisible();
+  });
+
+  test('mortgage page loads with pre-approval form', async ({ page }) => {
+    const response = await page.goto('/mortgage');
+    expect(response?.status()).toBeLessThan(400);
+    await expect(page.getByTestId('buyer-lead-form')).toBeVisible();
+  });
+
+  test('homepage is buyer-centric', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveTitle(/buy|mortgage/i);
+    await expect(page.getByTestId('buyer-lead-form')).toBeVisible();
+  });
+
   test('blog page loads', async ({ page }) => {
     const response = await page.goto('/blog');
     expect(response?.status()).toBeLessThan(400);

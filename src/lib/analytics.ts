@@ -198,3 +198,59 @@ export function trackPageView(url?: string) {
     window.ttq.page();
   }
 }
+
+/**
+ * Track a buyer / mortgage pre-approval lead (highest-intent buyer event).
+ */
+export function trackMortgageLead(data: {
+  leadId?: string;
+  goal: string;
+  timeline: string;
+  source?: string;
+}) {
+  gtag('event', 'generate_lead', {
+    event_category: 'Mortgage',
+    event_label: 'Buyer Pre-Approval Form',
+    value: 15,
+    currency: 'CAD',
+    lead_goal: data.goal,
+    lead_timeline: data.timeline,
+    lead_source: data.source ?? 'site',
+  });
+
+  const adsConversionId = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID;
+  const adsMortgageLabel = process.env.NEXT_PUBLIC_GOOGLE_ADS_MORTGAGE_LABEL || process.env.NEXT_PUBLIC_GOOGLE_ADS_CONTACT_LABEL;
+  if (adsConversionId && adsMortgageLabel) {
+    gtag('event', 'conversion', {
+      send_to: `${adsConversionId}/${adsMortgageLabel}`,
+      value: 15.0,
+      currency: 'CAD',
+    });
+  }
+
+  fbq('track', 'Lead', {
+    content_name: 'Buyer Pre-Approval Form',
+    content_category: 'Mortgage',
+    value: 15.0,
+    currency: 'CAD',
+  });
+
+  ttq('SubmitForm', {
+    content_name: 'Buyer Pre-Approval Form',
+    value: 15,
+    currency: 'CAD',
+  });
+}
+
+/**
+ * Track the hand-off click to the Express Mortgage (Finmo) application.
+ */
+export function trackFinmoHandoff(leadId?: string) {
+  gtag('event', 'mortgage_application_click', {
+    event_category: 'Mortgage',
+    event_label: 'Express Mortgage Application',
+    lead_id: leadId ?? '',
+  });
+  fbq('trackCustom', 'MortgageApplicationClick', { lead_id: leadId ?? '' });
+  ttq('ClickButton', { content_name: 'Express Mortgage Application' });
+}

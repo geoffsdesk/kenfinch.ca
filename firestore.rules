@@ -22,6 +22,18 @@ service cloud.firestore {
       allow read: if request.auth != null;
     }
 
+    // Exit-intent / lightweight email captures (client-written)
+    match /leads/{leadId} {
+      allow create: if true;
+      allow read: if request.auth != null;
+    }
+
+    // Buyer / mortgage pre-approval leads are written server-side via the
+    // Admin SDK; clients never write here. Admins may read.
+    match /buyer_leads/{leadId} {
+      allow read: if request.auth != null;
+    }
+
     // Authenticated users can write chat logs
     // Admins can read chat logs
     match /chatbot_logs/{logId} {

@@ -1,4 +1,5 @@
 ---
+category: selling
 title: 'The Ultimate Spring 2026 Seller''s Checklist: River Oaks, West Oak Trails & Palermo West'
 date: '2025-12-29'
 image: '/spring-2026-checklist-cover.jpg'

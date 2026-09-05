@@ -1,4 +1,5 @@
 ---
+category: selling
 title: 'The 90-Day Executive Sale Plan: How to Sell Your Oakville Home Fast & For Top Dollar'
 date: '2025-08-29'
 image: '/90-day-sale-plan-cover.png'

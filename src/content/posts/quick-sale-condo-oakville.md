@@ -1,4 +1,5 @@
 ---
+category: selling
 title: 'How to Sell Your Condo Fast in Oakville: A Complete Guide'
 date: '2026-04-06'
 excerpt: 'Looking to sell your Oakville condo quickly? From pricing strategy to staging tips tailored for condos, here is everything you need to know to get a fast sale at the best price.'

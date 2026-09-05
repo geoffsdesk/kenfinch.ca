@@ -1,4 +1,5 @@
 ---
+category: selling
 title: 'How to Price Your Oakville Home in 2026: A Data-Driven Approach'
 date: '2026-03-15'
 image: '/how_to_price_2026.jpg'

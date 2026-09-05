@@ -9,12 +9,12 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight, Home, MapPin, TrendingUp, Star } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Oakville Neighbourhoods Guide',
+  title: 'Oakville Neighbourhoods: Buyer Guides',
   description:
-    'Explore Oakville\'s top neighbourhoods with expert insights on home values, market trends, and selling strategies. Get a free home valuation from Ken Finch.',
+    'Buyer guides to every Oakville neighbourhood: price ranges, schools, commute times, and an honest take from Ken Finch on who each area suits. Get pre-approved and find where your budget fits.',
   keywords: [
     'Oakville neighbourhoods',
-    'sell home Oakville',
+    'buy home Oakville',
     'Old Oakville real estate',
     'Bronte homes for sale',
     'Glen Abbey real estate',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/neighborhoods' },
   openGraph: {
     title: 'Oakville Neighbourhoods Guide | Ken Finch',
-    description: 'Explore Oakville\'s top neighbourhoods with expert insights on home values and selling strategies.',
+    description: 'Price ranges, schools, commute, and who each Oakville neighbourhood suits. Buyer guides from Ken Finch.',
     url: 'https://www.kenfinch.ca/neighborhoods',
   },
 };
@@ -42,11 +42,11 @@ export default function NeighborhoodsPage() {
               Oakville Neighbourhood Guides
             </p>
             <h1 className="font-heading text-4xl font-bold md:text-5xl">
-              Know Your Neighbourhood. Sell With Confidence.
+              Find the Oakville Neighbourhood That Fits Your Budget and Your Life.
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-              Every Oakville neighbourhood has its own story, buyer profile, and pricing dynamics.
-              Understanding yours is the first step to a faster sale at the best possible price.
+              Every Oakville neighbourhood has its own price range, schools, commute, and personality.
+              These guides tell you which one is right for you, and what it takes to win an offer there.
             </p>
 
             {/* Stats bar */}
@@ -141,7 +141,7 @@ export default function NeighborhoodsPage() {
                   </CardContent>
                   <CardFooter className="pt-0">
                     <span className="flex items-center gap-1 text-sm font-medium text-primary transition-colors group-hover:text-primary/80">
-                      View Selling Guide <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                      View Buyer's Guide <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                     </span>
                   </CardFooter>
                 </Card>
@@ -155,20 +155,23 @@ export default function NeighborhoodsPage() {
           <div className="container mx-auto max-w-3xl px-4 text-center">
             <Home className="mx-auto mb-4 h-10 w-10 text-primary" />
             <h2 className="font-heading text-3xl font-bold">
-              Not Sure What Your Home Is Worth?
+              Know your budget before you pick a neighbourhood.
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              Try our AI-powered home valuation tool for a free, instant estimate based on the
-              latest Oakville market data — or schedule a private consultation with Ken.
+              Ken is a licensed mortgage broker as well as your buyer agent. A two-minute pre-approval
+              check tells you which of these neighbourhoods are realistic, and how to win there.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button asChild size="lg">
-                <Link href="/#valuation">Get Your Free Valuation</Link>
+                <Link href="/mortgage#apply">Get pre-approved</Link>
               </Button>
               <Button asChild variant="outline" size="lg">
                 <Link href="/contact">Talk to Ken</Link>
               </Button>
             </div>
+            <p className="mt-6 text-sm text-muted-foreground">
+              Selling in Oakville? <Link href="/sell#valuation-tool" className="text-primary font-medium hover:underline">Get a free AI home valuation</Link>.
+            </p>
           </div>
         </section>
       </main>

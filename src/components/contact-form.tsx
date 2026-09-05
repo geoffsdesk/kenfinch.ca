@@ -169,7 +169,7 @@ export function ContactForm() {
                         name="intent"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>What Are You Looking For?</FormLabel>
+                            <FormLabel>How can Ken help?</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger>
@@ -177,10 +177,13 @@ export function ContactForm() {
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="Ready to list my home">Ready to list my home</SelectItem>
-                                    <SelectItem value="Curious about my home value">Curious about my home value</SelectItem>
-                                    <SelectItem value="Thinking of selling in 3-6 months">Thinking of selling in 3-6 months</SelectItem>
-                                    <SelectItem value="Want a market update">Want a market update</SelectItem>
+                                    <SelectItem value="Buying my first home">Buying my first home</SelectItem>
+                                    <SelectItem value="Buying (moving up or relocating)">Buying (moving up or relocating)</SelectItem>
+                                    <SelectItem value="Mortgage pre-approval">Mortgage pre-approval</SelectItem>
+                                    <SelectItem value="Refinance or renewal">Refinance or renewal</SelectItem>
+                                    <SelectItem value="Buying and selling">Buying and selling</SelectItem>
+                                    <SelectItem value="Selling my home">Selling my home</SelectItem>
+                                    <SelectItem value="Investment property">Investment property</SelectItem>
                                     <SelectItem value="Other question">Other question</SelectItem>
                                 </SelectContent>
                             </Select>
@@ -197,7 +200,7 @@ export function ContactForm() {
                             <FormLabel>Message (Optional)</FormLabel>
                             <FormControl>
                                 <Textarea
-                                    placeholder="Tell Ken a bit about your situation — your timeline, questions, or anything else you'd like him to know."
+                                    placeholder="Tell Ken a bit about your situation: your timeline, budget, areas you like, or anything else he should know."
                                     className="min-h-[100px]"
                                     {...field}
                                 />

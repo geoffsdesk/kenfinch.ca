@@ -1,4 +1,5 @@
 ---
+category: selling
 title: 'Selling in Oakville vs. Burlington in 2026: What Homeowners Should Know'
 date: '2026-02-20'
 image: '/burlington_vs_oakville.jpg'

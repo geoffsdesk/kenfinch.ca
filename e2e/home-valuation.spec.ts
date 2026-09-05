@@ -31,10 +31,10 @@ const TEST_PROPERTY = {
 };
 
 test.describe('Home Valuation Multi-Step Form', () => {
-  test('valuation form is visible on homepage', async ({ page }) => {
-    await page.goto('/');
+  test('valuation form is visible on the sell page', async ({ page }) => {
+    await page.goto('/sell');
 
-    // The valuation tool should be on the homepage
+    // The valuation tool lives on /sell (the homepage is buyer-centric)
     await expect(
       page.getByText(/home details|ai home valuat/i).first(),
     ).toBeVisible({ timeout: 15_000 });
@@ -47,7 +47,7 @@ test.describe('Home Valuation Multi-Step Form', () => {
 
     const skipEmailCheck = !process.env.GMAIL_CLIENT_ID;
 
-    await page.goto('/');
+    await page.goto('/sell');
 
     // ── Step 1: Fill property details ──────────────────────────────
 

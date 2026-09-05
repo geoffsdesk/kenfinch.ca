@@ -1,4 +1,5 @@
 ---
+category: market
 title: 'October 2026 Market Report: Why Oakville Remains an Island of Opportunity for Sellers'
 date: '2025-10-28T12:00:00'
 image: '/october-market-report.png'
