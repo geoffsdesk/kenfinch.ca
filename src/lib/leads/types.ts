@@ -186,5 +186,5 @@ export function buyerLabel(field: string, value?: string | null) {
 
 /** Automated test submissions (Playwright suite, manual QA "(ignore)" leads). */
 export function isTestSubmission(name: string | null | undefined, email: string | null | undefined): boolean {
-  return /^e2e-[^@]*@kenfinch\.ca$/i.test(email ?? '') || /E2E|\(ignore\)/i.test(name ?? '');
+  return /^e2e-[^@]*@kenfinch\.ca$/i.test(email ?? '') || /\bE2E\b|\(ignore\)/i.test(name ?? '');
 }
