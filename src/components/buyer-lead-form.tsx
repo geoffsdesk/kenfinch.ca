@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { submitBuyerLead } from '@/app/actions/buyer-lead';
+import { submitLead } from '@/lib/leads/client';
 import { finmoApplicationUrl, CONTACT, MORTGAGE, SERVICE_AREAS } from '@/lib/site';
 import { trackMortgageLead, trackFinmoHandoff } from '@/lib/analytics';
 
@@ -230,11 +230,7 @@ export function BuyerLeadForm({
     setSubmitting(true);
     setServerError(null);
     try {
-      const res = await submitBuyerLead({
-        ...values,
-        source,
-        page: typeof window !== 'undefined' ? window.location.pathname : undefined,
-      });
+      const res = await submitLead({ ...values, type: 'buyer', source });
       if (!res.ok) {
         setServerError(res.error);
         return;

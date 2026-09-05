@@ -6,6 +6,7 @@
 import sgMail from '@sendgrid/mail';
 import { CONTACT, MORTGAGE, SITE_URL } from '@/lib/site';
 import { TYPE_LABELS, STATUS_LABELS, buyerLabel, type LeadRecord } from './types';
+import { attributionLabel } from '@/lib/attribution';
 
 /** Geoff is BCC'd on every lead notification so the pipeline is auditable. */
 export const OVERSIGHT_EMAIL = process.env.LEAD_OVERSIGHT_EMAIL || 'geoff.radian6@gmail.com';
@@ -135,7 +136,8 @@ export function kenNotificationHtml(lead: LeadRecord, leadId: string): string {
     <h3>Contact</h3>${contact}
     ${body}
     <p style="margin-top:20px"><a href="${dashboardUrl()}" style="background:#d4af37;color:#111;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600">Open in dashboard</a></p>
-    <p style="font-size:12px;color:#777">Lead ID ${esc(leadId)} &middot; Source ${esc(lead.source)} &middot; Page ${esc(lead.page)}<br>
+    <p style="font-size:12px;color:#777">Lead ID ${esc(leadId)} &middot; Form ${esc(lead.source)} &middot; Page ${esc(lead.page)}<br>
+    Marketing source: <strong>${esc(attributionLabel(lead.attribution))}</strong>${lead.attribution?.utm_term ? ` &middot; keyword: ${esc(lead.attribution.utm_term)}` : ''}${lead.attribution?.landingPage ? ` &middot; landed on ${esc(lead.attribution.landingPage)}` : ''}<br>
     This lead will get an automatic "did Ken reach you?" check-in in 2 days. Update the status in the dashboard to keep the digest accurate.</p>
   `);
 }
@@ -208,14 +210,24 @@ export function digestHtml(args: {
   const line = (l: LeadRecord) =>
     `<li style="margin:6px 0"><strong>${esc(l.name)}</strong> &middot; ${esc(TYPE_LABELS[l.type])}${l.hot ? ' &middot; <span style="color:#b45309;font-weight:600">HOT</span>' : ''}<br>
       <span style="color:#555;font-size:13px">${esc(l.summary)}</span><br>
-      <span style="font-size:13px">${esc(l.phone ?? '')} ${esc(l.email)} &middot; ${esc(fmtToronto(l.createdAt))} &middot; status: ${esc(STATUS_LABELS[l.status])}</span></li>`;
+      <span style="font-size:13px">${esc(l.phone ?? '')} ${esc(l.email)} &middot; ${esc(fmtToronto(l.createdAt))} &middot; status: ${esc(STATUS_LABELS[l.status])} &middot; via ${esc(attributionLabel(l.attribution))}</span></li>`;
   const section = (title: string, items: LeadRecord[], empty: string, color = '#111') =>
     `<h3 style="color:${color};margin:22px 0 6px">${esc(title)} (${items.length})</h3>${items.length ? `<ul style="padding-left:18px;margin:0">${items.map(line).join('')}</ul>` : `<p style="color:#777;font-size:14px;margin:0">${esc(empty)}</p>`}`;
+  const bySource: Record<string, number> = {};
+  args.newLeads.forEach((l) => {
+    const k = attributionLabel(l.attribution);
+    bySource[k] = (bySource[k] ?? 0) + 1;
+  });
+  const sources = Object.entries(bySource)
+    .sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `<span style="display:inline-block;margin:0 10px 6px 0;font-size:13px"><strong>${v}</strong> ${esc(k)}</span>`)
+    .join('');
   const pipeline = Object.entries(args.counts)
     .map(([k, v]) => `<span style="display:inline-block;margin:0 10px 6px 0;font-size:13px"><strong>${v}</strong> ${esc(k)}</span>`)
     .join('');
   return wrap(`Lead digest for ${args.dateLabel}`, `
     <div style="margin-bottom:8px">${pipeline}</div>
+    ${sources ? `<p style="margin:0 0 4px;font-size:12px;color:#777;text-transform:uppercase;letter-spacing:.08em">New leads by marketing source</p><div style="margin-bottom:8px">${sources}</div>` : ''}
     ${section('Needs attention: no contact after 1 business day', args.stale, 'Nothing overdue. Nice.', '#b91c1c')}
     ${section('Leads who said Ken has NOT reached them', args.saidNo, 'No "no" replies in the last day.', '#b91c1c')}
     ${section('Follow-ups scheduled for today', args.dueToday, 'None scheduled.')}

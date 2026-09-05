@@ -49,11 +49,12 @@ function buildDoc(input: LeadInput): LeadDoc {
     updatedAt: createdAt,
     source: input.source ?? 'site',
     page: input.page ?? '',
+    attribution: input.attribution ?? null,
   };
 
   switch (input.type) {
     case 'buyer': {
-      const { firstName, lastName, email, phone, message, source, page, consent, type, ...details } = input;
+      const { firstName, lastName, email, phone, message, source, page, consent, type, attribution, ...details } = input;
       const summary = [
         buyerLabel('goal', details.goal),
         buyerLabel('timeline', details.timeline),

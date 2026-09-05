@@ -14,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Loader2, Inbox, Phone, Mail, ChevronDown, ChevronUp, Flame, AlertTriangle, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
 import { LEAD_STATUSES, STATUS_LABELS, TYPE_LABELS, buyerLabel, type LeadRecord, type LeadStatus, type LeadType } from '@/lib/leads/types';
 import { cn } from '@/lib/utils';
+import { attributionLabel } from '@/lib/attribution';
 
 type Automation = { lastRunAt: string | null; lastDigestAt: string | null; smsConfigured: boolean; kenMobileConfigured: boolean; cronConfigured: boolean };
 
@@ -221,6 +222,7 @@ export function LeadInbox({ password }: { password: string }) {
                         {l.phone && <a href={`tel:${l.phone}`} className="inline-flex items-center gap-1 text-primary hover:underline"><Phone className="h-3.5 w-3.5" />{l.phone}</a>}
                         {l.email && <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-primary hover:underline"><Mail className="h-3.5 w-3.5" />{l.email}</a>}
                         <span className="text-muted-foreground">{ago(l.createdAt)}</span>
+                        <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{attributionLabel(l.attribution)}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -298,8 +300,14 @@ function LeadDetail({ lead, busy, onNote, onFollowUp }: { lead: LeadRecord; busy
                 <dd className="break-words">{v}</dd>
               </div>
             ))}
-            <dt className="text-muted-foreground">Source</dt>
+            <dt className="text-muted-foreground">Form</dt>
             <dd>{lead.source} {lead.page && <span className="text-muted-foreground">({lead.page})</span>}</dd>
+            <dt className="text-muted-foreground">Marketing</dt>
+            <dd>
+              {attributionLabel(lead.attribution)}
+              {lead.attribution?.utm_term && <span className="text-muted-foreground"> (keyword: {lead.attribution.utm_term})</span>}
+              {lead.attribution?.landingPage && <span className="text-muted-foreground"> landed on {lead.attribution.landingPage}</span>}
+            </dd>
             <dt className="text-muted-foreground">Confirmation email</dt>
             <dd>{lead.followUp?.confirmationSentAt ? 'Sent' : 'Not sent'}</dd>
             <dt className="text-muted-foreground">48h check-in</dt>

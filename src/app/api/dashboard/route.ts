@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import admin from 'firebase-admin';
 import { listLeads } from '@/lib/leads/store';
+import { attributionLabel } from '@/lib/attribution';
 
 // Simple password check
 const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || 'kenfinch2026';
@@ -151,6 +152,14 @@ async function getFirestoreData() {
         intentCounts[intent] = (intentCounts[intent] || 0) + 1;
       });
 
+    const sourceBreakdown: Record<string, number> = {};
+    leads
+      .filter((l) => l.createdAt >= thirtyDaysAgo)
+      .forEach((l) => {
+        const k = attributionLabel(l.attribution);
+        sourceBreakdown[k] = (sourceBreakdown[k] || 0) + 1;
+      });
+
     const recentLeads = leads.slice(0, 8).map((l) => ({
       name: l.name,
       email: l.email,
@@ -173,6 +182,7 @@ async function getFirestoreData() {
       totalPopups: count('popup'),
       popups30: count('popup', thirtyDaysAgo),
       intentBreakdown: intentCounts,
+      sourceBreakdown,
       recentLeads,
     };
   } catch (error) {

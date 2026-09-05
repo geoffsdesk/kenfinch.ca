@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
-import { createLead } from '@/app/actions/leads';
+import { submitLead } from '@/lib/leads/client';
 import { trackContactFormSubmission } from '@/lib/analytics';
 
 import { Button } from '@/components/ui/button';
@@ -57,7 +57,7 @@ export function ContactForm() {
     try {
         // Unified lead pipeline: Firestore + Ken email (BCC oversight) +
         // confirmation to the sender + 48h check-in scheduling.
-        const res = await createLead({
+        const res = await submitLead({
             type: 'contact',
             name: values.name,
             email: values.email,

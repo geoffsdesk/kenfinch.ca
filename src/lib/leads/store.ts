@@ -34,6 +34,7 @@ export function toRecord(id: string, raw: FirebaseFirestore.DocumentData): LeadR
     details: raw.details ?? {},
     source: raw.source ?? '',
     page: raw.page ?? '',
+    attribution: raw.attribution ?? null,
     status: raw.status ?? 'new',
     statusUpdatedAt: raw.statusUpdatedAt ?? created,
     notes: raw.notes ?? [],

@@ -33,7 +33,25 @@ export const TYPE_LABELS: Record<LeadType, string> = {
 
 // ─── Input schemas (what the forms send) ─────────────────────────────────────
 
+export const attributionSchema = z
+  .object({
+    utm_source: z.string().max(200).optional(),
+    utm_medium: z.string().max(200).optional(),
+    utm_campaign: z.string().max(200).optional(),
+    utm_term: z.string().max(200).optional(),
+    utm_content: z.string().max(200).optional(),
+    gclid: z.string().max(200).optional(),
+    fbclid: z.string().max(200).optional(),
+    msclkid: z.string().max(200).optional(),
+    landingPage: z.string().max(300).optional(),
+    referrer: z.string().max(300).optional(),
+    firstSeenAt: z.string().max(40).optional(),
+  })
+  .optional();
+export type LeadAttribution = z.infer<typeof attributionSchema>;
+
 const base = {
+  attribution: attributionSchema,
   email: z.string().trim().email('Please enter a valid email address.'),
   phone: z.string().trim().max(30).optional(),
   message: z.string().trim().max(2000).optional(),
@@ -61,6 +79,7 @@ export const buyerLeadInput = z.object({
   message: base.message,
   source: base.source,
   page: base.page,
+  attribution: base.attribution,
 });
 
 export const contactLeadInput = z.object({
@@ -108,6 +127,7 @@ export interface LeadDoc {
   details: Record<string, unknown>;
   source: string;
   page: string;
+  attribution: NonNullable<LeadAttribution> | null;
   status: LeadStatus;
   statusUpdatedAt: string;
   notes: LeadNote[];

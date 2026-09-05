@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Download, ArrowRight, Landmark, Phone } from 'lucide-react';
-import { createLead } from '@/app/actions/leads';
+import { submitLead } from '@/lib/leads/client';
 import { CONTACT } from '@/lib/site';
 import Link from 'next/link';
 
@@ -67,7 +67,7 @@ export function ExitIntentPopup() {
     if (!email) return;
     setLoading(true);
     try {
-      await createLead({
+      await submitLead({
         type: 'popup',
         name: name || undefined,
         email,

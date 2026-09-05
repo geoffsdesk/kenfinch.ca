@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useJsApiLoader } from '@react-google-maps/api';
 
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
-import { createLead } from '@/app/actions/leads';
+import { submitLead } from '@/lib/leads/client';
 import { trackValuationSubmission, trackExpertOpinionRequest } from '@/lib/analytics';
 
 import { Button } from '@/components/ui/button';
@@ -214,7 +214,7 @@ function HomeValuationInternal() {
         const yearBuiltLabel = yearBuiltOptions.find(opt => opt.value === formValues.yearBuilt)?.label;
         const finishedBasementLabel = finishedBasementOptions.find(opt => opt.value === formValues.finishedBasement)?.label;
 
-        const res = await createLead({
+        const res = await submitLead({
             type: 'valuation',
             name: values.name,
             email: values.email,

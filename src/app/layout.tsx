@@ -7,6 +7,8 @@ import { TrackingScripts } from '@/components/tracking-scripts';
 import { StickyCTA } from '@/components/sticky-cta';
 import { ExitIntentPopup } from '@/components/exit-intent-popup';
 import { WhatsAppButton } from '@/components/whatsapp-button';
+import { AttributionCapture } from '@/components/attribution-capture';
+import { Suspense } from 'react';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -57,6 +59,9 @@ export default function RootLayout({
         <StickyCTA />
         <ExitIntentPopup />
         <WhatsAppButton />
+        <Suspense fallback={null}>
+          <AttributionCapture />
+        </Suspense>
         <Toaster />
         <TrackingScripts />
       </body>
