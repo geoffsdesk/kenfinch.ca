@@ -35,14 +35,14 @@ env:
   # Google Ads conversion labels (one per conversion action created in Ads).
   # Create each with `firebase apphosting:secrets:set <NAME>` then uncomment.
   # Until then, import the GA4 `generate_lead` event into Google Ads instead.
-  # - variable: NEXT_PUBLIC_GOOGLE_ADS_MORTGAGE_LABEL
-  #   secret: NEXT_PUBLIC_GOOGLE_ADS_MORTGAGE_LABEL
-  # - variable: NEXT_PUBLIC_GOOGLE_ADS_CONTACT_LABEL
-  #   secret: NEXT_PUBLIC_GOOGLE_ADS_CONTACT_LABEL
-  # - variable: NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL
-  #   secret: NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL
-  # - variable: NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL
-  #   secret: NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL
+  - variable: NEXT_PUBLIC_GOOGLE_ADS_MORTGAGE_LABEL
+    secret: NEXT_PUBLIC_GOOGLE_ADS_MORTGAGE_LABEL
+  - variable: NEXT_PUBLIC_GOOGLE_ADS_CONTACT_LABEL
+    secret: NEXT_PUBLIC_GOOGLE_ADS_CONTACT_LABEL
+  - variable: NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL
+    secret: NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL
+  - variable: NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL
+    secret: NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL
 
   # Server-side secrets
   - variable: SENDGRID_API_KEY
