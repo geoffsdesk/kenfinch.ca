@@ -1,3 +1,5 @@
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { HomeValuation } from '@/components/home-valuation';
 import { CheckCircle, Phone, ArrowRight, Star, Shield, Clock, TrendingUp } from 'lucide-react';
@@ -20,20 +22,7 @@ export const metadata: Metadata = {
 export default function SellLandingPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Minimal header — no navigation, just branding + phone */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-3">
-            <Image src="/kf_logo.png" alt="Ken Finch Real Estate" width={160} height={45} className="h-10 w-auto" />
-            <span className="hidden sm:inline-block h-6 w-px bg-border" />
-            <img src="/logo_rlp.png" alt="Royal LePage Signature" className="hidden sm:inline-block" style={{ height: '28px', width: 'auto' }} />
-          </Link>
-          <a href="tel:+14165205544" className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm">
-            <Phone className="h-4 w-4" />
-            (416) 520-5544
-          </a>
-        </div>
-      </header>
+      <Header />
 
       <main className="flex-1">
         {/* Hero — single focus: get the valuation */}
@@ -191,14 +180,7 @@ export default function SellLandingPage() {
         </section>
       </main>
 
-      {/* Minimal footer */}
-      <footer className="border-t py-6">
-        <div className="container px-4 text-center">
-          <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Ken Finch, Broker — Royal LePage Signature Realty, Brokerage. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
