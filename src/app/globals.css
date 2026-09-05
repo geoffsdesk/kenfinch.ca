@@ -106,9 +106,10 @@
   background: linear-gradient(90deg, transparent, hsl(46 65% 52%), transparent);
 }
 
-/* Smooth scroll behavior */
+/* Smooth scroll behavior; keep scrolled-to elements clear of the sticky header */
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 /* Improve focus visibility for accessibility */

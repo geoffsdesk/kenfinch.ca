@@ -510,6 +510,22 @@ function HomeValuationInternal() {
                               {...field}
                               value={addressInput}
                               onChange={handleInput}
+                              onKeyDown={(e) => {
+                                // Escape closes the suggestion list so it never blocks the fields below.
+                                if (e.key === 'Escape') {
+                                  setShowSuggestions(false);
+                                  setSuggestions([]);
+                                }
+                              }}
+                              onBlur={() => {
+                                field.onBlur();
+                                // Delay so a click on a suggestion registers before the list closes.
+                                setTimeout(() => setShowSuggestions(false), 150);
+                              }}
+                              onFocus={() => {
+                                if (suggestions.length > 0) setShowSuggestions(true);
+                              }}
+                              autoComplete="off"
                               placeholder="e.g., 123 Maple Street, Oakville, ON"
                               className="pl-10"
                           />
