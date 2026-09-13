@@ -54,7 +54,8 @@ def main():
     stats = {'skipped': 0, 'unknown_consent': 0}
     for r in load(a.csv):
         email = (r.get('email') or '').strip().lower()
-        if email and not re.match(r"^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$", email):
+        # Same rule the server (zod) applies, so a bad address never fails a whole batch.
+        if email and not re.match(r"^(?!\.)(?!.*\.\.)([a-z0-9_'+\-.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9-]*\.)+[a-z]{2,}$", email):
             stats['bad_email'] = stats.get('bad_email', 0) + 1
             email = ''  # keep the contact as phone-only rather than reject the whole batch
         phone = (r.get('phone') or '').strip()
