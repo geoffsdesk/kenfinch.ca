@@ -15,7 +15,7 @@ import { STATUS_LABELS, isTestSubmission, type LeadRecord } from '@/lib/leads/ty
 import { runCampaigns } from '@/lib/campaigns/runner';
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 /**
  * Hourly lead automation (called by .github/workflows/lead-automation.yml).

@@ -10,7 +10,7 @@ import type { ContactRecord } from '@/lib/contacts/types';
 import { mailProvider } from '@/lib/mail';
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || 'kenfinch2026';
 
