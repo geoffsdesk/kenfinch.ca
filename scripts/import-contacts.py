@@ -54,6 +54,9 @@ def main():
     stats = {'skipped': 0, 'unknown_consent': 0}
     for r in load(a.csv):
         email = (r.get('email') or '').strip().lower()
+        if email and not re.match(r"^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+@[a-z0-9-]+(\.[a-z0-9-]+)+$", email):
+            stats['bad_email'] = stats.get('bad_email', 0) + 1
+            email = ''  # keep the contact as phone-only rather than reject the whole batch
         phone = (r.get('phone') or '').strip()
         if not email and len(digits(phone)) < 10:
             stats['skipped'] += 1
@@ -92,7 +95,7 @@ def main():
             'pastClient': past,
         })
 
-    print(f"prepared {len(rows)} rows; skipped {stats['skipped']} (no email or phone); {stats['unknown_consent']} sphere contacts await Ken's review (imported, not emailed)")
+    print(f"prepared {len(rows)} rows; skipped {stats['skipped']} (no email or phone); {stats.get('bad_email', 0)} invalid emails blanked (kept as phone-only); {stats['unknown_consent']} sphere contacts await Ken's review (imported, not emailed)")
     if a.dry_run:
         print(json.dumps(rows[:2], indent=2))
         return
@@ -102,8 +105,11 @@ def main():
     for i in range(0, len(rows), 400):
         chunk = rows[i:i + 400]
         req = urllib.request.Request(url, data=json.dumps({'password': pw, 'op': 'import', 'batch': a.batch, 'rows': chunk}).encode(), headers={'Content-Type': 'application/json'})
-        with urllib.request.urlopen(req, timeout=120) as resp:
-            out = json.load(resp)
+        try:
+            with urllib.request.urlopen(req, timeout=120) as resp:
+                out = json.load(resp)
+        except urllib.error.HTTPError as e:
+            sys.exit(f"batch {i // 400 + 1} failed: HTTP {e.code}: {e.read().decode('utf-8', 'replace')[:500]}")
         for k in total:
             total[k] += out.get(k, 0)
         print(f"batch {i // 400 + 1}: {out}")
