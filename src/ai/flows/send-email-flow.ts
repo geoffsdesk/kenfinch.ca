@@ -9,7 +9,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import sgMail from '@sendgrid/mail';
+import { sendMail, mailProvider } from '@/lib/mail';
 
 const SendEmailInputSchema = z.object({
     to: z.string().email().describe('The email address of the recipient.'),
@@ -34,29 +34,22 @@ const sendEmailFlow = ai.defineFlow(
   },
   async (input) => {
 
-    if (!process.env.SENDGRID_API_KEY) {
-        console.error('SENDGRID_API_KEY is not set in the environment variables.');
-        throw new Error('SENDGRID_API_KEY is not set in the environment variables.');
+    if (!mailProvider()) {
+        console.error('No email provider configured (RESEND_API_KEY or SENDGRID_API_KEY).');
+        throw new Error('No email provider configured.');
     }
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-    const msg = {
-      to: input.to,
-      from: input.from,
-      replyTo: input.replyTo,
-      subject: input.subject,
-      html: input.html,
-    };
 
     try {
-      await sgMail.send(msg);
-      console.log('Email sent successfully');
+      await sendMail({
+        to: input.to,
+        from: input.from,
+        replyTo: input.replyTo,
+        subject: input.subject,
+        html: input.html,
+      });
       return { success: true };
     } catch (error) {
       console.error('Error sending email:', error);
-      if ((error as any).response) {
-        console.error((error as any).response.body)
-      }
       throw new Error('Failed to send email.');
     }
   }

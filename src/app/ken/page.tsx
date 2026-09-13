@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LeadInbox } from '@/components/lead-inbox';
+import { DatabasePanel } from '@/components/database-panel';
 import {
   Eye, Users, FileText, TrendingUp, Globe, BarChart3,
   Lock, Loader2, RefreshCw, ArrowUpRight, ArrowDownRight,
@@ -462,6 +463,8 @@ export default function KenDashboard() {
             </Card>
 
             <LeadInbox password={password} />
+
+            <DatabasePanel password={password} />
 
             {/* ─── Footer ─────────────────────────────────────────── */}
             <div className="text-center text-xs text-muted-foreground pt-4 pb-8">

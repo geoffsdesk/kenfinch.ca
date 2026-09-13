@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${siteUrl}/contact`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${siteUrl}/sell`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${siteUrl}/renewal`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${siteUrl}/sell-condo-oakville`, lastModified: now, changeFrequency: 'monthly', priority: 0.6 },
   ];
 

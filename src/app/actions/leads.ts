@@ -17,6 +17,8 @@
 
 import { leadInput, isTestSubmission, type LeadDoc, type LeadInput, type LeadRecord, buyerLabel } from '@/lib/leads/types';
 import { insertLead, patchLead, newToken, nowIso } from '@/lib/leads/store';
+import { findContactByToken, findContactByEmail } from '@/lib/contacts/store';
+import { markContactConverted } from '@/lib/campaigns/runner';
 import {
   sendMail,
   sendSms,
@@ -54,7 +56,7 @@ function buildDoc(input: LeadInput): LeadDoc {
 
   switch (input.type) {
     case 'buyer': {
-      const { firstName, lastName, email, phone, message, source, page, consent, type, attribution, ...details } = input;
+      const { firstName, lastName, email, phone, message, source, page, consent, type, attribution, contactToken: _ct, ...details } = input;
       const summary = [
         buyerLabel('goal', details.goal),
         buyerLabel('timeline', details.timeline),
@@ -82,7 +84,7 @@ function buildDoc(input: LeadInput): LeadDoc {
         name: input.name,
         email: input.email,
         phone: input.phone || null,
-        hot: /first home|pre-approval|buying/i.test(input.intent ?? ''),
+        hot: /first home|pre-approval|buying|renewal within 6 months/i.test(input.intent ?? ''),
         summary: [input.intent || 'General enquiry', input.message ? `"${input.message.slice(0, 80)}${input.message.length > 80 ? '…' : ''}"` : null].filter(Boolean).join(' · '),
         details: { intent: input.intent ?? '', message: input.message ?? '' },
       };
@@ -193,6 +195,16 @@ export async function createLead(raw: unknown): Promise<CreateLeadResult> {
       await patchLead(leadId, patch);
     } catch (err) {
       console.error('lead patch failed:', err);
+    }
+    // 5. Database contact? Stop the campaign sequence and link the two records.
+    try {
+      const contact = (parsed.data.contactToken ? await findContactByToken(parsed.data.contactToken) : null) ?? (await findContactByEmail(lead.email));
+      if (contact && contact.status !== 'converted') {
+        await markContactConverted(contact, leadId, `${lead.type} form: ${lead.summary}`.slice(0, 200));
+        await patchLead(leadId, { 'details.contactId': contact.id, 'details.contactSegment': contact.segment });
+      }
+    } catch (err) {
+      console.error('contact link failed:', err);
     }
   }
   return { ok: true, leadId };

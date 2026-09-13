@@ -57,6 +57,8 @@ const base = {
   message: z.string().trim().max(2000).optional(),
   source: z.string().max(80).optional(),
   page: z.string().max(200).optional(),
+  /** Database contact token (from campaign links, `?c=`), ties the lead back to the contact. */
+  contactToken: z.string().regex(/^[a-f0-9]{32}$/i).optional(),
 };
 
 export const buyerLeadInput = z.object({
@@ -80,6 +82,7 @@ export const buyerLeadInput = z.object({
   source: base.source,
   page: base.page,
   attribution: base.attribution,
+  contactToken: base.contactToken,
 });
 
 export const contactLeadInput = z.object({

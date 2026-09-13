@@ -12,6 +12,7 @@ import {
   TORONTO_TZ,
 } from '@/lib/leads/notify';
 import { STATUS_LABELS, isTestSubmission, type LeadRecord } from '@/lib/leads/types';
+import { runCampaigns } from '@/lib/campaigns/runner';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -150,8 +151,16 @@ export async function GET(req: NextRequest) {
     const quarantined = await quarantineTestLeads(leads);
     const checkins = await runCheckins(leads, now);
     const digest = await runDigest(leads, now, force);
+    // Database campaign (reactivation sequence). Failures here must not block the lead jobs above.
+    let campaigns: unknown;
+    try {
+      campaigns = await runCampaigns(now, req.nextUrl.searchParams.get('campaign') === 'force');
+    } catch (err) {
+      console.error('campaign run failed:', err);
+      campaigns = { error: (err as Error).message };
+    }
     await setSystemState({ lastRunAt: nowIso() });
-    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, quarantined, checkins, digest });
+    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, quarantined, checkins, digest, campaigns });
   } catch (err) {
     console.error('lead automation failed:', err);
     return NextResponse.json({ ok: false, error: (err as Error).message }, { status: 500 });

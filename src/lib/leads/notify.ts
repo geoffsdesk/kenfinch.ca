@@ -3,7 +3,6 @@
  * Twilio (optional; silently skipped when not configured).
  */
 
-import sgMail from '@sendgrid/mail';
 import { CONTACT, MORTGAGE, SITE_URL } from '@/lib/site';
 import { TYPE_LABELS, STATUS_LABELS, buyerLabel, type LeadRecord } from './types';
 import { attributionLabel } from '@/lib/attribution';
@@ -11,35 +10,13 @@ import { attributionLabel } from '@/lib/attribution';
 /** Geoff is BCC'd on every lead notification so the pipeline is auditable. */
 export const OVERSIGHT_EMAIL = process.env.LEAD_OVERSIGHT_EMAIL || 'geoff.radian6@gmail.com';
 export const KEN_EMAIL = CONTACT.leadInbox;
-const FROM = CONTACT.leadInbox;
 
 export const TORONTO_TZ = 'America/Toronto';
 
 // ─── Email ───────────────────────────────────────────────────────────────────
 
-export async function sendMail(msg: {
-  to: string | string[];
-  subject: string;
-  html: string;
-  text?: string;
-  replyTo?: string;
-  bcc?: string | string[];
-  cc?: string | string[];
-}) {
-  const key = process.env.SENDGRID_API_KEY;
-  if (!key) throw new Error('SENDGRID_API_KEY is not set');
-  sgMail.setApiKey(key);
-  await sgMail.send({
-    from: { email: FROM, name: 'Ken Finch' },
-    to: msg.to,
-    cc: msg.cc,
-    bcc: msg.bcc,
-    replyTo: msg.replyTo,
-    subject: msg.subject,
-    html: msg.html,
-    text: msg.text ?? msg.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim(),
-  });
-}
+// Provider selection (Resend, else SendGrid) lives in src/lib/mail.ts.
+export { sendMail } from '@/lib/mail';
 
 export function esc(s: unknown) {
   return String(s ?? '')

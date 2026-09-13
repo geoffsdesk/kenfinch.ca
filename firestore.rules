@@ -27,6 +27,11 @@ service cloud.firestore {
       allow read: if request.auth != null;
     }
 
+    // Ken's database (imported CRM contacts + campaign state). Server-written only.
+    match /crm_contacts/{contactId} {
+      allow read: if request.auth != null;
+    }
+
     // Buyer / mortgage pre-approval leads are written server-side via the
     // Admin SDK; clients never write here. Admins may read.
     match /buyer_leads/{leadId} {
