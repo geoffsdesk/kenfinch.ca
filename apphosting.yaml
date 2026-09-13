@@ -45,6 +45,10 @@ env:
     secret: NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL
 
   # Server-side secrets
+  # Email: Resend is used when RESEND_API_KEY is set (src/lib/mail.ts); SendGrid is the fallback
+  # and can be removed once Resend is confirmed.
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY
   - variable: SENDGRID_API_KEY
     secret: SENDGRID_API_KEY
   - variable: GEMINI_API_KEY
