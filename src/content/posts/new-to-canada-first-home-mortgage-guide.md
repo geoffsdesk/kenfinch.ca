@@ -65,4 +65,4 @@ Because I hold both licences, I can tell you on the first call which lender will
 
 Start with the [pre-approval check](/mortgage#apply). It takes two minutes, there is no credit inquiry, and I call you back within one business day. Or call or text me at (416) 520-5544.
 
-*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Agent Level 1, Licence #M26000634, Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241. Program rules change; confirm current eligibility with Ken before relying on any figure above.*
+*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Agent Level 1, Licence #M26000634, Canada Express-Mortgage Inc., FSRA Brokerage Licence #13241. Program rules change; confirm current eligibility with Ken before relying on any figure above.*

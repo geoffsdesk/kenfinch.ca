@@ -19,6 +19,7 @@ const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || 'kenfinch2026';
  *   { password, op: 'enrol', segment?: string, limit?: number }
  *   { password, op: 'pause' | 'resume' }
  *   { password, op: 'cap', hourlyCap: number }
+ *   { password, op: 'steps', steps: string[] }                              (approved email steps, e.g. ['e1','e2'])
  *   { password, op: 'run' }                                           (send one batch now, ignores the time window)
  *   { password, op: 'exclude' | 'reactivate', id }
  */
@@ -59,6 +60,12 @@ export async function POST(req: NextRequest) {
         if (Number.isNaN(cap)) return NextResponse.json({ error: 'Bad cap' }, { status: 400 });
         await setCampaignState({ hourlyCap: cap });
         return NextResponse.json({ ok: true, hourlyCap: cap });
+      }
+      case 'steps': {
+        const steps = Array.isArray(body.steps) ? body.steps.filter((x): x is string => typeof x === 'string' && /^e[1-4]$/.test(x)) : null;
+        if (!steps) return NextResponse.json({ error: 'Bad steps' }, { status: 400 });
+        await setCampaignState({ enabledSteps: steps });
+        return NextResponse.json({ ok: true, enabledSteps: steps });
       }
       case 'run': {
         const result = await runCampaigns(new Date(), true);

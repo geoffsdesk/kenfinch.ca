@@ -39,7 +39,7 @@ export const REAL_ESTATE = {
 export const MORTGAGE = {
   title: 'Mortgage Agent Level 1',
   agentLicence: 'M26000634',
-  brokerage: 'Canadian Express-Mortgage Inc.',
+  brokerage: 'Canada Express-Mortgage Inc.',
   brokerageShort: 'Express Mortgage',
   brokerageLicence: '13241',
   brokeragePhone: '(905) 785-9926',

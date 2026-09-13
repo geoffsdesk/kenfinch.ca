@@ -90,7 +90,7 @@ export default function Home() {
         email: CONTACT.email,
         address: { '@type': 'PostalAddress', addressLocality: 'Oakville', addressRegion: 'ON', addressCountry: 'CA' },
         description:
-          'Ken Finch is a licensed real estate broker with Royal LePage Signature Realty and a licensed mortgage agent with Canadian Express-Mortgage Inc., helping buyers across Oakville and the GTA find and finance the right home.',
+          'Ken Finch is a licensed real estate broker with Royal LePage Signature Realty and a licensed mortgage agent with Canada Express-Mortgage Inc., helping buyers across Oakville and the GTA find and finance the right home.',
         areaServed: [
           { '@type': 'Place', name: 'Oakville, ON' },
           { '@type': 'Place', name: 'Burlington, ON' },
@@ -140,7 +140,7 @@ export default function Home() {
         worksFor: [{ '@id': `${SITE_URL}/#agent` }, { '@type': 'Organization', name: MORTGAGE.brokerage }],
         workLocation: { '@type': 'Place', name: 'Oakville, Ontario, Canada' },
         description:
-          'Ken Finch is an Oakville, Ontario real estate broker (Royal LePage Signature Realty) and licensed mortgage agent (Canadian Express-Mortgage Inc.) who has helped GTA families buy and sell homes since 2004.',
+          'Ken Finch is an Oakville, Ontario real estate broker (Royal LePage Signature Realty) and licensed mortgage agent (Canada Express-Mortgage Inc.) who has helped GTA families buy and sell homes since 2004.',
         sameAs: [
           'https://www.royallepage.ca/en/agent/ontario/toronto/ken-finch/31668/',
           'https://www.linkedin.com/in/kenfinchrealtor/',

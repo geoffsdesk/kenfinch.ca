@@ -8,7 +8,7 @@ excerpt: 'Everything a first-time buyer in Oakville, Burlington, Mississauga or 
 
 Buying your first home in the GTA is a financing problem first and a house-hunting problem second. Get the financing right and the search becomes simple. Get it wrong and you will tour homes you cannot close on. This guide walks through the 2026 rules, the programs that put real money back in your pocket, and the order to do things in.
 
-I write this as someone licensed on both sides: a real estate broker with Royal LePage Signature Realty and a mortgage agent with Canadian Express-Mortgage Inc. The advice below is what I tell my own first-time buyers.
+I write this as someone licensed on both sides: a real estate broker with Royal LePage Signature Realty and a mortgage agent with Canada Express-Mortgage Inc. The advice below is what I tell my own first-time buyers.
 
 ## Step 1: Know the 2026 rules that set your budget
 

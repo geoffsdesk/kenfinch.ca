@@ -103,5 +103,5 @@ export interface DatabaseStats {
     unsubscribed: number;
     converted: number;
   } | null;
-  automation: { hourlyCap: number; paused: boolean; lastRunAt: string | null; lastRunSent: number; provider: string | null };
+  automation: { hourlyCap: number; paused: boolean; enabledSteps: string[]; lastRunAt: string | null; lastRunSent: number; provider: string | null };
 }

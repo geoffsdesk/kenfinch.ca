@@ -74,13 +74,19 @@ export async function runCampaigns(now = new Date(), force = false) {
     .sort((a, b) => (b.lastActivityYear || '').localeCompare(a.lastActivityYear || ''));
 
   const cap = Math.max(0, state.hourlyCap);
+  const enabled = new Set(state.enabledSteps ?? ['e1']);
   const sent: string[] = [];
   const errors: string[] = [];
   let skippedSteps = 0;
+  let waitingApproval = 0;
   for (const c of due) {
     if (sent.length >= cap) break;
     const step = stepByKey(c.campaign!.nextStep!);
     if (!step) continue;
+    if (!enabled.has(step.key)) {
+      waitingApproval += 1; // Ken has not approved this email yet; it sends once enabled
+      continue;
+    }
     const next = nextStepAfter(step.key);
     const scheduleNext = (from: Date) =>
       next ? new Date(from.getTime() + (next.dayOffset - step.dayOffset) * 86400000).toISOString() : null;
@@ -122,7 +128,7 @@ export async function runCampaigns(now = new Date(), force = false) {
   }
   const sentToday = (state.sentTodayDate === date ? state.sentToday : 0) + sent.length;
   await setCampaignState({ lastRunAt: nowIso(), lastRunSent: sent.length, sentToday, sentTodayDate: date });
-  return { due: due.length, sent: sent.length, skippedSteps, errors, cap };
+  return { due: due.length, sent: sent.length, skippedSteps, waitingApproval, errors, cap };
 }
 
 /** Mark a contact converted when a form submission carries its token. */

@@ -12,7 +12,7 @@ import { Phone, MapPin, ArrowRight, Award, Clock, Users, BadgeCheck, Landmark } 
 export const metadata: Metadata = {
   title: { absolute: 'Meet Ken Finch: Oakville Real Estate Broker & Mortgage Agent' },
   description:
-    'Ken Finch is an Oakville, Ontario real estate broker with Royal LePage Signature Realty and a licensed mortgage agent with Canadian Express-Mortgage Inc., helping GTA buyers and sellers since 2004.',
+    'Ken Finch is an Oakville, Ontario real estate broker with Royal LePage Signature Realty and a licensed mortgage agent with Canada Express-Mortgage Inc., helping GTA buyers and sellers since 2004.',
   keywords: [
     'Ken Finch',
     'Oakville real estate broker',

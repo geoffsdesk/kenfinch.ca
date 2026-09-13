@@ -26,7 +26,7 @@ If you are selling your current home and buying the next one, the timeline is a 
 
 ## 5. You get the whole lender market, not one bank
 
-Through Canadian Express-Mortgage Inc. I place mortgages with over thirty lenders: the big banks, credit unions, and monoline lenders that often price more sharply than the branch down the street. One credit inquiry, one application, and the lender competes for you rather than the other way around. For self-employed buyers, new Canadians, and anyone with a bruised credit history, that breadth is the difference between an approval and a decline.
+Through Canada Express-Mortgage Inc. I place mortgages with over thirty lenders: the big banks, credit unions, and monoline lenders that often price more sharply than the branch down the street. One credit inquiry, one application, and the lender competes for you rather than the other way around. For self-employed buyers, new Canadians, and anyone with a bruised credit history, that breadth is the difference between an approval and a decline.
 
 ## What it costs you
 
@@ -42,4 +42,4 @@ Two licences means two regulators, two sets of disclosure rules, and a duty to a
 
 Ready to see the difference? Start with the [two-minute pre-approval check](/mortgage#apply) or read the [First-Time Home Buyer Guide](/blog/first-time-home-buyer-guide-oakville-gta-2026).
 
-*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Agent Level 1, Licence #M26000634, Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241.*
+*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Agent Level 1, Licence #M26000634, Canada Express-Mortgage Inc., FSRA Brokerage Licence #13241.*

@@ -9,7 +9,7 @@ import { Loader2, RefreshCw, Users, Mail, Pause, Play, Send } from 'lucide-react
 import type { DatabaseStats } from '@/lib/contacts/types';
 import { SEGMENT_LABELS, CONTACT_STATUS_LABELS } from '@/lib/contacts/types';
 
-const STEP_LABELS: Record<string, string> = { e1: '1. Quick update', e2: '2. 120-day window', e3: '3. Oakville market', e4: '4. Keep you on the list?' };
+const STEP_LABELS: Record<string, string> = { e1: '1. Renewal wave', e2: '2. 120-day window', e3: '3. Oakville market', e4: '4. Keep you on the list?' };
 
 export function DatabasePanel({ password }: { password: string }) {
   const [stats, setStats] = useState<DatabaseStats | null>(null);
@@ -130,6 +130,26 @@ export function DatabasePanel({ password }: { password: string }) {
               ) : (
                 <p className="text-sm text-muted-foreground">Nobody enrolled yet.</p>
               )}
+              <div className="flex flex-wrap items-center gap-3 text-sm">
+                <span className="text-xs text-muted-foreground">Approved to send:</span>
+                {Object.entries(STEP_LABELS).map(([k, label]) => {
+                  const on = s.automation.enabledSteps?.includes(k);
+                  return (
+                    <label key={k} className="inline-flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!on}
+                        disabled={!!busy}
+                        onChange={() => {
+                          const next = on ? s.automation.enabledSteps.filter((x) => x !== k) : [...s.automation.enabledSteps, k];
+                          act('steps', { op: 'steps', steps: next }, (r) => `Approved steps: ${(r.enabledSteps as string[]).join(', ') || 'none'}.`);
+                        }}
+                      />
+                      {label}
+                    </label>
+                  );
+                })}
+              </div>
               <p className="text-xs text-muted-foreground">
                 Provider: <strong>{s.automation.provider ?? 'none configured'}</strong> &middot; cap {s.automation.hourlyCap}/hour, Mon-Fri 9-18 Toronto
                 {s.automation.lastRunAt ? ` · last run ${new Date(s.automation.lastRunAt).toLocaleString('en-CA')} sent ${s.automation.lastRunSent}` : ''}

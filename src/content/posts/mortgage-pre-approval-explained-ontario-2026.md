@@ -72,4 +72,4 @@ Oakville listings still attract multiple offers on well-priced homes. A pre-appr
 
 Start with the [pre-approval check](/mortgage#apply), or read the [First-Time Home Buyer Guide](/blog/first-time-home-buyer-guide-oakville-gta-2026) if this is your first purchase. Questions? Call (416) 520-5544.
 
-*Ken Finch, Mortgage Agent Level 1, Licence #M26000634. Mortgage services provided through Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241. A pre-approval is not a commitment to lend; final approval is subject to lender review.*
+*Ken Finch, Mortgage Agent Level 1, Licence #M26000634. Mortgage services provided through Canada Express-Mortgage Inc., FSRA Brokerage Licence #13241. A pre-approval is not a commitment to lend; final approval is subject to lender review.*

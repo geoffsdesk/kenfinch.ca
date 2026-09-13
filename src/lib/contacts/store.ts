@@ -136,13 +136,15 @@ export function digits(s: string) {
 export interface CampaignSystemState {
   hourlyCap: number;
   paused: boolean;
+  /** Step keys Ken has approved for sending; unapproved steps wait (nextSendAt untouched). */
+  enabledSteps: string[];
   lastRunAt: string | null;
   lastRunSent: number;
   sentToday: number;
   sentTodayDate: string;
 }
 
-const DEFAULT_STATE: CampaignSystemState = { hourlyCap: 8, paused: false, lastRunAt: null, lastRunSent: 0, sentToday: 0, sentTodayDate: '' };
+const DEFAULT_STATE: CampaignSystemState = { hourlyCap: 8, paused: false, enabledSteps: ['e1'], lastRunAt: null, lastRunSent: 0, sentToday: 0, sentTodayDate: '' };
 
 export async function getCampaignState(): Promise<CampaignSystemState> {
   const snap = await getAdminDb().doc(SYSTEM_DOC).get();
@@ -182,6 +184,6 @@ export function summarize(contacts: ContactRecord[], campaignId: string, state: 
     emailable,
     phoneOnly,
     campaign: camp.enrolled ? camp : null,
-    automation: { hourlyCap: state.hourlyCap, paused: state.paused, lastRunAt: state.lastRunAt, lastRunSent: state.lastRunSent, provider },
+    automation: { hourlyCap: state.hourlyCap, paused: state.paused, enabledSteps: state.enabledSteps, lastRunAt: state.lastRunAt, lastRunSent: state.lastRunSent, provider },
   };
 }

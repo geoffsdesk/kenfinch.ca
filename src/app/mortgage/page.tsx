@@ -13,7 +13,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Mortgage Pre-Approval in Oakville & the GTA',
   description:
-    'Get a mortgage pre-approval from Ken Finch, licensed mortgage agent with Canadian Express-Mortgage Inc. (FSRA #13241). 30+ lenders, first-time buyer programs, purchases, refinances and renewals across Ontario.',
+    'Get a mortgage pre-approval from Ken Finch, licensed mortgage agent with Canada Express-Mortgage Inc. (FSRA #13241). 30+ lenders, first-time buyer programs, purchases, refinances and renewals across Ontario.',
   keywords: [
     'mortgage pre-approval Oakville',
     'mortgage agent Oakville',
