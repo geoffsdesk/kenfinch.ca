@@ -19,6 +19,9 @@ export function DatabasePanel({ password }: { password: string }) {
   const [segment, setSegment] = useState<string>('all');
   const [limit, setLimit] = useState<string>('');
   const [cap, setCap] = useState<string>('');
+  const [testTo, setTestTo] = useState<string>('');
+  const [testStep, setTestStep] = useState<string>('e1');
+  const [testSegment, setTestSegment] = useState<string>('idx-prospect');
 
   const call = useCallback(
     async (body: Record<string, unknown>) => {
@@ -207,6 +210,38 @@ export function DatabasePanel({ password }: { password: string }) {
                   onClick={() => act('run', { op: 'run' }, (r) => `Sent ${(r.result as { sent?: number })?.sent ?? 0} now.`)}
                 >
                   {busy === 'run' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}Send a batch now
+                </Button>
+              </div>
+            </div>
+
+            <div className="rounded-lg border p-4 space-y-2">
+              <p className="font-semibold text-sm">Send a test to yourself</p>
+              <p className="text-xs text-muted-foreground">Renders the chosen email for a sample contact and sends it through the same path as the real campaign. Subject is prefixed with [TEST].</p>
+              <div className="flex flex-wrap items-end gap-2">
+                <Input className="w-[260px]" placeholder="you@example.com" value={testTo} onChange={(e) => setTestTo(e.target.value)} />
+                <Select value={testStep} onValueChange={setTestStep}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(STEP_LABELS).map(([k, label]) => (
+                      <SelectItem key={k} value={k}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={testSegment} onValueChange={setTestSegment}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="idx-prospect">Search-site opener</SelectItem>
+                    <SelectItem value="sphere">Sphere opener</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button size="sm" variant="outline" disabled={!!busy || !testTo} onClick={() => act('test', { op: 'test', to: testTo, step: testStep, segment: testSegment }, () => `Test sent to ${testTo}.`)}>
+                  {busy === 'test' ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}Send test
                 </Button>
               </div>
             </div>

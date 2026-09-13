@@ -3,7 +3,10 @@ import { z } from 'zod';
 import { listContacts, importContacts, summarize, getCampaignState, setCampaignState, setContactStatus } from '@/lib/contacts/store';
 import { contactImportRow } from '@/lib/contacts/types';
 import { enrolContacts, runCampaigns } from '@/lib/campaigns/runner';
-import { REACTIVATION_ID } from '@/lib/campaigns/reactivation';
+import { REACTIVATION_ID, stepByKey, stepLinks } from '@/lib/campaigns/reactivation';
+import { sendMail, BULK_MAIL_FROM } from '@/lib/mail';
+import { KEN_EMAIL } from '@/lib/leads/notify';
+import type { ContactRecord } from '@/lib/contacts/types';
 import { mailProvider } from '@/lib/mail';
 
 export const dynamic = 'force-dynamic';
@@ -20,6 +23,7 @@ const DASHBOARD_PASSWORD = process.env.DASHBOARD_PASSWORD || 'kenfinch2026';
  *   { password, op: 'pause' | 'resume' }
  *   { password, op: 'cap', hourlyCap: number }
  *   { password, op: 'steps', steps: string[] }                              (approved email steps, e.g. ['e1','e2'])
+ *   { password, op: 'test', to: email, step: 'e1'|'e2'|'e3'|'e4', segment?: 'sphere'|'idx-prospect' }  (send a rendered sample to yourself)
  *   { password, op: 'run' }                                           (send one batch now, ignores the time window)
  *   { password, op: 'exclude' | 'reactivate', id }
  */
@@ -66,6 +70,29 @@ export async function POST(req: NextRequest) {
         if (!steps) return NextResponse.json({ error: 'Bad steps' }, { status: 400 });
         await setCampaignState({ enabledSteps: steps });
         return NextResponse.json({ ok: true, enabledSteps: steps });
+      }
+      case 'test': {
+        const to = typeof body.to === 'string' ? body.to.trim() : '';
+        const step = stepByKey(typeof body.step === 'string' ? body.step : 'e1');
+        if (!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(to) || !step) return NextResponse.json({ error: 'Bad address or step' }, { status: 400 });
+        const segment = body.segment === 'sphere' ? 'sphere' : 'idx-prospect';
+        const now = new Date().toISOString();
+        const sample: ContactRecord = {
+          id: 'test', firstName: 'Geoff', lastName: 'Test', email: to, phone: '', segment, status: 'active',
+          consent: { basis: 'express', source: 'test', reviewedByKen: true }, lastActivityYear: '2025', source: 'test', tags: [],
+          token: '0123456789abcdef0123456789abcdef', campaign: null, leadId: null, importBatch: 'test', notes: [], createdAt: now, updatedAt: now,
+        };
+        const links = stepLinks(sample, step.key);
+        const res = await sendMail({
+          from: BULK_MAIL_FROM,
+          to,
+          replyTo: KEN_EMAIL,
+          subject: `[TEST ${step.key} / ${segment}] ${step.subject(sample)}`,
+          html: step.html(sample, links),
+          headers: { 'List-Unsubscribe': `<${links.unsubscribe}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
+          tag: `test-${step.key}`,
+        });
+        return NextResponse.json({ ok: true, id: res.id });
       }
       case 'run': {
         const result = await runCampaigns(new Date(), true);
