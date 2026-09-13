@@ -21,8 +21,8 @@ export const maxDuration = 300;
  * Hourly lead automation (called by .github/workflows/lead-automation.yml).
  *
  *  - Sends the 48-hour "did Ken reach you?" check-in (email, plus SMS when
- *    Twilio is configured) to leads that are still new/contacted, only during
- *    polite hours in Toronto.
+ *    Twilio is configured) to leads still marked New, only during polite hours
+ *    in Toronto. Ken cancels it by setting the status to Contacted in /ken.
  *  - Once per day after 08:00 Toronto, emails the lead digest to Geoff and Ken.
  *
  * Auth: `Authorization: Bearer <CRON_SECRET>` or `?key=<CRON_SECRET>`.
@@ -89,7 +89,8 @@ async function runCheckins(leads: LeadRecord[], now: Date) {
       l.id &&
       l.followUp?.token &&
       !l.followUp.checkinSentAt &&
-      (l.status === 'new' || l.status === 'contacted') &&
+      // Only leads Ken has not touched. Marking a lead Contacted (or anything later) in /ken cancels the check-in.
+      l.status === 'new' &&
       l.email &&
       new Date(l.followUp.checkinDueAt) <= now,
   );

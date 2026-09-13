@@ -115,7 +115,7 @@ export function kenNotificationHtml(lead: LeadRecord, leadId: string): string {
     <p style="margin-top:20px"><a href="${dashboardUrl()}" style="background:#d4af37;color:#111;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600">Open in dashboard</a></p>
     <p style="font-size:12px;color:#777">Lead ID ${esc(leadId)} &middot; Form ${esc(lead.source)} &middot; Page ${esc(lead.page)}<br>
     Marketing source: <strong>${esc(attributionLabel(lead.attribution))}</strong>${lead.attribution?.utm_term ? ` &middot; keyword: ${esc(lead.attribution.utm_term)}` : ''}${lead.attribution?.landingPage ? ` &middot; landed on ${esc(lead.attribution.landingPage)}` : ''}<br>
-    This lead will get an automatic "did Ken reach you?" check-in in 2 days. Update the status in the dashboard to keep the digest accurate.</p>
+    This lead gets an automatic "did Ken reach you?" check-in in 2 days unless you mark it Contacted in the dashboard first.</p>
   `);
 }
 
