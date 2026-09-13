@@ -36,6 +36,7 @@ def main():
     ap.add_argument('--review')
     ap.add_argument('--site', default='https://www.kenfinch.ca')
     ap.add_argument('--batch', default='kvcore-2026-09')
+    ap.add_argument('--all-express', action='store_true', help='Whole export came from a double opt-in CRM: mark every contact express consent')
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args()
     pw = os.environ.get('DASHBOARD_PASSWORD')
@@ -62,7 +63,9 @@ def main():
         know = yes(rv.get('know_them', r.get('know_them')))
         past = yes(rv.get('past_client', r.get('past_client')))
         exclude = yes(rv.get('exclude', r.get('exclude'))) or yes(r.get('unsubscribed'))
-        if seg == 'idx-prospect':
+        if a.all_express:
+            basis, src = 'express', 'kvCORE double opt-in record (confirmed by Geoff 2026-09-13)'
+        elif seg == 'idx-prospect':
             basis, src = 'express', 'Registered on search.neighbourhoodexpertteam.com (consent checkbox)'
         elif seg == 'active-lead':
             basis, src = 'express', 'Asked Ken for help (active/new lead)'
