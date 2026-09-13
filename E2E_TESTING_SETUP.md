@@ -46,7 +46,7 @@ Go to **Settings → Secrets and variables → Actions** in the GitHub repo and 
 #### Failure Alerts — Email
 | Secret | Description |
 |---|---|
-| `SENDGRID_API_KEY` | Same key the site uses for sending emails |
+| `RESEND_API_KEY` | Same Resend key the site uses for sending emails |
 | `ALERT_EMAIL_TO` | Where to send failure alerts (e.g. `geoff.radian6@gmail.com`) |
 | `ALERT_EMAIL_FROM` | Sender address (e.g. `alerts@kenfinch.ca`) |
 
@@ -103,7 +103,7 @@ playwright.config.ts           # Playwright configuration
 
 When tests fail, the workflow sends alerts on **all configured channels simultaneously**:
 
-1. **Email** (SendGrid): detailed HTML report with test names, errors, and link to GitHub Actions run
+1. **Email** (Resend): detailed HTML report with test names, errors, and link to GitHub Actions run
 2. **SMS** (Twilio): concise failure summary
 3. **WhatsApp** (Twilio): same as SMS, sent to your WhatsApp number
 

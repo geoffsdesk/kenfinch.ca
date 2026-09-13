@@ -1,14 +1,12 @@
 /**
- * Single outbound email sender for the whole site.
- *
- * Provider is chosen at runtime:
- *   - RESEND_API_KEY set   -> Resend (free tier: 3,000/month, 100/day; Pro removes the daily cap)
- *   - else SENDGRID_API_KEY -> SendGrid (legacy)
+ * Single outbound email sender for the whole site, via Resend.
  *
  * Transactional mail (lead alerts, confirmations, check-ins, digest) goes out
  * from MAIL_FROM (default realtor@kenfinch.ca). Database campaigns go out from
  * BULK_MAIL_FROM (default ken@kenfinch.ca) so replies land in Ken's mailbox and
  * a spam complaint on a bulk send never touches the transactional address.
+ *
+ * Resend free tier: 3,000 emails/month, 100/day. Pro removes the daily cap.
  */
 
 import { CONTACT } from '@/lib/site';
@@ -27,19 +25,17 @@ export interface MailMessage {
   bcc?: string | string[];
   cc?: string | string[];
   headers?: Record<string, string>;
-  /** Free-form tag for the provider's logs (e.g. "reactivation-e1"). */
+  /** Free-form tag for Resend's logs (e.g. "reactivation-e1"). */
   tag?: string;
 }
 
 export interface MailResult {
-  provider: 'resend' | 'sendgrid';
+  provider: 'resend';
   id: string | null;
 }
 
 export function mailProvider(): MailResult['provider'] | null {
-  if (process.env.RESEND_API_KEY) return 'resend';
-  if (process.env.SENDGRID_API_KEY) return 'sendgrid';
-  return null;
+  return process.env.RESEND_API_KEY ? 'resend' : null;
 }
 
 function toText(html: string) {
@@ -59,45 +55,24 @@ function toText(html: string) {
     .trim();
 }
 
+const list = (v?: string | string[]) => (v ? (Array.isArray(v) ? v : [v]) : undefined);
+
 export async function sendMail(msg: MailMessage): Promise<MailResult> {
-  const from = msg.from || MAIL_FROM;
-  const text = msg.text ?? toText(msg.html);
-  const provider = mailProvider();
-  if (!provider) throw new Error('No email provider configured (set RESEND_API_KEY or SENDGRID_API_KEY)');
-
-  if (provider === 'resend') {
-    const { Resend } = await import('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    const { data, error } = await resend.emails.send({
-      from: `${FROM_NAME} <${from}>`,
-      to: Array.isArray(msg.to) ? msg.to : [msg.to],
-      cc: msg.cc ? (Array.isArray(msg.cc) ? msg.cc : [msg.cc]) : undefined,
-      bcc: msg.bcc ? (Array.isArray(msg.bcc) ? msg.bcc : [msg.bcc]) : undefined,
-      replyTo: msg.replyTo,
-      subject: msg.subject,
-      html: msg.html,
-      text,
-      headers: msg.headers,
-      tags: msg.tag ? [{ name: 'campaign', value: msg.tag.replace(/[^a-zA-Z0-9_-]/g, '_') }] : undefined,
-    });
-    if (error) throw new Error(`Resend: ${error.name}: ${error.message}`);
-    return { provider, id: data?.id ?? null };
-  }
-
-  const { default: sgMail } = await import('@sendgrid/mail');
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
-  const [res] = await sgMail.send({
-    from: { email: from, name: FROM_NAME },
-    to: msg.to,
-    cc: msg.cc,
-    bcc: msg.bcc,
+  if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY is not set');
+  const { Resend } = await import('resend');
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const { data, error } = await resend.emails.send({
+    from: `${FROM_NAME} <${msg.from || MAIL_FROM}>`,
+    to: list(msg.to)!,
+    cc: list(msg.cc),
+    bcc: list(msg.bcc),
     replyTo: msg.replyTo,
     subject: msg.subject,
     html: msg.html,
-    text,
+    text: msg.text ?? toText(msg.html),
     headers: msg.headers,
-    categories: msg.tag ? [msg.tag] : undefined,
+    tags: msg.tag ? [{ name: 'campaign', value: msg.tag.replace(/[^a-zA-Z0-9_-]/g, '_') }] : undefined,
   });
-  const id = (res?.headers as Record<string, string> | undefined)?.['x-message-id'] ?? null;
-  return { provider, id };
+  if (error) throw new Error(`Resend: ${error.name}: ${error.message}`);
+  return { provider: 'resend', id: data?.id ?? null };
 }

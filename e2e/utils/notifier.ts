@@ -1,11 +1,11 @@
 /**
  * Multi-channel failure notification system.
  *
- * Sends alerts via email (SendGrid), SMS, and WhatsApp (Twilio)
+ * Sends alerts via email (Resend), SMS, and WhatsApp (Twilio)
  * when E2E tests fail.
  *
  * Required env vars:
- *   SENDGRID_API_KEY           – for email alerts
+ *   RESEND_API_KEY             – for email alerts
  *   ALERT_EMAIL_TO             – recipient email (e.g. geoff.radian6@gmail.com)
  *   ALERT_EMAIL_FROM           – sender email (e.g. alerts@kenfinch.ca)
  *   TWILIO_ACCOUNT_SID         – Twilio account
@@ -15,7 +15,15 @@
  *   ALERT_PHONE_TO             – recipient phone (e.g. +1234567890)
  */
 
-import sgMail from '@sendgrid/mail';
+/** Minimal Resend client (REST) so the E2E utils do not pull in the app's modules. */
+async function resendSend(msg: { to: string; from: string; subject: string; html: string }): Promise<void> {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: `KenFinch.ca alerts <${msg.from}>`, to: [msg.to], subject: msg.subject, html: msg.html }),
+  });
+  if (!res.ok) throw new Error(`Resend ${res.status}: ${await res.text()}`);
+}
 
 interface TestFailure {
   testName: string;
@@ -25,19 +33,17 @@ interface TestFailure {
 }
 
 /**
- * Send an HTML email alert via SendGrid.
+ * Send an HTML email alert via Resend.
  */
 async function sendEmailAlert(failures: TestFailure[]): Promise<void> {
-  const apiKey = process.env.SENDGRID_API_KEY;
+  const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.ALERT_EMAIL_TO;
   const from = process.env.ALERT_EMAIL_FROM || 'alerts@kenfinch.ca';
 
   if (!apiKey || !to) {
-    console.warn('Email alert skipped: SENDGRID_API_KEY or ALERT_EMAIL_TO not set');
+    console.warn('Email alert skipped: RESEND_API_KEY or ALERT_EMAIL_TO not set');
     return;
   }
-
-  sgMail.setApiKey(apiKey);
 
   const failureRows = failures
     .map(
@@ -54,7 +60,7 @@ async function sendEmailAlert(failures: TestFailure[]): Promise<void> {
     ? `<p><a href="${failures[0].runUrl}">View full run in GitHub Actions</a></p>`
     : '';
 
-  await sgMail.send({
+  await resendSend({
     to,
     from,
     subject: `[KenFinch.ca] E2E Test FAILURE - ${failures.length} test(s) failed`,

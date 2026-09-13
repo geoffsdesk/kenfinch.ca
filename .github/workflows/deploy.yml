@@ -51,7 +51,7 @@ jobs:
           NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL: ${{ secrets.NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL }}
           NEXT_PUBLIC_META_PIXEL_ID: ${{ secrets.NEXT_PUBLIC_META_PIXEL_ID }}
           NEXT_PUBLIC_TIKTOK_PIXEL_ID: ${{ secrets.NEXT_PUBLIC_TIKTOK_PIXEL_ID }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: npm run build
 
       - name: Authenticate to Google Cloud
@@ -77,6 +77,6 @@ jobs:
           NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL: ${{ secrets.NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL }}
           NEXT_PUBLIC_META_PIXEL_ID: ${{ secrets.NEXT_PUBLIC_META_PIXEL_ID }}
           NEXT_PUBLIC_TIKTOK_PIXEL_ID: ${{ secrets.NEXT_PUBLIC_TIKTOK_PIXEL_ID }}
-          SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npx firebase-tools@13.28.0 deploy --only hosting --project $FIREBASE_PROJECT --non-interactive --debug

@@ -1,7 +1,7 @@
 
 'use server';
 /**
- * @fileOverview A flow for sending emails using SendGrid.
+ * @fileOverview A flow for sending emails (Resend, via src/lib/mail.ts).
  *
  * - sendEmail - A function that sends an email.
  * - SendEmailInput - The input type for the sendEmail function.
@@ -35,7 +35,7 @@ const sendEmailFlow = ai.defineFlow(
   async (input) => {
 
     if (!mailProvider()) {
-        console.error('No email provider configured (RESEND_API_KEY or SENDGRID_API_KEY).');
+        console.error('No email provider configured (RESEND_API_KEY).');
         throw new Error('No email provider configured.');
     }
 

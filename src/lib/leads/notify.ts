@@ -1,5 +1,5 @@
 /**
- * Outbound notifications for the lead pipeline: email via SendGrid, SMS via
+ * Outbound notifications for the lead pipeline: email via Resend, SMS via
  * Twilio (optional; silently skipped when not configured).
  */
 
@@ -15,7 +15,7 @@ export const TORONTO_TZ = 'America/Toronto';
 
 // ─── Email ───────────────────────────────────────────────────────────────────
 
-// Provider selection (Resend, else SendGrid) lives in src/lib/mail.ts.
+// The Resend sender lives in src/lib/mail.ts.
 export { sendMail } from '@/lib/mail';
 
 export function esc(s: unknown) {
