@@ -1,12 +1,12 @@
 ---
-title: 'Why Buy With a Realtor Who Is Also Your Mortgage Broker'
+title: 'Why Buy With a Realtor Who Also Arranges Your Mortgage'
 date: '2026-08-12'
 category: mortgage
 image: '/ken_with_client.jpg'
 excerpt: 'Financing conditions fall through, budgets turn out to be guesses, and closings get rescued at the last minute because the agent and the lender never talked. Here is what changes when one licensed advisor handles both.'
 ---
 
-Every real estate transaction has two halves: the home and the money. In the usual setup they are handled by two people who have never met, each of whom finds out what the other did after the fact. I spent twenty years as a real estate broker watching that gap cost buyers homes, and eventually I fixed it by becoming a licensed mortgage broker as well. Here is what that changes in practice.
+Every real estate transaction has two halves: the home and the money. In the usual setup they are handled by two people who have never met, each of whom finds out what the other did after the fact. I spent twenty years as a real estate broker watching that gap cost buyers homes, and eventually I fixed it by becoming a licensed mortgage agent as well. Here is what that changes in practice.
 
 ## 1. Your budget is real before your first showing
 
@@ -42,4 +42,4 @@ Two licences means two regulators, two sets of disclosure rules, and a duty to a
 
 Ready to see the difference? Start with the [two-minute pre-approval check](/mortgage#apply) or read the [First-Time Home Buyer Guide](/blog/first-time-home-buyer-guide-oakville-gta-2026).
 
-*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Broker, Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241.*
+*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Agent Level 1, Licence #M26000634, Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241.*

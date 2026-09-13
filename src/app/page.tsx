@@ -25,13 +25,13 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Buy a Home in Oakville & the GTA | Ken Finch, Real Estate Broker + Mortgage Broker' },
+  title: { absolute: 'Buy a Home in Oakville & the GTA | Ken Finch, Real Estate Broker + Mortgage Agent' },
   description:
-    'Buy your next home in Oakville, Burlington, Mississauga or anywhere in the GTA with Ken Finch: a licensed real estate broker and licensed mortgage broker. Get pre-approved and find the right home with one advisor.',
+    'Buy your next home in Oakville, Burlington, Mississauga or anywhere in the GTA with Ken Finch: a licensed real estate broker and licensed mortgage agent. Get pre-approved and find the right home with one advisor.',
   keywords: [
     'buy home Oakville',
     'Oakville real estate agent for buyers',
-    'mortgage broker Oakville',
+    'mortgage agent Oakville',
     'mortgage pre-approval Oakville',
     'first time home buyer Oakville',
     'GTA buyer agent',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Buy a Home in Oakville & the GTA | Ken Finch',
     description:
-      'One advisor for your home search and your mortgage. Ken Finch is a licensed real estate broker and licensed mortgage broker serving Oakville and the GTA.',
+      'One advisor for your home search and your mortgage. Ken Finch is a licensed real estate broker and licensed mortgage agent serving Oakville and the GTA.',
     url: `${SITE_URL}/`,
     images: [`${SITE_URL}/hero_family_moving.jpg`],
   },
@@ -49,8 +49,8 @@ export const metadata: Metadata = {
 
 const FAQS = [
   {
-    q: 'Why work with a Realtor who is also a mortgage broker?',
-    a: 'You get one plan instead of two conversations. Ken knows what lenders need before you write an offer, so your budget is realistic, your financing condition is safe, and there are no surprises between accepted offer and closing. He is licensed as a real estate broker (RECO) and as a mortgage broker (FSRA).',
+    q: 'Why work with a Realtor who also arranges your mortgage?',
+    a: 'You get one plan instead of two conversations. Ken knows what lenders need before you write an offer, so your budget is realistic, your financing condition is safe, and there are no surprises between accepted offer and closing. He is licensed as a real estate broker (RECO) and as a Mortgage Agent Level 1 (FSRA).',
   },
   {
     q: 'Does it cost me anything to use Ken as my buyer agent?',
@@ -90,7 +90,7 @@ export default function Home() {
         email: CONTACT.email,
         address: { '@type': 'PostalAddress', addressLocality: 'Oakville', addressRegion: 'ON', addressCountry: 'CA' },
         description:
-          'Ken Finch is a licensed real estate broker with Royal LePage Signature Realty and a licensed mortgage broker with Canadian Express-Mortgage Inc., helping buyers across Oakville and the GTA find and finance the right home.',
+          'Ken Finch is a licensed real estate broker with Royal LePage Signature Realty and a licensed mortgage agent with Canadian Express-Mortgage Inc., helping buyers across Oakville and the GTA find and finance the right home.',
         areaServed: [
           { '@type': 'Place', name: 'Oakville, ON' },
           { '@type': 'Place', name: 'Burlington, ON' },
@@ -134,13 +134,13 @@ export default function Home() {
         name: 'Ken Finch',
         givenName: 'Ken',
         familyName: 'Finch',
-        jobTitle: ['Real Estate Broker', 'Mortgage Broker'],
+        jobTitle: ['Real Estate Broker', 'Mortgage Agent'],
         image: `${SITE_URL}/ken_headshot_professional.jpg`,
         url: SITE_URL,
         worksFor: [{ '@id': `${SITE_URL}/#agent` }, { '@type': 'Organization', name: MORTGAGE.brokerage }],
         workLocation: { '@type': 'Place', name: 'Oakville, Ontario, Canada' },
         description:
-          'Ken Finch is an Oakville, Ontario real estate broker (Royal LePage Signature Realty) and licensed mortgage broker (Canadian Express-Mortgage Inc.) who has helped GTA families buy and sell homes since 2004.',
+          'Ken Finch is an Oakville, Ontario real estate broker (Royal LePage Signature Realty) and licensed mortgage agent (Canadian Express-Mortgage Inc.) who has helped GTA families buy and sell homes since 2004.',
         sameAs: [
           'https://www.royallepage.ca/en/agent/ontario/toronto/ken-finch/31668/',
           'https://www.linkedin.com/in/kenfinchrealtor/',
@@ -191,11 +191,11 @@ export default function Home() {
                   Oakville &middot; Burlington &middot; Mississauga &middot; GTA
                 </p>
                 <h1 className="font-headline text-4xl font-bold leading-[1.05] sm:text-5xl md:text-6xl xl:text-7xl">
-                  Buy your next home with the broker who also{' '}
+                  Buy your next home with the Realtor who also{' '}
                   <span className="text-primary">gets you the mortgage.</span>
                 </h1>
                 <p className="max-w-xl text-lg text-slate-300 md:text-xl">
-                  Ken Finch is a licensed real estate broker <em>and</em> a licensed mortgage broker. One advisor, one
+                  Ken Finch is a licensed real estate broker <em>and</em> a licensed mortgage agent. One advisor, one
                   plan: know exactly what you can afford, then find and win the right home in Oakville or anywhere in the GTA.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 pt-1">
@@ -218,7 +218,7 @@ export default function Home() {
                 </div>
                 <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-sm text-slate-300">
                   <span className="inline-flex items-center gap-1.5"><BadgeCheck className="h-4 w-4 text-primary" /> Licensed Real Estate Broker</span>
-                  <span className="inline-flex items-center gap-1.5"><BadgeCheck className="h-4 w-4 text-primary" /> Licensed Mortgage Broker</span>
+                  <span className="inline-flex items-center gap-1.5"><BadgeCheck className="h-4 w-4 text-primary" /> Licensed Mortgage Agent</span>
                   <span className="inline-flex items-center gap-1.5">
                     <span className="flex text-primary">
                       {[1, 2, 3, 4, 5].map((i) => <Star key={i} className="h-3.5 w-3.5 fill-current" />)}
@@ -389,7 +389,7 @@ export default function Home() {
                   />
                   <div className="text-sm">
                     <p className="font-semibold">Ken Finch</p>
-                    <p className="text-muted-foreground">Real Estate Broker &middot; Mortgage Broker</p>
+                    <p className="text-muted-foreground">Real Estate Broker &middot; Mortgage Agent</p>
                     <a href={CONTACT.phoneHref} className="text-primary font-medium hover:underline">{CONTACT.phoneDisplay}</a>
                   </div>
                 </div>

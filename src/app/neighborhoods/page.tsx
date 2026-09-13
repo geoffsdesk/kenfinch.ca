@@ -158,7 +158,7 @@ export default function NeighborhoodsPage() {
               Know your budget before you pick a neighbourhood.
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-              Ken is a licensed mortgage broker as well as your buyer agent. A two-minute pre-approval
+              Ken is a licensed mortgage agent as well as your buyer agent. A two-minute pre-approval
               check tells you which of these neighbourhoods are realistic, and how to win there.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">

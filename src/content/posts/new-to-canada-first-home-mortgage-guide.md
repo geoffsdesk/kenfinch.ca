@@ -8,7 +8,7 @@ excerpt: 'A practical guide for newcomers to Canada: how Canadian credit works, 
 
 Every week I meet families who arrived in Canada with savings, good jobs, and years of perfect payment history in another country, only to be told by a bank that they have "no credit." It is frustrating, and it is fixable. This guide explains how the Canadian system works, how to build a usable credit file fast, and how a newcomer actually gets approved for a first mortgage in the GTA.
 
-I write it as a real estate broker and a licensed mortgage broker who has helped newcomers buy in Oakville, Mississauga, Milton and Brampton for over twenty years.
+I write it as a real estate broker and a licensed mortgage agent who has helped newcomers buy in Oakville, Mississauga, Milton and Brampton for over twenty years.
 
 ## Why your credit history did not come with you
 
@@ -65,4 +65,4 @@ Because I hold both licences, I can tell you on the first call which lender will
 
 Start with the [pre-approval check](/mortgage#apply). It takes two minutes, there is no credit inquiry, and I call you back within one business day. Or call or text me at (416) 520-5544.
 
-*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Broker, Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241. Program rules change; confirm current eligibility with Ken before relying on any figure above.*
+*Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, Mortgage Agent Level 1, Licence #M26000634, Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241. Program rules change; confirm current eligibility with Ken before relying on any figure above.*

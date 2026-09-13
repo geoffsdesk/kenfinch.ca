@@ -10,7 +10,7 @@ import { CalendarClock, Landmark, ShieldCheck } from 'lucide-react';
 export const metadata: Metadata = {
   title: 'Mortgage Renewal Check | Ken Finch, Oakville',
   description:
-    'Tell Ken Finch when your mortgage renews and he will shop the market for you 120 days out. Oakville mortgage broker, no obligation.',
+    'Tell Ken Finch when your mortgage renews and he will shop the market for you 120 days out. Oakville mortgage agent, no obligation.',
   alternates: { canonical: '/renewal' },
   openGraph: {
     title: 'When does your mortgage renew?',

@@ -11,16 +11,16 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Buy a Home in Oakville & the GTA with a Buyer Agent + Mortgage Broker',
+  title: 'Buy a Home in Oakville & the GTA with a Buyer Agent + Mortgage Agent',
   description:
-    'Looking to buy a home in Oakville, Burlington, Mississauga or the GTA? Ken Finch is a licensed buyer agent and mortgage broker. Get pre-approved, tour the right homes, and win your offer with one advisor.',
+    'Looking to buy a home in Oakville, Burlington, Mississauga or the GTA? Ken Finch is a licensed buyer agent and mortgage agent. Get pre-approved, tour the right homes, and win your offer with one advisor.',
   keywords: [
     'buy a home in Oakville',
     'Oakville buyer agent',
     'homes for sale Oakville',
     'real estate agent for buyers Oakville',
     'first time home buyer GTA',
-    'mortgage broker Oakville',
+    'mortgage agent Oakville',
     'Burlington buyer agent',
     'Mississauga real estate agent',
   ],
@@ -54,7 +54,7 @@ export default function BuyPage() {
         areaServed: ['Oakville', 'Burlington', 'Mississauga', 'Milton', 'Toronto', 'Greater Toronto Area'],
         url: `${SITE_URL}/buy`,
         description:
-          'Full buyer representation in Oakville and the GTA from Ken Finch, a licensed real estate broker and mortgage broker: pre-approval, curated search, offer strategy and closing coordination.',
+          'Full buyer representation in Oakville and the GTA from Ken Finch, a licensed real estate broker and mortgage agent: pre-approval, curated search, offer strategy and closing coordination.',
       },
       {
         '@type': 'BreadcrumbList',
@@ -85,7 +85,7 @@ export default function BuyPage() {
                 </h1>
                 <p className="text-lg text-muted-foreground max-w-[560px]">
                   Ken Finch represents buyers across the GTA as a licensed real estate broker, and arranges their mortgages as a
-                  licensed mortgage broker. Start with a two-minute pre-approval check and Ken will call you with a real budget.
+                  licensed mortgage agent. Start with a two-minute pre-approval check and Ken will call you with a real budget.
                 </p>
 
                 <div className="grid grid-cols-2 gap-4 pt-2">

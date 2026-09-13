@@ -11,7 +11,7 @@ export function Footer() {
           <div className="space-y-4 lg:col-span-1">
             <span className="font-bold font-headline text-xl text-primary">KenFinch.ca</span>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Ken Finch is a licensed real estate broker and licensed mortgage broker helping buyers and sellers across
+              Ken Finch is a licensed real estate broker and licensed mortgage agent helping buyers and sellers across
               Oakville and the GTA since 2004. One advisor for the home and the mortgage.
             </p>
             <div className="flex items-center gap-4 pt-1">
@@ -83,7 +83,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} {CONTACT.name}, {REAL_ESTATE.title}, {REAL_ESTATE.brokerage}. {REAL_ESTATE.disclaimer} All rights reserved.
           </p>
           <p className="text-center text-xs text-muted-foreground leading-relaxed">
-            {CONTACT.name}, {MORTGAGE.title}. Mortgage services provided through {MORTGAGE.brokerage}, FSRA Brokerage Licence #{MORTGAGE.brokerageLicence}.
+            {CONTACT.name}, {MORTGAGE.title}, Licence #{MORTGAGE.agentLicence}. Mortgage services provided through {MORTGAGE.brokerage}, FSRA Brokerage Licence #{MORTGAGE.brokerageLicence}.
             Mortgage pre-approvals are not a commitment to lend; rates and terms are subject to lender approval.
           </p>
         </div>

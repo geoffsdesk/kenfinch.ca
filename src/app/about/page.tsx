@@ -10,13 +10,13 @@ import type { Metadata } from 'next';
 import { Phone, MapPin, ArrowRight, Award, Clock, Users, BadgeCheck, Landmark } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Meet Ken Finch: Oakville Real Estate Broker & Mortgage Broker' },
+  title: { absolute: 'Meet Ken Finch: Oakville Real Estate Broker & Mortgage Agent' },
   description:
-    'Ken Finch is an Oakville, Ontario real estate broker with Royal LePage Signature Realty and a licensed mortgage broker with Canadian Express-Mortgage Inc., helping GTA buyers and sellers since 2004.',
+    'Ken Finch is an Oakville, Ontario real estate broker with Royal LePage Signature Realty and a licensed mortgage agent with Canadian Express-Mortgage Inc., helping GTA buyers and sellers since 2004.',
   keywords: [
     'Ken Finch',
     'Oakville real estate broker',
-    'Oakville mortgage broker',
+    'Oakville mortgage agent',
     'Royal LePage Oakville',
     'best real estate agent Oakville',
     'Oakville realtor',
@@ -24,9 +24,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/about' },
   openGraph: {
-    title: { absolute: 'Meet Ken Finch: Oakville Real Estate Broker & Mortgage Broker' },
+    title: { absolute: 'Meet Ken Finch: Oakville Real Estate Broker & Mortgage Agent' },
     description:
-      'Licensed real estate broker and licensed mortgage broker serving Oakville and the GTA since 2004.',
+      'Licensed real estate broker and licensed mortgage agent serving Oakville and the GTA since 2004.',
     url: `${SITE_URL}/about`,
     type: 'profile',
     images: [`${SITE_URL}/ken_headshot_professional.jpg`],
@@ -36,10 +36,10 @@ export const metadata: Metadata = {
 const FAQS = [
   {
     q: 'Who is Ken Finch?',
-    a: `Ken Finch is an Oakville, Ontario real estate broker with ${REAL_ESTATE.brokerage} and a licensed mortgage broker with ${MORTGAGE.brokerage} (FSRA Brokerage Licence #${MORTGAGE.brokerageLicence}). Licensed in real estate since 2004, he helps buyers and sellers across Oakville and the Greater Toronto Area.`,
+    a: `Ken Finch is an Oakville, Ontario real estate broker with ${REAL_ESTATE.brokerage} and a licensed mortgage agent with ${MORTGAGE.brokerage} (FSRA Brokerage Licence #${MORTGAGE.brokerageLicence}). Licensed in real estate since 2004, he helps buyers and sellers across Oakville and the Greater Toronto Area.`,
   },
   {
-    q: 'Is Ken Finch a mortgage broker as well as a Realtor?',
+    q: 'Is Ken Finch a mortgage agent as well as a Realtor?',
     a: `Yes. Ken holds both a real estate licence (RECO) and a mortgage licence (FSRA), so he can arrange a buyer's pre-approval and financing through ${MORTGAGE.brokerage} while representing them on the purchase.`,
   },
   {
@@ -64,7 +64,7 @@ export default function AboutPage() {
         '@type': 'Person',
         '@id': `${SITE_URL}/about#person`,
         name: 'Ken Finch',
-        jobTitle: ['Real Estate Broker', 'Mortgage Broker'],
+        jobTitle: ['Real Estate Broker', 'Mortgage Agent'],
         image: `${SITE_URL}/ken_headshot_professional.jpg`,
         url: `${SITE_URL}/about`,
         description: FAQS[0].a,
@@ -99,7 +99,7 @@ export default function AboutPage() {
                 <div className="w-56 h-56 md:w-72 md:h-72 rounded-2xl overflow-hidden shadow-xl border-4 border-primary/20">
                   <Image
                     src="/ken_headshot_professional.jpg"
-                    alt="Ken Finch, Oakville Real Estate Broker and Mortgage Broker"
+                    alt="Ken Finch, Oakville Real Estate Broker and Mortgage Agent"
                     width={320}
                     height={320}
                     className="object-cover w-full h-full"
@@ -112,7 +112,7 @@ export default function AboutPage() {
                 <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">Meet Ken Finch</h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
                   Ken is one of the few advisors in the GTA licensed on both sides of a home purchase: a real estate broker with{' '}
-                  {REAL_ESTATE.brokerage}, and a mortgage broker with {MORTGAGE.brokerage}. Since 2004 he has helped Oakville
+                  {REAL_ESTATE.brokerage}, and a mortgage agent with {MORTGAGE.brokerage}. Since 2004 he has helped Oakville
                   families buy, finance, and sell homes with one plan instead of three phone numbers.
                 </p>
                 <div className="flex flex-wrap gap-3 pt-2">
@@ -142,7 +142,7 @@ export default function AboutPage() {
               <div className="grid gap-6 md:grid-cols-2">
                 {[
                   { icon: BadgeCheck, title: 'Real estate', body: `${REAL_ESTATE.title} with ${REAL_ESTATE.brokerage}. Licensed since 2004.` },
-                  { icon: Landmark, title: 'Mortgages', body: `${MORTGAGE.title} with ${MORTGAGE.brokerage}, FSRA Brokerage Licence #${MORTGAGE.brokerageLicence}. Access to 30+ lenders.` },
+                  { icon: Landmark, title: 'Mortgages', body: `${MORTGAGE.title} (Licence #${MORTGAGE.agentLicence}) with ${MORTGAGE.brokerage}, FSRA Brokerage Licence #${MORTGAGE.brokerageLicence}. Access to 30+ lenders.` },
                   { icon: MapPin, title: 'Based in', body: 'Oakville, Ontario. Buyers served across Halton, Peel and Toronto; mortgages province-wide.' },
                   { icon: Clock, title: 'Experience', body: 'Over 20 years of Oakville transactions, from first condos to lakefront estates.' },
                   { icon: Award, title: 'Credentials', body: 'FRI (Fellow of the Real Estate Institute), CPM (Certified Property Manager). Past president of the Real Estate Institute of Canada.' },

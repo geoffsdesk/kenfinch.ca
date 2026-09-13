@@ -61,6 +61,6 @@ Oakville has the strongest track record for holding value in a downturn, driven 
 
 ## The right way to decide
 
-Get pre-approved first. The real budget usually eliminates one of the three cities and makes the choice between the other two obvious. As a licensed mortgage broker I can do that in a few days, and as your buyer agent I work in all three cities, so there is no pressure to pick one before you have seen the options.
+Get pre-approved first. The real budget usually eliminates one of the three cities and makes the choice between the other two obvious. As a licensed mortgage agent I can do that in a few days, and as your buyer agent I work in all three cities, so there is no pressure to pick one before you have seen the options.
 
 Start with the [two-minute pre-approval check](/mortgage#apply), browse the [Oakville neighbourhood guides](/neighborhoods), or call me at (416) 520-5544.

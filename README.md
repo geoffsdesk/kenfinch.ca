@@ -1,6 +1,6 @@
 # KenFinch.ca: Buyer-First Real Estate & Mortgage Platform
 
-KenFinch.ca is the website for Ken Finch, an Oakville, Ontario real estate broker (Royal LePage Signature Realty) who is also a licensed mortgage broker (Canadian Express-Mortgage Inc., FSRA #13241). As of September 2026 the site is buyer-centric: its job is to turn GTA home buyers into mortgage pre-approval leads that Ken works personally and hands into his Express Mortgage (Finmo) portal.
+KenFinch.ca is the website for Ken Finch, an Oakville, Ontario real estate broker (Royal LePage Signature Realty) who is also a licensed mortgage agent (Canadian Express-Mortgage Inc., FSRA #13241). As of September 2026 the site is buyer-centric: its job is to turn GTA home buyers into mortgage pre-approval leads that Ken works personally and hands into his Express Mortgage (Finmo) portal.
 
 ## Key Features
 

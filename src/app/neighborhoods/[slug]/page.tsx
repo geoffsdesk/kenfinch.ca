@@ -239,7 +239,7 @@ export default async function NeighborhoodPage({ params }: PageProps) {
                 <p className="text-sm font-semibold uppercase tracking-widest text-primary">Buying in {neighborhood.name}?</p>
                 <h2 className="font-headline text-3xl font-bold">See what your budget buys here, before you tour.</h2>
                 <p className="text-muted-foreground">
-                  Homes in {neighborhood.name} range from {neighborhood.priceRange}. Ken, a licensed mortgage broker as well as your
+                  Homes in {neighborhood.name} range from {neighborhood.priceRange}. Ken, a licensed mortgage agent as well as your
                   buyer agent, will tell you where you land in that range and what it takes to win an offer here.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">

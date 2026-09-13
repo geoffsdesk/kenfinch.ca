@@ -13,20 +13,20 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Mortgage Pre-Approval in Oakville & the GTA',
   description:
-    'Get a mortgage pre-approval from Ken Finch, licensed mortgage broker with Canadian Express-Mortgage Inc. (FSRA #13241). 30+ lenders, first-time buyer programs, purchases, refinances and renewals across Ontario.',
+    'Get a mortgage pre-approval from Ken Finch, licensed mortgage agent with Canadian Express-Mortgage Inc. (FSRA #13241). 30+ lenders, first-time buyer programs, purchases, refinances and renewals across Ontario.',
   keywords: [
     'mortgage pre-approval Oakville',
-    'mortgage broker Oakville',
-    'mortgage broker Burlington',
-    'mortgage broker Mississauga',
+    'mortgage agent Oakville',
+    'mortgage agent Burlington',
+    'mortgage agent Mississauga',
     'first time home buyer mortgage Ontario',
     'mortgage stress test 2026',
     'Express Mortgage Ken Finch',
   ],
   alternates: { canonical: '/mortgage' },
   openGraph: {
-    title: 'Mortgage Pre-Approval | Ken Finch, Mortgage Broker',
-    description: 'Real numbers from 30+ lenders before you shop. Licensed mortgage broker serving Oakville and all of Ontario.',
+    title: 'Mortgage Pre-Approval | Ken Finch, Mortgage Agent Level 1, Licence #M26000634',
+    description: 'Real numbers from 30+ lenders before you shop. Licensed mortgage agent serving Oakville and all of Ontario.',
     url: `${SITE_URL}/mortgage`,
   },
 };
@@ -49,7 +49,7 @@ const FAQS = [
     a: 'Government ID, recent pay stubs and a letter of employment (or two years of tax returns and notices of assessment if self-employed), 90 days of statements showing your down payment, and details of any existing debts. The secure application walks you through uploading each item.',
   },
   {
-    q: 'Is a mortgage broker more expensive than my bank?',
+    q: 'Is going through a mortgage agent more expensive than my bank?',
     a: 'For standard residential mortgages, brokers are paid by the lender, so there is no fee to you. Because Ken can place your file with over thirty banks, credit unions and monoline lenders, you typically end up with a better rate and terms than a single bank offers.',
   },
   {
@@ -68,7 +68,7 @@ export default function MortgagePage() {
         name: 'Ken Finch Mortgage Services',
         url: `${SITE_URL}/mortgage`,
         telephone: '+1-416-520-5544',
-        description: `Residential mortgage pre-approvals, purchases, refinances and renewals arranged by Ken Finch, ${MORTGAGE.title}, through ${MORTGAGE.brokerage} (FSRA Brokerage Licence #${MORTGAGE.brokerageLicence}).`,
+        description: `Residential mortgage pre-approvals, purchases, refinances and renewals arranged by Ken Finch, ${MORTGAGE.title} (Licence #${MORTGAGE.agentLicence}), through ${MORTGAGE.brokerage} (FSRA Brokerage Licence #${MORTGAGE.brokerageLicence}).`,
         areaServed: { '@type': 'AdministrativeArea', name: 'Ontario, Canada' },
         parentOrganization: { '@type': 'Organization', name: MORTGAGE.brokerage },
         provider: { '@id': `${SITE_URL}/#person` },
@@ -99,7 +99,7 @@ export default function MortgagePage() {
               <div className="space-y-6 animate-fade-in-up">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
                   <Landmark className="h-4 w-4" />
-                  Licensed mortgage broker &middot; 30+ lenders
+                  Licensed mortgage agent &middot; 30+ lenders
                 </div>
                 <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl/none">
                   Get pre-approved <span className="text-gradient">before you shop.</span>

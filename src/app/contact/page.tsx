@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/contact' },
   openGraph: {
     title: 'Contact Ken Finch | Oakville Real Estate & Mortgages',
-    description: 'Reach Ken Finch, real estate broker and mortgage broker, for buying, selling, or financing in Oakville and the GTA.',
+    description: 'Reach Ken Finch, real estate broker and mortgage agent, for buying, selling, or financing in Oakville and the GTA.',
     url: `${SITE_URL}/contact`,
   },
 };

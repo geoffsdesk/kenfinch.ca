@@ -33,11 +33,12 @@ export const REAL_ESTATE = {
  * page. The individual's licence number is optional; the approved title is
  * required when the individual is named.
  *
- * TODO(Ken): confirm the approved title in the FSRA public registry
- * ("Mortgage Broker" vs "Mortgage Agent Level 1/2") before launch.
+ * Ken is licensed as "Mortgage Agent Level 1" (FSRA licence M26000634), per
+ * https://express-mortgage.ca/mortgage-agents/. Never call him a mortgage broker.
  */
 export const MORTGAGE = {
-  title: 'Mortgage Broker',
+  title: 'Mortgage Agent Level 1',
+  agentLicence: 'M26000634',
   brokerage: 'Canadian Express-Mortgage Inc.',
   brokerageShort: 'Express Mortgage',
   brokerageLicence: '13241',

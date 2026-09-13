@@ -1,5 +1,5 @@
 /**
- * Database reactivation campaign: "Ken is now a mortgage broker" + renewal check.
+ * Database reactivation campaign: "Ken is now a mortgage agent" + renewal check.
  *
  * Four emails over 30 days. Every email is short, plain, sent from Ken's own
  * address with replies going to his mailbox, and carries a one-click
@@ -62,11 +62,11 @@ function layout(body: string, links: StepLinks) {
     ${body}
     <p style="margin:26px 0 0">Ken</p>
     <p style="margin:4px 0 0;font-size:14px;color:#444">Ken Finch<br>
-      Realtor and Mortgage Broker<br>
+      Realtor and Mortgage Agent<br>
       Call or text ${esc(CONTACT.phoneDisplay)} &middot; <a href="mailto:${esc(CONTACT.email)}" style="color:#444">${esc(CONTACT.email)}</a> &middot; <a href="${SITE_URL}" style="color:#444">kenfinch.ca</a></p>
     <hr style="border:none;border-top:1px solid #e5e5e5;margin:28px 0 12px">
     <p style="font-size:12px;color:#777;line-height:1.5;margin:0">
-      Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, ${esc(MORTGAGE.title)}, ${esc(MORTGAGE.brokerage)}, FSRA brokerage licence #${esc(MORTGAGE.brokerageLicence)}.
+      Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, ${esc(MORTGAGE.title)}, Licence #${esc(MORTGAGE.agentLicence)}. Mortgage services provided through ${esc(MORTGAGE.brokerage)}, FSRA brokerage licence #${esc(MORTGAGE.brokerageLicence)}.
       You are receiving this because you have worked with Ken, registered on his home-search site, or asked him about Oakville real estate.
       <a href="${links.unsubscribe}" style="color:#777">Unsubscribe</a> at any time.
       Oakville, Ontario.
@@ -84,16 +84,17 @@ export const REACTIVATION_STEPS: CampaignStep[] = [
   {
     key: 'e1',
     dayOffset: 0,
-    subject: () => `A quick update from Ken`,
+    subject: () => `If you bought in 2020 or 2021, read this before your renewal letter arrives`,
     html: (c, l) =>
       layout(
         `
       <p>Hi ${esc(firstName(c))},</p>
       <p>${why(c)}</p>
-      <p>On top of real estate, I am now a licensed mortgage broker. In practice it means one person handles the house and the financing, and I can place a mortgage with dozens of lenders instead of one bank.</p>
-      <p>The thing I am finding most useful for people right now is renewals. Most of us just sign what the bank mails us. Shopping it, 120 days out, is usually worth a call.</p>
-      <p><strong>When does your mortgage come up for renewal?</strong> Reply with the month, or <a href="${l.renewal}" style="color:#1a1a1a">tap here, it takes 30 seconds</a>, and I will put a reminder in my calendar to check the market for you at the right time. No obligation.</p>
-      <p>And if you are thinking about buying, selling or helping a family member get started, just reply. I am happy to talk it through.</p>`,
+      <p>The last big group of five-year mortgages from the pandemic years is renewing right now. Those were the lowest rates most of us will ever see, and industry estimates put the average payment increase at renewal at around 15 percent. If you bought or renewed in 2020 or 2021, that is your renewal.</p>
+      <p>Here is the part that matters: the letter your bank sends is a starting offer, not the market. Most lenders hold a rate for 120 days, and that window is where your renewal can be shopped across dozens of lenders, including your current one, with no penalty and usually no cost to switch. There are also ways to soften the jump, like resetting the amortization or blending, that the bank will not always bring up on its own.</p>
+      <p>I can help with this directly now. On top of real estate, I am a licensed mortgage agent, so one person handles the house and the financing.</p>
+      <p><strong>When does your mortgage come up for renewal?</strong> Reply with the month, or <a href="${l.renewal}" style="color:#1a1a1a">tap here, it takes 30 seconds</a>, and I will put it in my calendar and check the market for you at the right time. No obligation. If the bank's offer is the best one, I will tell you to take it.</p>
+      <p>And if you are thinking about buying, selling or helping a family member get started, just reply.</p>`,
         l,
       ),
   },

@@ -105,7 +105,7 @@ export function ExitIntentPopup() {
                   </div>
                   <h2 className="font-headline text-2xl font-bold">Not sure what you can afford?</h2>
                   <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
-                    Leave your email and Ken, a licensed mortgage broker, will send you a quick affordability estimate and the
+                    Leave your email and Ken, a licensed mortgage agent, will send you a quick affordability estimate and the
                     first-time buyer programs you may qualify for. No credit check.
                   </p>
                 </div>

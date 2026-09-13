@@ -60,7 +60,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     url: canonicalUrl,
     image: imageUrl,
     articleSection: CATEGORY_LABELS[post.category],
-    author: { '@type': 'Person', name: 'Ken Finch', url: SITE_URL, jobTitle: ['Real Estate Broker', 'Mortgage Broker'] },
+    author: { '@type': 'Person', name: 'Ken Finch', url: SITE_URL, jobTitle: ['Real Estate Broker', 'Mortgage Agent'] },
     publisher: {
       '@type': 'Organization',
       name: 'Ken Finch Real Estate & Mortgages',
@@ -85,7 +85,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">{CATEGORY_LABELS[post.category]}</p>
             <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl">{post.title}</h1>
             <p className="text-muted-foreground">
-              {post.formattedDate} &middot; By Ken Finch, Real Estate Broker &amp; Mortgage Broker
+              {post.formattedDate} &middot; By Ken Finch, Real Estate Broker &amp; Mortgage Agent
             </p>
           </header>
           <Separator className="my-8" />

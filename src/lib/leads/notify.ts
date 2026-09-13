@@ -35,7 +35,7 @@ function wrap(title: string, body: string) {
     </div>
     ${body}
     <p style="margin-top:28px;font-size:11px;color:#777;line-height:1.5">
-      Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, ${esc(MORTGAGE.title)}.
+      Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, ${esc(MORTGAGE.title)}, Licence #${esc(MORTGAGE.agentLicence)}.
       Mortgage services provided through ${esc(MORTGAGE.brokerage)}, FSRA Brokerage Licence #${esc(MORTGAGE.brokerageLicence)}.
     </p>
   </div>`;

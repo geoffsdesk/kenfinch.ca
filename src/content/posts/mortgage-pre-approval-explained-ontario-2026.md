@@ -39,7 +39,7 @@ When a lender pre-approves you, they hold a rate for a set period. If rates rise
 
 ## Broker pre-approval vs. bank pre-approval
 
-Your bank will happily pre-approve you. The catch is that they pre-approve you for their products and their rules only. A mortgage broker submits your file to the lender that fits it best among banks, credit unions, and monoline lenders (lenders that only do mortgages and often price more aggressively). One credit inquiry covers all of them.
+Your bank will happily pre-approve you. The catch is that they pre-approve you for their products and their rules only. A mortgage agent or broker submits your file to the lender that fits it best among banks, credit unions, and monoline lenders (lenders that only do mortgages and often price more aggressively). One credit inquiry covers all of them.
 
 For self-employed buyers, new Canadians, or anyone with a credit blemish, the difference is bigger: a bank may decline where an alternative lender approves, and a broker knows which one to call.
 
@@ -72,4 +72,4 @@ Oakville listings still attract multiple offers on well-priced homes. A pre-appr
 
 Start with the [pre-approval check](/mortgage#apply), or read the [First-Time Home Buyer Guide](/blog/first-time-home-buyer-guide-oakville-gta-2026) if this is your first purchase. Questions? Call (416) 520-5544.
 
-*Ken Finch, Mortgage Broker. Mortgage services provided through Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241. A pre-approval is not a commitment to lend; final approval is subject to lender review.*
+*Ken Finch, Mortgage Agent Level 1, Licence #M26000634. Mortgage services provided through Canadian Express-Mortgage Inc., FSRA Brokerage Licence #13241. A pre-approval is not a commitment to lend; final approval is subject to lender review.*

@@ -9,7 +9,7 @@ import { MORTGAGE, REAL_ESTATE, CONTACT } from '@/lib/site';
 export function MortgageDisclosure({ className = '' }: { className?: string }) {
   return (
     <p className={`text-xs leading-relaxed text-muted-foreground ${className}`}>
-      {CONTACT.name}, {MORTGAGE.title}. Mortgage services provided through {MORTGAGE.brokerage},
+      {CONTACT.name}, {MORTGAGE.title}, Licence #{MORTGAGE.agentLicence}. Mortgage services provided through {MORTGAGE.brokerage},
       FSRA Brokerage Licence #{MORTGAGE.brokerageLicence}. Real estate services provided by {CONTACT.name},{' '}
       {REAL_ESTATE.title}, {REAL_ESTATE.brokerage}. {REAL_ESTATE.disclaimer} A mortgage pre-approval is not a
       commitment to lend. Rates, terms, and approval are subject to lender criteria and may change without notice.
