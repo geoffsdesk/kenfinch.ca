@@ -101,21 +101,22 @@ export const REACTIVATION_STEPS: CampaignStep[] = [
   {
     key: 'e2',
     dayOffset: 7,
-    subject: () => `The 120-day renewal window`,
+    subject: () => `What a 15 percent jump looks like, and four ways to soften it`,
     skipIf: (c) => !!c.leadId,
     html: (c, l) =>
       layout(
         `
       <p>Hi ${esc(firstName(c))},</p>
-      <p>A short one, because this is the part most people miss.</p>
-      <p>Your lender's renewal letter usually arrives a few weeks before the term ends, with a rate that is rarely their best. Most lenders will hold a rate for 120 days, which is the window where a broker can shop it properly, including your current lender, without you paying any penalty.</p>
-      <p>Three things worth knowing:</p>
-      <ul style="padding-left:20px;margin:0 0 16px">
-        <li>Switching lenders at renewal generally does not need a new down payment, and many lenders cover the transfer costs.</li>
-        <li>If your income or credit has changed, or you have a rental or self-employment income, the lender you choose matters more than the rate you see advertised.</li>
-        <li>If you want to pull equity for a renovation, a cottage or to help your kids, renewal is the cheapest moment to do it.</li>
-      </ul>
-      <p><a href="${l.renewal}" style="color:#1a1a1a"><strong>Tell me your renewal month</strong></a> and I will reach out at the 120-day mark with real numbers. Or reply to this email. Either works.</p>`,
+      <p>Last week I mentioned the renewal wave. Here is what it looks like in dollars, because that is the version people remember.</p>
+      <p>Say you have $700,000 left on a 25-year amortization and your five-year fixed from 2021 is ending. Using the kind of rates lenders are quoting right now versus what most people locked in back then, the monthly payment goes up somewhere in the range of $500 to $600. That is the roughly 15 percent jump the industry has been talking about, on a very ordinary Oakville mortgage. Your number depends on your balance, your rate and your remaining amortization, and I would be glad to run it for you.</p>
+      <p>Four ways to soften it, roughly in the order I bring them up with clients:</p>
+      <ol style="padding-left:22px;margin:0 0 16px">
+        <li style="margin-bottom:8px"><strong>Shop it.</strong> Your current lender's renewal letter is their opening offer. Placing the same mortgage with a different lender at renewal usually costs you nothing, and the rate difference on $700,000 adds up quickly.</li>
+        <li style="margin-bottom:8px"><strong>Reset the amortization.</strong> Stretching the remaining term back out lowers the payment. You pay more interest over time, but it can turn an unaffordable jump into a manageable one, and you can add prepayments later when things ease.</li>
+        <li style="margin-bottom:8px"><strong>Blend or go short.</strong> A shorter term or a blended option can make sense if you expect rates to move, or if your plans might change in the next two or three years.</li>
+        <li><strong>Use the equity while you are at it.</strong> If you were planning a renovation, a rental purchase or helping a family member, doing it at renewal avoids a second set of fees later.</li>
+      </ol>
+      <p>The window to do any of this well is about 120 days before your term ends. If you have not told me your renewal month yet, <a href="${l.renewal}" style="color:#1a1a1a">tap here, it takes 30 seconds</a>, or just reply with the month, and I will run your numbers before your lender's letter arrives.</p>`,
         l,
       ),
   },

@@ -14,7 +14,7 @@
 
 import Script from 'next/script';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { trackPageView } from '@/lib/analytics';
 
 // ─── Environment variables (injected at build time) ──────────────────────────
@@ -30,11 +30,20 @@ const primaryGtagId = gtagIds[0]; // Used for the script src
 
 export function TrackingScripts() {
   const pathname = usePathname();
+  // Load nothing for automated browsers (Playwright/E2E, uptime checks, scrapers set
+  // navigator.webdriver). Otherwise the test suite fires real Google Ads conversions
+  // and inflates "direct" traffic in GA4.
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    if (!(navigator as Navigator & { webdriver?: boolean }).webdriver) setEnabled(true);
+  }, []);
 
   // Track SPA route changes
   useEffect(() => {
-    trackPageView(pathname);
-  }, [pathname]);
+    if (enabled) trackPageView(pathname);
+  }, [pathname, enabled]);
+
+  if (!enabled) return null;
 
   return (
     <>
