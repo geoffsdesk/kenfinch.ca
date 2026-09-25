@@ -15,9 +15,9 @@ export function middleware(request: NextRequest) {
 
   // Redirect non-www -> www (production only)
   if (host === 'kenfinch.ca') {
-    const url = request.nextUrl.clone();
-    url.host = 'www.kenfinch.ca';
-    return NextResponse.redirect(url, 301);
+    // Build the target from scratch: nextUrl carries the internal port (8080) on App Hosting.
+    const target = new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://www.kenfinch.ca');
+    return NextResponse.redirect(target, 301);
   }
 
   return NextResponse.next();
