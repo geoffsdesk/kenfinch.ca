@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { listContacts, importContacts, summarize, getCampaignState, setCampaignState, setContactStatus } from '@/lib/contacts/store';
+import { listContacts, importContacts, summarize, getCampaignState, setCampaignState, setContactStatus, findContactByEmail } from '@/lib/contacts/store';
 import { contactImportRow } from '@/lib/contacts/types';
 import { enrolContacts, runCampaigns } from '@/lib/campaigns/runner';
 import { REACTIVATION_ID, stepByKey, stepLinks } from '@/lib/campaigns/reactivation';
@@ -97,6 +97,23 @@ export async function POST(req: NextRequest) {
       case 'run': {
         const result = await runCampaigns(new Date(), true);
         return NextResponse.json({ ok: true, result });
+      }
+      case 'unsubscribe-emails': {
+        // Manual removals (people who replied asking to be removed, or no longer relevant).
+        const emails = Array.isArray(body.emails) ? body.emails.filter((x): x is string => typeof x === 'string').map((e) => e.trim().toLowerCase()) : [];
+        if (!emails.length) return NextResponse.json({ error: 'No emails' }, { status: 400 });
+        const done: string[] = [];
+        const missing: string[] = [];
+        for (const e of emails) {
+          const c = await findContactByEmail(e);
+          if (!c) {
+            missing.push(e);
+            continue;
+          }
+          if (c.status !== 'unsubscribed') await setContactStatus(c.id, 'unsubscribed', 'Removed by Ken/Geoff (asked to be removed or no longer relevant).', 'ken');
+          done.push(e);
+        }
+        return NextResponse.json({ ok: true, unsubscribed: done, notFound: missing });
       }
       case 'exclude':
       case 'reactivate': {
