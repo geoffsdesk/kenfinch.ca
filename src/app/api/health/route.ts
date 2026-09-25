@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { mailProvider } from '@/lib/mail';
+import { TEMPLATE_VERSION } from '@/lib/campaigns/reactivation';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ export async function GET() {
     mailProvider: mailProvider(),
     sms: !!(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_FROM),
     cron: !!process.env.CRON_SECRET,
+    templateVersion: TEMPLATE_VERSION,
     at: new Date().toISOString(),
   });
 }

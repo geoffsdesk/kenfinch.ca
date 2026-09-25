@@ -16,6 +16,8 @@ import { esc } from '@/lib/leads/notify';
 import type { ContactRecord } from '@/lib/contacts/types';
 
 export const REACTIVATION_ID = 'reactivation-2026';
+/** Bumped whenever copy changes; surfaced by /api/health so a deploy can be confirmed. */
+export const TEMPLATE_VERSION = '2026-09-25-e2';
 
 export interface CampaignStep {
   key: string;
@@ -107,7 +109,7 @@ export const REACTIVATION_STEPS: CampaignStep[] = [
       layout(
         `
       <p>Hi ${esc(firstName(c))},</p>
-      <p>Last week I mentioned the renewal wave. Here is what it looks like in dollars, because that is the version people remember.</p>
+      <p>A couple of weeks ago I wrote to you about the renewal wave, the last big group of pandemic-era five-year mortgages coming up for renewal. Here is what it looks like in dollars, because that is the version people remember.</p>
       <p>Say you have $700,000 left on a 25-year amortization and your five-year fixed from 2021 is ending. Using the kind of rates lenders are quoting right now versus what most people locked in back then, the monthly payment goes up somewhere in the range of $500 to $600. That is the roughly 15 percent jump the industry has been talking about, on a very ordinary Oakville mortgage. Your number depends on your balance, your rate and your remaining amortization, and I would be glad to run it for you.</p>
       <p>Four ways to soften it, roughly in the order I bring them up with clients:</p>
       <ol style="padding-left:22px;margin:0 0 16px">
