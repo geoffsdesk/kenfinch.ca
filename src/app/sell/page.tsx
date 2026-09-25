@@ -6,6 +6,7 @@ import { CheckCircle, Phone, ArrowRight, Star, Shield, Clock, TrendingUp } from 
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { CONTACT } from '@/lib/site';
 
 export const metadata: Metadata = {
   title: 'Free Oakville Home Valuation',
@@ -108,6 +109,47 @@ export default function SellLandingPage() {
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Video — Ken's #1 seller mistake */}
+        <section className="py-12 md:py-16">
+          <div className="container px-4 md:px-6">
+            <div className="text-center mb-8 max-w-2xl mx-auto">
+              <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-2">From Ken</p>
+              <h2 className="font-headline text-2xl font-bold sm:text-3xl">
+                The #1 Thing I&apos;d Never Do Selling My Own Home
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                After 22 years selling real estate, the first week on the market is when you get the most interest. Don&apos;t waste it overpricing to test the market.
+              </p>
+            </div>
+            <div className="max-w-3xl mx-auto overflow-hidden rounded-2xl shadow-xl bg-black">
+              <video
+                className="w-full h-auto aspect-video"
+                controls
+                playsInline
+                preload="metadata"
+                poster="/ken-intro-poster.jpg"
+              >
+                <source src="/ken-intro-720p.mp4" type="video/mp4" />
+                <track kind="captions" src="/ken-intro-720p.vtt" srcLang="en" label="English" default />
+              </video>
+            </div>
+            <div className="mt-8 text-center">
+              <a
+                href={`https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(
+                  "Hi Ken, I saw your video on KenFinch.ca. I'm thinking about selling. Please send me your complete list of things you'd never do when selling your own home."
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="lg" className="font-semibold text-base px-8 shadow-lg">
+                  Get Ken&apos;s Complete List
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </a>
             </div>
           </div>
         </section>
