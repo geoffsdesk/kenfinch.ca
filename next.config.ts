@@ -5,13 +5,6 @@ const nextConfig: NextConfig = {
   /* Permanent redirects for old .php URLs (pre-Next.js site) */
   async redirects() {
     return [
-      // Canonical host: the apex serves the same site, which splits search signals. Send it to www.
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'kenfinch.ca' }],
-        destination: 'https://www.kenfinch.ca/:path*',
-        permanent: true,
-      },
       {
         source: '/index.php',
         destination: '/',

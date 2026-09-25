@@ -8,9 +8,12 @@ import type { NextRequest } from 'next/server';
  * www and non-www resolve to the same page.
  */
 export function middleware(request: NextRequest) {
-  const host = request.headers.get('host') || '';
+  // On Firebase App Hosting the visitor's hostname arrives in x-forwarded-host;
+  // the `host` header is the internal backend name, which is why the plain
+  // host check never matched and the apex kept serving a duplicate site.
+  const host = (request.headers.get('x-forwarded-host') || request.headers.get('host') || '').split(':')[0].toLowerCase();
 
-  // Redirect non-www → www (production only)
+  // Redirect non-www -> www (production only)
   if (host === 'kenfinch.ca') {
     const url = request.nextUrl.clone();
     url.host = 'www.kenfinch.ca';
