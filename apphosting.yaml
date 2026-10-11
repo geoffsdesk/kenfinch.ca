@@ -68,3 +68,16 @@ env:
   #   secret: TWILIO_PHONE_FROM
   # - variable: KEN_MOBILE_NUMBER
   #   secret: KEN_MOBILE_NUMBER
+
+  # Lead spam defence. Form tokens are signed with LEAD_FORM_SECRET (falls back to
+  # CRON_SECRET). Create with: firebase apphosting:secrets:set LEAD_FORM_SECRET  (32+ random chars)
+  # Tokens signed by ANY of LEAD_FORM_SECRET, LEAD_FORM_SECRET_PREVIOUS and CRON_SECRET verify,
+  # so to introduce or rotate the key without flagging visitors who loaded a form before the
+  # rollout, keep the old value in LEAD_FORM_SECRET_PREVIOUS for a day, then remove it.
+  # - variable: LEAD_FORM_SECRET
+  #   secret: LEAD_FORM_SECRET
+  # - variable: LEAD_FORM_SECRET_PREVIOUS
+  #   secret: LEAD_FORM_SECRET_PREVIOUS
+  # Kill switch: set to "false" to store spam scores without acting on them.
+  # - variable: SPAM_ENFORCE
+  #   value: "false"

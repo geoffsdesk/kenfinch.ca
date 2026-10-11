@@ -15,6 +15,10 @@ test.describe('Contact Form', () => {
     await expect(page.getByPlaceholder('you@example.com')).toBeVisible();
     await expect(page.getByPlaceholder('(123) 456-7890')).toBeVisible();
     await expect(page.getByRole('button', { name: /send message/i })).toBeVisible();
+
+    // Spam honeypot: present, but out of the tab order (and off-screen).
+    await expect(page.locator('input[name="referral_code"]')).toHaveCount(1);
+    await expect(page.locator('input[name="referral_code"]')).toHaveAttribute('tabindex', '-1');
   });
 
   test('form validates required fields', async ({ page }) => {

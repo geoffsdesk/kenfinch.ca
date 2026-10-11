@@ -11,8 +11,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Loader2, Inbox, Phone, Mail, ChevronDown, ChevronUp, Flame, AlertTriangle, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
+import { Loader2, Inbox, Phone, Mail, ChevronDown, ChevronUp, Flame, AlertTriangle, CheckCircle2, XCircle, RefreshCw, ShieldAlert } from 'lucide-react';
 import { LEAD_STATUSES, STATUS_LABELS, TYPE_LABELS, buyerLabel, type LeadRecord, type LeadStatus, type LeadType } from '@/lib/leads/types';
+import { REASON_LABELS } from '@/lib/leads/spam';
 import { cn } from '@/lib/utils';
 import { attributionLabel } from '@/lib/attribution';
 
@@ -24,6 +25,7 @@ const FILTERS = [
   { key: 'open', label: 'In progress' },
   { key: 'all', label: 'All' },
   { key: 'closed', label: 'Won / lost' },
+  { key: 'spam', label: 'Spam' },
 ] as const;
 type FilterKey = (typeof FILTERS)[number]['key'];
 
@@ -63,6 +65,15 @@ const TYPE_COLORS: Record<LeadType, string> = {
   valuation: 'bg-violet-100 text-violet-900',
   popup: 'bg-slate-100 text-slate-700',
 };
+
+/** Held for review: scored as possible spam and not yet released by Ken. */
+function isReviewHeld(l: LeadRecord) {
+  return l.spam?.verdict === 'review' && !l.spam.releasedAt;
+}
+
+function isTestLead(l: LeadRecord) {
+  return !!l.spam?.reasons.some((r) => r.rule === 'test');
+}
 
 const STATUS_COLORS: Record<LeadStatus, string> = {
   new: 'bg-red-100 text-red-800',
@@ -135,7 +146,9 @@ export function LeadInbox({ password }: { password: string }) {
       case 'open':
         return leads.filter((l) => ['contacted', 'qualified', 'application_started'].includes(l.status));
       case 'closed':
-        return leads.filter((l) => ['won', 'lost', 'spam'].includes(l.status));
+        return leads.filter((l) => ['won', 'lost'].includes(l.status));
+      case 'spam':
+        return leads.filter((l) => l.status === 'spam');
       default:
         return leads;
     }
@@ -147,7 +160,8 @@ export function LeadInbox({ password }: { password: string }) {
       new: leads.filter((l) => l.status === 'new').length,
       open: leads.filter((l) => ['contacted', 'qualified', 'application_started'].includes(l.status)).length,
       all: leads.length,
-      closed: leads.filter((l) => ['won', 'lost', 'spam'].includes(l.status)).length,
+      closed: leads.filter((l) => ['won', 'lost'].includes(l.status)).length,
+      spam: leads.filter((l) => l.status === 'spam').length,
     }),
     [leads],
   );
@@ -215,8 +229,22 @@ export function LeadInbox({ password }: { password: string }) {
                         {l.followUp?.checkinReply === 'no' && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700"><XCircle className="h-3 w-3" /> Lead says not contacted</span>}
                         {l.followUp?.checkinReply === 'yes' && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-green-700"><CheckCircle2 className="h-3 w-3" /> Lead confirmed contact</span>}
                         {stale >= 1 && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700"><AlertTriangle className="h-3 w-3" /> {stale} business day{stale > 1 ? 's' : ''} untouched</span>}
+                        {isReviewHeld(l) && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700"><ShieldAlert className="h-3 w-3" /> Possible spam · score {l.spam!.score}</span>}
+                        {l.status === 'spam' && l.spam && (
+                          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+                            {isTestLead(l) ? 'Test submission' : `Spam · score ${l.spam.score}`}
+                          </span>
+                        )}
                       </div>
                       <p className="font-semibold mt-1">{l.name}</p>
+                      {l.spam && l.spam.reasons.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {l.spam.reasons.slice(0, 4).map((r) => (
+                            <span key={r.rule} className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-mono" title={r.detail}>{REASON_LABELS[r.rule] ?? r.rule}</span>
+                          ))}
+                          {l.spam.reasons.length > 4 && <span className="text-[11px] text-muted-foreground">+{l.spam.reasons.length - 4} more</span>}
+                        </div>
+                      )}
                       <p className="text-sm text-muted-foreground">{l.summary}</p>
                       <div className="flex gap-4 mt-1 text-sm flex-wrap">
                         {l.phone && <a href={`tel:${l.phone}`} className="inline-flex items-center gap-1 text-primary hover:underline"><Phone className="h-3.5 w-3.5" />{l.phone}</a>}
@@ -242,7 +270,15 @@ export function LeadInbox({ password }: { password: string }) {
                     </div>
                   </div>
 
-                  {isOpen && <LeadDetail lead={l} busy={busy === l.id} onNote={(t) => update(l.id, { op: 'note', text: t })} onFollowUp={(d) => update(l.id, { op: 'followup', at: d })} />}
+                  {isOpen && (
+                    <LeadDetail
+                      lead={l}
+                      busy={busy === l.id}
+                      onNote={(t) => update(l.id, { op: 'note', text: t })}
+                      onFollowUp={(d) => update(l.id, { op: 'followup', at: d })}
+                      onRelease={() => update(l.id, { op: 'release' })}
+                    />
+                  )}
                 </div>
               );
             })
@@ -253,10 +289,32 @@ export function LeadInbox({ password }: { password: string }) {
   );
 }
 
-function LeadDetail({ lead, busy, onNote, onFollowUp }: { lead: LeadRecord; busy: boolean; onNote: (t: string) => void; onFollowUp: (d: string | null) => void }) {
+function LeadDetail({
+  lead,
+  busy,
+  onNote,
+  onFollowUp,
+  onRelease,
+}: {
+  lead: LeadRecord;
+  busy: boolean;
+  onNote: (t: string) => void;
+  onFollowUp: (d: string | null) => void;
+  onRelease: () => void;
+}) {
   const [note, setNote] = useState('');
   const [date, setDate] = useState(lead.nextFollowUpAt ?? '');
   const d = lead.details as Record<string, unknown>;
+  const spam = lead.spam;
+  const held = lead.status === 'spam' || isReviewHeld(lead);
+  const releasable = held && !isTestLead(lead);
+  const confirmationState = lead.followUp?.confirmationSentAt
+    ? 'Sent'
+    : isReviewHeld(lead)
+      ? 'Held (possible spam)'
+      : lead.status === 'spam'
+        ? 'Not sent (spam)'
+        : 'Not sent';
 
   const detailRows: [string, string][] =
     lead.type === 'buyer'
@@ -308,8 +366,34 @@ function LeadDetail({ lead, busy, onNote, onFollowUp }: { lead: LeadRecord; busy
               {lead.attribution?.utm_term && <span className="text-muted-foreground"> (keyword: {lead.attribution.utm_term})</span>}
               {lead.attribution?.landingPage && <span className="text-muted-foreground"> landed on {lead.attribution.landingPage}</span>}
             </dd>
+            <dt className="text-muted-foreground">Spam check</dt>
+            <dd>{spam ? `${spam.verdict} · score ${spam.score}${spam.releasedAt ? ' · released by Ken' : ''}` : 'not assessed'}</dd>
+            {spam && spam.reasons.length > 0 && (
+              <>
+                <dt className="text-muted-foreground">Signals</dt>
+                <dd className="break-words">
+                  {spam.reasons.map((r) => `${REASON_LABELS[r.rule] ?? r.rule} (${r.weight > 0 ? '+' : ''}${r.weight})${r.detail ? ': ' + r.detail : ''}`).join('; ')}
+                </dd>
+              </>
+            )}
+            {lead.request && (
+              <>
+                <dt className="text-muted-foreground">IP</dt>
+                <dd>{`${lead.request.ip ?? 'unknown'}${lead.request.ipSource ? ` (${lead.request.ipSource})` : ''}${lead.request.scrubbedAt ? ' · scrubbed' : ''}`}</dd>
+                <dt className="text-muted-foreground">User agent</dt>
+                <dd className="break-all text-xs">{(lead.request.ua ?? '').slice(0, 120)}</dd>
+                <dt className="text-muted-foreground">Language</dt>
+                <dd>{lead.request.lang ?? ''}</dd>
+              </>
+            )}
+            {lead.client && (
+              <>
+                <dt className="text-muted-foreground">Client</dt>
+                <dd>{`webdriver ${lead.client.webdriver} · ${lead.client.interactions} interactions · ${lead.client.msSinceMount} ms on page`}</dd>
+              </>
+            )}
             <dt className="text-muted-foreground">Confirmation email</dt>
-            <dd>{lead.followUp?.confirmationSentAt ? 'Sent' : 'Not sent'}</dd>
+            <dd>{confirmationState}</dd>
             <dt className="text-muted-foreground">48h check-in</dt>
             <dd>
               {lead.followUp?.checkinSentAt ? `Sent ${ago(lead.followUp.checkinSentAt)}` : `Due ${new Date(lead.followUp?.checkinDueAt ?? lead.createdAt).toLocaleString()}`}
@@ -323,6 +407,21 @@ function LeadDetail({ lead, busy, onNote, onFollowUp }: { lead: LeadRecord; busy
             )}
           </dl>
         </div>
+        {releasable && (
+          <div>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={busy}
+              onClick={() => {
+                if (window.confirm(`This will ${lead.status === 'spam' ? 'email Ken and ' : ''}send the confirmation email to ${lead.email}. Continue?`)) onRelease();
+              }}
+            >
+              {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldAlert className="mr-2 h-4 w-4" />}
+              {lead.status === 'spam' ? 'Not spam: release and notify' : 'Not spam: send confirmation'}
+            </Button>
+          </div>
+        )}
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">Next follow-up</p>
           <div className="flex gap-2">

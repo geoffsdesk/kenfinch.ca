@@ -11,6 +11,8 @@ import { useJsApiLoader } from '@react-google-maps/api';
 import { getHomeValuation, type HomeValuationOutput } from '@/ai/flows/home-valuation';
 import { submitLead } from '@/lib/leads/client';
 import { trackValuationSubmission, trackExpertOpinionRequest } from '@/lib/analytics';
+import { useFormGuard } from '@/lib/leads/form-guard';
+import { HoneypotField } from '@/components/honeypot-field';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -107,6 +109,7 @@ function HomeValuationInternal() {
   const [error, setError] = useState<string | null>(null);
   const [contactSubmitted, setContactSubmitted] = useState(false);
   const { toast } = useToast();
+  const guard = useFormGuard('valuation');
 
   // New Places API autocomplete state
   const [addressInput, setAddressInput] = useState('');
@@ -237,15 +240,18 @@ function HomeValuationInternal() {
             },
             source: 'valuation-expert-opinion',
             page: typeof window !== 'undefined' ? window.location.pathname : undefined,
+            ...(await guard.guardPayload()),
         });
         if (!res.ok) throw new Error(res.error);
 
-        // Fire expert opinion tracking across all pixels
-        trackExpertOpinionRequest({
-            name: values.name,
-            email: values.email,
-            address: formValues.address,
-        });
+        // Fire expert opinion tracking across all pixels (held leads never count as conversions)
+        if (res.track) {
+            trackExpertOpinionRequest({
+                name: values.name,
+                email: values.email,
+                address: formValues.address,
+            });
+        }
 
         setContactSubmitted(true);
         toast({
@@ -418,7 +424,7 @@ function HomeValuationInternal() {
                         <p className="text-muted-foreground">This is an estimate. For a precise valuation, contact Ken Finch directly.</p>
                     </div>
                     <Form {...contactForm}>
-                        <form onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-4">
+                        <form {...guard.formEventHandlers} onSubmit={contactForm.handleSubmit(onContactSubmit)} className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
                                 control={contactForm.control}
@@ -469,6 +475,7 @@ function HomeValuationInternal() {
                                     </FormItem>
                                 )}
                                 />
+                            <HoneypotField id="hv-referral" {...guard.honeypotProps} />
                             <Button type="submit" size="lg" className="w-full" disabled={contactForm.formState.isSubmitting}>
                                 {contactForm.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                                 Contact Ken Finch for an Expert Opinion

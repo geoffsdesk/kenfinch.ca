@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listLeads, patchLead, getSystemState, setSystemState, nowIso } from '@/lib/leads/store';
+import { listLeads, patchLead, getSystemState, setSystemState, nowIso, listLeadsMissingEmailKey } from '@/lib/leads/store';
+import { normalizeEmail } from '@/lib/leads/spam';
+import { purgeExpiredCounters, purgeExpiredNonces } from '@/lib/leads/ratelimit';
 import {
   sendMail,
   sendSms,
@@ -63,8 +65,15 @@ function authorized(req: NextRequest) {
   return header === `Bearer ${secret}` || key === secret;
 }
 
-/** Quarantine any test submissions that slipped in before the filter existed. */
-async function quarantineTestLeads(leads: LeadRecord[]) {
+const SCRUB_AFTER_MS = 60 * 24 * 3600 * 1000;
+
+/**
+ * Housekeeping: (a) quarantine test submissions that slipped in before the
+ * filter existed, (b) backfill `emailKey` on legacy docs, (c) scrub raw IP /
+ * user agent from leads older than 60 days, (d) purge expired rate counters
+ * and used form-token nonces.
+ */
+async function housekeeping(leads: LeadRecord[], now: Date) {
   const stale = leads.filter((l) => l.status !== 'spam' && isTestSubmission(l.name, l.email));
   for (const l of stale) {
     await patchLead(l.id, {
@@ -75,7 +84,32 @@ async function quarantineTestLeads(leads: LeadRecord[]) {
     });
     l.status = 'spam';
   }
-  return stale.length;
+
+  let emailKeysBackfilled = 0;
+  try {
+    for (const l of await listLeadsMissingEmailKey(50)) {
+      await patchLead(l.id, { emailKey: normalizeEmail(l.email) });
+      emailKeysBackfilled += 1;
+    }
+  } catch (err) {
+    console.error('emailKey backfill failed:', err);
+  }
+
+  let scrubbed = 0;
+  const cutoff = now.getTime() - SCRUB_AFTER_MS;
+  for (const l of leads.filter((l) => l.request && !l.request.scrubbedAt && new Date(l.createdAt).getTime() < cutoff).slice(0, 50)) {
+    await patchLead(l.id, { 'request.ip': null, 'request.xff': null, 'request.fahIp': null, 'request.ua': null, 'request.scrubbedAt': nowIso() });
+    scrubbed += 1;
+  }
+
+  const countersPurged = await purgeExpiredCounters(100);
+  const noncesPurged = await purgeExpiredNonces(100);
+  return { testQuarantined: stale.length, emailKeysBackfilled, scrubbed, countersPurged, noncesPurged };
+}
+
+/** Held for review (possible spam, not yet released by Ken) or quarantined: no automatic outreach. */
+function isHeld(l: LeadRecord) {
+  return l.status === 'spam' || (l.spam?.verdict === 'review' && !l.spam.releasedAt);
 }
 
 async function runCheckins(leads: LeadRecord[], now: Date) {
@@ -91,13 +125,20 @@ async function runCheckins(leads: LeadRecord[], now: Date) {
       !l.followUp.checkinSentAt &&
       // Only leads Ken has not touched. Marking a lead Contacted (or anything later) in /ken cancels the check-in.
       l.status === 'new' &&
+      !isHeld(l) &&
       l.email &&
       new Date(l.followUp.checkinDueAt) <= now,
   );
   for (const lead of due) {
     const patch: Record<string, unknown> = {};
     try {
-      await sendMail({ to: lead.email, replyTo: KEN_EMAIL, subject: 'Quick check-in from Ken Finch', html: checkinHtml(lead, lead.id) });
+      await sendMail({
+        to: lead.email,
+        replyTo: KEN_EMAIL,
+        subject: 'Quick check-in from Ken Finch',
+        html: checkinHtml(lead, lead.id),
+        headers: { 'Auto-Submitted': 'auto-replied' },
+      });
       patch['followUp.checkinSentAt'] = nowIso();
       if (smsConfigured() && lead.phone) {
         try {
@@ -122,7 +163,8 @@ async function runDigest(leads: LeadRecord[], now: Date, force = false) {
 
   const dayAgo = new Date(now.getTime() - 24 * 3600 * 1000);
   const active = leads.filter((l) => l.status !== 'spam' && l.status !== 'won' && l.status !== 'lost');
-  const newLeads = leads.filter((l) => new Date(l.createdAt) >= dayAgo);
+  const newLeads = leads.filter((l) => new Date(l.createdAt) >= dayAgo && l.status !== 'spam');
+  const quarantined = leads.filter((l) => l.status === 'spam' && l.spam && !l.spam.reasons.some((r) => r.rule === 'test') && new Date(l.createdAt) >= dayAgo);
   const stale = active.filter((l) => l.status === 'new' && businessDaysSince(l.createdAt, now) >= 1);
   const saidNo = active.filter((l) => l.followUp?.checkinReply === 'no' && l.followUp.checkinRepliedAt && new Date(l.followUp.checkinRepliedAt) >= dayAgo);
   const dueToday = active.filter((l) => l.nextFollowUpAt && l.nextFollowUpAt.slice(0, 10) <= date);
@@ -137,10 +179,10 @@ async function runDigest(leads: LeadRecord[], now: Date, force = false) {
   await sendMail({
     to: [OVERSIGHT_EMAIL, KEN_EMAIL],
     subject: `Lead digest ${date}: ${newLeads.length} new, ${attention} need attention`,
-    html: digestHtml({ dateLabel, newLeads, stale, saidNo, dueToday, counts }),
+    html: digestHtml({ dateLabel, newLeads, stale, saidNo, dueToday, quarantined, counts }),
   });
   await setSystemState({ lastDigestDate: date, lastDigestAt: nowIso() });
-  return { sent: true, newLeads: newLeads.length, stale: stale.length, saidNo: saidNo.length, dueToday: dueToday.length };
+  return { sent: true, newLeads: newLeads.length, stale: stale.length, saidNo: saidNo.length, dueToday: dueToday.length, quarantined: quarantined.length };
 }
 
 export async function GET(req: NextRequest) {
@@ -149,7 +191,7 @@ export async function GET(req: NextRequest) {
   const force = req.nextUrl.searchParams.get('digest') === 'force';
   try {
     const leads = await listLeads(500);
-    const quarantined = await quarantineTestLeads(leads);
+    const housekept = await housekeeping(leads, now);
     const checkins = await runCheckins(leads, now);
     const digest = await runDigest(leads, now, force);
     // Database campaign (reactivation sequence). Failures here must not block the lead jobs above.
@@ -161,7 +203,7 @@ export async function GET(req: NextRequest) {
       campaigns = { error: (err as Error).message };
     }
     await setSystemState({ lastRunAt: nowIso() });
-    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, quarantined, checkins, digest, campaigns });
+    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, ...housekept, checkins, digest, campaigns });
   } catch (err) {
     console.error('lead automation failed:', err);
     return NextResponse.json({ ok: false, error: (err as Error).message }, { status: 500 });

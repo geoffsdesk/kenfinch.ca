@@ -52,13 +52,25 @@ export type LeadAttribution = z.infer<typeof attributionSchema>;
 
 const base = {
   attribution: attributionSchema,
-  email: z.string().trim().email('Please enter a valid email address.'),
+  email: z.string().trim().max(254).email('Please enter a valid email address.'),
   phone: z.string().trim().max(30).optional(),
   message: z.string().trim().max(2000).optional(),
   source: z.string().max(80).optional(),
   page: z.string().max(200).optional(),
   /** Database contact token (from campaign links, `?c=`), ties the lead back to the contact. */
   contactToken: z.string().regex(/^[a-f0-9]{32}$/i).optional(),
+  /** Honeypot payload key; the DOM field is named referral_code. Any value is a spam signal. */
+  hp: z.string().max(500).optional(),
+  /** Signed form token issued when the form mounted (src/lib/leads/form-token.ts). */
+  formToken: z.string().max(240).optional(),
+  /** Client-side signals gathered by useFormGuard. Forgeable, so only ever a soft signal. */
+  client: z
+    .object({
+      webdriver: z.boolean().optional(),
+      interactions: z.number().int().min(0).max(1_000_000).optional(),
+      msSinceMount: z.number().int().min(0).max(1_000_000_000).optional(),
+    })
+    .optional(),
 };
 
 export const buyerLeadInput = z.object({
@@ -83,6 +95,9 @@ export const buyerLeadInput = z.object({
   page: base.page,
   attribution: base.attribution,
   contactToken: base.contactToken,
+  hp: base.hp,
+  formToken: base.formToken,
+  client: base.client,
 });
 
 export const contactLeadInput = z.object({
@@ -98,7 +113,10 @@ export const valuationLeadInput = z.object({
   address: z.string().trim().min(1).max(300),
   estimate: z.number().nonnegative().optional(),
   confidence: z.number().min(0).max(1).optional(),
-  property: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])).optional(),
+  property: z
+    .record(z.string().max(60), z.union([z.string().max(300), z.number(), z.boolean()]))
+    .refine((o) => Object.keys(o).length <= 24, 'Too many fields')
+    .optional(),
   ...base,
 });
 
@@ -120,10 +138,62 @@ export interface LeadNote {
   by: 'ken' | 'system' | 'lead';
 }
 
+export type SpamVerdict = 'clean' | 'review' | 'spam';
+export type SpamRule =
+  | 'test' | 'honeypot' | 'email:prior-spam' | 'rate:ip' | 'rate:email'
+  | 'token:invalid' | 'token:missing' | 'token:unsigned' | 'token:stale' | 'token:mismatch' | 'token:fast'
+  | 'client:webdriver' | 'client:no-interaction' | 'renewal:forged'
+  | 'name:random' | 'name:short' | 'email:gmail-dots' | 'email:vendor-domain'
+  | 'message:digits' | 'message:equals-phone' | 'message:url-self' | 'message:url' | 'intent:empty' | 'ua:automation'
+  | 'trust:contact-token' | 'trust:crm-email' | 'trust:name-in-email';
+
+/** `detail` is at most 80 chars and never contains the message body. */
+export interface SpamReason {
+  rule: SpamRule;
+  weight: number;
+  detail?: string;
+}
+
+export interface SpamAssessment {
+  version: 1;
+  score: number; // plain sum, may be negative
+  verdict: SpamVerdict;
+  reasons: SpamReason[]; // every rule that fired, sorted by |weight| desc
+  assessedAt: string; // ISO
+  enforced: boolean; // false when SPAM_ENFORCE=false (verdict stored, not applied)
+  releasedAt: string | null; // set by dashboard release
+  releasedBy: 'ken' | null;
+  overriddenTo: 'spam' | null; // Ken set status=spam via the select on a non-spam verdict
+}
+
+export interface LeadRequestMeta {
+  ip: string | null; // chosen per pickClientIp
+  ipSource: 'x-fah-client-ip' | 'xff-penultimate' | 'xff-first' | null;
+  ipHash: string | null; // sha256(`${salt}:${ip}`).slice(0,32)
+  xff: string | null; // raw x-forwarded-for
+  fahIp: string | null; // raw x-fah-client-ip
+  ua: string | null;
+  lang: string | null; // accept-language
+  referer: string | null;
+  origin: string | null;
+  fetchSite: string | null; // sec-fetch-site
+  via: string | null;
+  capturedAt: string;
+  scrubbedAt: string | null; // cron nulls ip/xff/fahIp/ua after 60 days
+}
+
+export interface LeadClientSignals {
+  webdriver: boolean | null;
+  interactions: number | null;
+  msSinceMount: number | null;
+}
+
 export interface LeadDoc {
   type: LeadType;
   name: string;
   email: string;
+  /** normalizeEmail(email): the "same mailbox" key used for rate limits and prior-spam lookups. */
+  emailKey: string;
   phone: string | null;
   summary: string;
   hot: boolean;
@@ -148,6 +218,10 @@ export interface LeadDoc {
     kenSmsAt: string | null;
     errors: string[];
   };
+  request: LeadRequestMeta | null;
+  client: LeadClientSignals | null;
+  /** null only on legacy docs created before spam scoring existed. */
+  spam: SpamAssessment | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -191,3 +265,6 @@ export function buyerLabel(field: string, value?: string | null) {
 export function isTestSubmission(name: string | null | undefined, email: string | null | undefined): boolean {
   return /^e2e-[^@]*@kenfinch\.ca$/i.test(email ?? '') || /\bE2E\b|\(ignore\)/i.test(name ?? '');
 }
+
+// spam.ts imports only types from this file, so there is no runtime cycle.
+export { normalizeEmail } from './spam';

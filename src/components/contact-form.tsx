@@ -7,6 +7,8 @@ import { z } from 'zod';
 import { useToast } from '@/hooks/use-toast';
 import { submitLead } from '@/lib/leads/client';
 import { trackContactFormSubmission } from '@/lib/analytics';
+import { useFormGuard } from '@/lib/leads/form-guard';
+import { HoneypotField } from '@/components/honeypot-field';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -40,6 +42,7 @@ const contactSchema = z.object({
 
 export function ContactForm() {
   const { toast } = useToast();
+  const guard = useFormGuard('contact');
 
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
@@ -66,15 +69,18 @@ export function ContactForm() {
             message: values.message || undefined,
             source: 'contact-form',
             page: typeof window !== 'undefined' ? window.location.pathname : undefined,
+            ...(await guard.guardPayload()),
         });
         if (!res.ok) throw new Error(res.error);
 
-        // 3. Fire conversion tracking across all pixels
-        trackContactFormSubmission({
-            name: values.name,
-            email: values.email,
-            phone: values.phone,
-        });
+        // 3. Fire conversion tracking across all pixels (held leads never count as conversions)
+        if (res.track) {
+            trackContactFormSubmission({
+                name: values.name,
+                email: values.email,
+                phone: values.phone,
+            });
+        }
 
         form.reset();
         toast({
@@ -95,7 +101,7 @@ export function ContactForm() {
     <Card>
         <CardContent className="pt-6">
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onContactSubmit)} className="space-y-4">
+                <form {...guard.formEventHandlers} onSubmit={form.handleSubmit(onContactSubmit)} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                         control={form.control}
@@ -192,6 +198,7 @@ export function ContactForm() {
                             </FormItem>
                         )}
                         />
+                    <HoneypotField id="cf-referral" {...guard.honeypotProps} />
                     <Button type="submit" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
                         {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                         Send Message

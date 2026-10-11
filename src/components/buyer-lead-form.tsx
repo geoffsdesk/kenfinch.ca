@@ -15,6 +15,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { submitLead } from '@/lib/leads/client';
+import { useFormGuard } from '@/lib/leads/form-guard';
+import { HoneypotField } from '@/components/honeypot-field';
 import { finmoApplicationUrl, CONTACT, MORTGAGE, SERVICE_AREAS } from '@/lib/site';
 import { trackMortgageLead, trackFinmoHandoff } from '@/lib/analytics';
 
@@ -204,6 +206,7 @@ export function BuyerLeadForm({
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [done, setDone] = useState<{ leadId: string; firstName: string } | null>(null);
+  const guard = useFormGuard('buyer');
 
   const form = useForm<Values>({
     resolver: zodResolver(schema),
@@ -230,12 +233,13 @@ export function BuyerLeadForm({
     setSubmitting(true);
     setServerError(null);
     try {
-      const res = await submitLead({ ...values, type: 'buyer', source });
+      const res = await submitLead({ ...values, type: 'buyer', source, ...(await guard.guardPayload()) });
       if (!res.ok) {
         setServerError(res.error);
         return;
       }
-      trackMortgageLead({ leadId: res.leadId, goal: values.goal, timeline: values.timeline, source });
+      if (res.track) trackMortgageLead({ leadId: res.leadId, goal: values.goal, timeline: values.timeline, source });
+      // The Finmo hand-off renders regardless: a held lead still sees the normal success state.
       setDone({ leadId: res.leadId, firstName: values.firstName });
     } catch (e) {
       console.error(e);
@@ -323,6 +327,7 @@ export function BuyerLeadForm({
 
         <Form {...form}>
           <form
+            {...guard.formEventHandlers}
             onSubmit={form.handleSubmit(onSubmit)}
             onKeyDown={(e) => {
               // Enter should advance steps, not submit prematurely.
@@ -333,6 +338,7 @@ export function BuyerLeadForm({
             }}
             className="space-y-6"
           >
+            <HoneypotField id="bf-referral" {...guard.honeypotProps} />
             {step === 0 && (
               <div className="space-y-6 animate-fade-in-up">
                 <FormField control={form.control} name="goal" render={({ field }) => (

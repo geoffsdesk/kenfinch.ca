@@ -5,6 +5,7 @@
 
 import { CONTACT, MORTGAGE, SITE_URL } from '@/lib/site';
 import { TYPE_LABELS, STATUS_LABELS, buyerLabel, type LeadRecord } from './types';
+import { REASON_LABELS } from './spam';
 import { attributionLabel } from '@/lib/attribution';
 
 /** Geoff is BCC'd on every lead notification so the pipeline is auditable. */
@@ -108,14 +109,24 @@ export function kenNotificationHtml(lead: LeadRecord, leadId: string): string {
     body = rows([['Requested', (d.asset as string) || '']]);
   }
   const hot = lead.hot ? `<p style="background:#fff3cd;border:1px solid #ffe08a;padding:8px 12px;border-radius:6px;font-weight:600">HOT lead: moving within 3 months. Call today.</p>` : '';
+  const review =
+    lead.spam?.verdict === 'review' && !lead.spam.releasedAt
+      ? `<p style="background:#fef3c7;border:1px solid #fcd34d;padding:10px 12px;border-radius:6px;font-size:14px"><strong>Possible spam (score ${lead.spam.score}).</strong> Signals: ${esc(
+          lead.spam.reasons.map((r) => REASON_LABELS[r.rule] ?? r.rule).join(', '),
+        )}. This sender has NOT been sent a confirmation email and will not get the 48-hour check-in. If this is a real person, open the dashboard and click "Not spam".</p>`
+      : '';
+  const request = lead.request
+    ? `<br>Request: ${esc(lead.request.ip ?? 'unknown IP')} &middot; ${esc((lead.request.ua ?? 'no UA').slice(0, 80))} &middot; ${esc(lead.request.lang ?? 'no language')}`
+    : '';
   return wrap(`${TYPE_LABELS[lead.type]} lead: ${lead.name}`, `
+    ${review}
     ${hot}
     <h3>Contact</h3>${contact}
     ${body}
     <p style="margin-top:20px"><a href="${dashboardUrl()}" style="background:#d4af37;color:#111;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600">Open in dashboard</a></p>
     <p style="font-size:12px;color:#777">Lead ID ${esc(leadId)} &middot; Form ${esc(lead.source)} &middot; Page ${esc(lead.page)}<br>
     Marketing source: <strong>${esc(attributionLabel(lead.attribution))}</strong>${lead.attribution?.utm_term ? ` &middot; keyword: ${esc(lead.attribution.utm_term)}` : ''}${lead.attribution?.landingPage ? ` &middot; landed on ${esc(lead.attribution.landingPage)}` : ''}<br>
-    This lead gets an automatic "did Ken reach you?" check-in in 2 days unless you mark it Contacted in the dashboard first.</p>
+    This lead gets an automatic "did Ken reach you?" check-in in 2 days unless you mark it Contacted in the dashboard first.${request}</p>
   `);
 }
 
@@ -182,12 +193,18 @@ export function digestHtml(args: {
   stale: LeadRecord[];
   saidNo: LeadRecord[];
   dueToday: LeadRecord[];
+  /** Auto-quarantined in the last 24h (test submissions excluded) so a real name can be spotted and released. */
+  quarantined: LeadRecord[];
   counts: Record<string, number>;
 }): string {
-  const line = (l: LeadRecord) =>
-    `<li style="margin:6px 0"><strong>${esc(l.name)}</strong> &middot; ${esc(TYPE_LABELS[l.type])}${l.hot ? ' &middot; <span style="color:#b45309;font-weight:600">HOT</span>' : ''}<br>
+  const line = (l: LeadRecord) => {
+    const rules = l.spam?.reasons.map((r) => r.rule) ?? [];
+    return `<li style="margin:6px 0"><strong>${esc(l.name)}</strong> &middot; ${esc(TYPE_LABELS[l.type])}${l.hot ? ' &middot; <span style="color:#b45309;font-weight:600">HOT</span>' : ''}<br>
       <span style="color:#555;font-size:13px">${esc(l.summary)}</span><br>
-      <span style="font-size:13px">${esc(l.phone ?? '')} ${esc(l.email)} &middot; ${esc(fmtToronto(l.createdAt))} &middot; status: ${esc(STATUS_LABELS[l.status])} &middot; via ${esc(attributionLabel(l.attribution))}</span></li>`;
+      <span style="font-size:13px">${esc(l.phone ?? '')} ${esc(l.email)} &middot; ${esc(fmtToronto(l.createdAt))} &middot; status: ${esc(STATUS_LABELS[l.status])} &middot; via ${esc(attributionLabel(l.attribution))}${
+        l.status === 'spam' && rules.length ? ` &middot; ${esc(rules.join(', '))}` : ''
+      }</span></li>`;
+  };
   const section = (title: string, items: LeadRecord[], empty: string, color = '#111') =>
     `<h3 style="color:${color};margin:22px 0 6px">${esc(title)} (${items.length})</h3>${items.length ? `<ul style="padding-left:18px;margin:0">${items.map(line).join('')}</ul>` : `<p style="color:#777;font-size:14px;margin:0">${esc(empty)}</p>`}`;
   const bySource: Record<string, number> = {};
@@ -209,6 +226,7 @@ export function digestHtml(args: {
     ${section('Leads who said Ken has NOT reached them', args.saidNo, 'No "no" replies in the last day.', '#b91c1c')}
     ${section('Follow-ups scheduled for today', args.dueToday, 'None scheduled.')}
     ${section('New leads in the last 24 hours', args.newLeads, 'No new leads yesterday.')}
+    ${section('Quarantined as spam in the last 24 hours', args.quarantined, 'Nothing quarantined.', '#6b7280')}
     <p style="margin-top:20px"><a href="${dashboardUrl()}" style="background:#d4af37;color:#111;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600">Open the lead inbox</a></p>
   `);
 }

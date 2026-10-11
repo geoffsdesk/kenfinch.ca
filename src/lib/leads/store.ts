@@ -4,6 +4,7 @@
 
 import { randomBytes } from 'crypto';
 import { getAdminDb } from '@/lib/firebase-admin';
+import { normalizeEmail } from './spam';
 import type { LeadDoc, LeadRecord, LeadStatus, LeadNote } from './types';
 
 export const LEADS_COLLECTION = 'leads';
@@ -28,6 +29,7 @@ export function toRecord(id: string, raw: FirebaseFirestore.DocumentData): LeadR
     type: raw.type ?? 'popup',
     name: raw.name ?? 'Not provided',
     email: raw.email ?? '',
+    emailKey: raw.emailKey ?? normalizeEmail(raw.email ?? ''),
     phone: raw.phone ?? null,
     summary: raw.summary ?? (raw.asset ? `Email capture: ${raw.asset}` : ''),
     hot: !!raw.hot,
@@ -48,6 +50,9 @@ export function toRecord(id: string, raw: FirebaseFirestore.DocumentData): LeadR
       checkinRepliedAt: null,
     },
     notify: raw.notify ?? { kenEmailAt: null, kenSmsAt: null, errors: [] },
+    request: raw.request ?? null,
+    client: raw.client ?? null,
+    spam: raw.spam ?? null,
     createdAt: created,
     updatedAt: raw.updatedAt ?? created,
   };
@@ -92,6 +97,25 @@ export async function listLeads(limit = 300): Promise<LeadRecord[]> {
   return [...seen.values()].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1)).slice(0, limit);
 }
 
+/** Leads from the same mailbox (equality-only query, no composite index). */
+export async function findLeadsByEmailKey(emailKey: string, limit = 10): Promise<LeadRecord[]> {
+  if (!emailKey) return [];
+  const snap = await getAdminDb().collection(LEADS_COLLECTION).where('emailKey', '==', emailKey).limit(limit).get();
+  return snap.docs.map((d) => toRecord(d.id, d.data()));
+}
+
+/**
+ * Legacy docs with no `emailKey` field (Firestore cannot query for a missing
+ * field, so scan the most recent 500 raw snapshots). Used by the cron backfill.
+ */
+export async function listLeadsMissingEmailKey(limit = 50): Promise<{ id: string; email: string }[]> {
+  const snap = await getAdminDb().collection(LEADS_COLLECTION).orderBy('createdAt', 'desc').limit(500).get();
+  return snap.docs
+    .filter((d) => !('emailKey' in d.data()))
+    .slice(0, limit)
+    .map((d) => ({ id: d.id, email: String(d.data().email ?? '') }));
+}
+
 export async function findLeadByPhone(digits: string): Promise<LeadRecord | null> {
   // Match on the last 10 digits so "+1 (416) 555-0123" and "4165550123" agree.
   const tail = digits.replace(/\D/g, '').slice(-10);
@@ -105,7 +129,13 @@ export async function setStatus(id: string, status: LeadStatus, by: LeadNote['by
   const lead = await getLead(id);
   if (!lead) throw new Error('Lead not found');
   const note: LeadNote = { at, text: `Status changed to ${status}`, by };
-  await patchLead(id, { status, statusUpdatedAt: at, notes: [...lead.notes, note] });
+  const patch: Record<string, unknown> = { status, statusUpdatedAt: at, notes: [...lead.notes, note] };
+  if (status === 'spam') {
+    // Marking spam cancels the 48h check-in and records Ken's override on the assessment.
+    patch['followUp.checkinSentAt'] = lead.followUp.checkinSentAt ?? at;
+    if (lead.spam) patch['spam.overriddenTo'] = 'spam';
+  }
+  await patchLead(id, patch);
 }
 
 export async function addNote(id: string, text: string, by: LeadNote['by'] = 'ken') {

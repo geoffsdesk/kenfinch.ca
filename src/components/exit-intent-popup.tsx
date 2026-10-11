@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X, Download, ArrowRight, Landmark, Phone } from 'lucide-react';
 import { submitLead } from '@/lib/leads/client';
+import { useFormGuard } from '@/lib/leads/form-guard';
+import { HoneypotField } from '@/components/honeypot-field';
 import { CONTACT } from '@/lib/site';
 import Link from 'next/link';
 
@@ -27,6 +29,8 @@ export function ExitIntentPopup() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  // The popup mounts on every page; only fetch a token once it is actually shown.
+  const guard = useFormGuard('popup', { enabled: show });
 
   useEffect(() => {
     setMode(isSeller ? 'seller' : 'buyer');
@@ -74,6 +78,7 @@ export function ExitIntentPopup() {
         asset: mode === 'seller' ? 'oakville-seller-guide' : 'buyer-affordability-check',
         source: 'exit-intent-popup',
         page: pathname || '',
+        ...(await guard.guardPayload()),
       });
     } catch (err) {
       console.error('Failed to save lead:', err);
@@ -109,9 +114,10 @@ export function ExitIntentPopup() {
                     first-time buyer programs you may qualify for. No credit check.
                   </p>
                 </div>
-                <form onSubmit={handleSubmit} className="space-y-3">
+                <form {...guard.formEventHandlers} onSubmit={handleSubmit} className="space-y-3">
                   <Input type="text" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
                   <Input type="email" placeholder="Your email address" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                  <HoneypotField id="pp-referral" {...guard.honeypotProps} />
                   <Button type="submit" className="w-full" size="lg" disabled={loading}>
                     {loading ? 'Sending...' : 'Send my estimate'}
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -163,9 +169,10 @@ export function ExitIntentPopup() {
                   staging tips, and what top agents do differently to sell homes faster and for more money.
                 </p>
               </div>
-              <form onSubmit={handleSubmit} className="space-y-3">
+              <form {...guard.formEventHandlers} onSubmit={handleSubmit} className="space-y-3">
                 <Input type="text" placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} />
                 <Input type="email" placeholder="Your email address" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <HoneypotField id="pp-referral" {...guard.honeypotProps} />
                 <Button type="submit" className="w-full" size="lg" disabled={loading}>
                   {loading ? 'Sending...' : 'Get the Free Guide'}
                   <ArrowRight className="ml-2 h-4 w-4" />

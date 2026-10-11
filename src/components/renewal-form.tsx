@@ -7,6 +7,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { submitLead } from '@/lib/leads/client';
 import { trackContactFormSubmission } from '@/lib/analytics';
+import { useFormGuard } from '@/lib/leads/form-guard';
+import { HoneypotField } from '@/components/honeypot-field';
 import { CONTACT } from '@/lib/site';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -56,6 +58,7 @@ export function RenewalForm() {
   const months = useMemo(monthOptions, []);
   const [done, setDone] = useState<{ month: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const guard = useFormGuard('renewal');
 
   const form = useForm<Values>({
     resolver: zodResolver(schema),
@@ -86,9 +89,10 @@ export function RenewalForm() {
         source: 'renewal-form',
         page: typeof window !== 'undefined' ? window.location.pathname : undefined,
         contactToken: contactToken && /^[a-f0-9]{32}$/i.test(contactToken) ? contactToken : undefined,
+        ...(await guard.guardPayload()),
       });
       if (!res.ok) throw new Error(res.error);
-      trackContactFormSubmission({ name: values.name, email: values.email, phone: values.phone });
+      if (res.track) trackContactFormSubmission({ name: values.name, email: values.email, phone: values.phone });
       setDone({ month: monthLabel });
     } catch (e) {
       console.error(e);
@@ -127,7 +131,7 @@ export function RenewalForm() {
     <Card>
       <CardContent className="pt-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="renewal-form">
+          <form {...guard.formEventHandlers} onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" data-testid="renewal-form">
             <FormField
               control={form.control}
               name="renewalMonth"
@@ -245,6 +249,7 @@ export function RenewalForm() {
                 </FormItem>
               )}
             />
+            <HoneypotField id="rf-referral" {...guard.honeypotProps} />
             {error && <p className="text-sm text-destructive">{error}</p>}
             <Button type="submit" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
