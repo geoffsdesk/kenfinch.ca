@@ -18,7 +18,7 @@ export const SPAM_AT = 6;
 /** rate:ip fires at RULES['rate:ip'] past this many leads from one network in 60 min ... */
 export const IP_RATE_AT = 5;
 /** ... and at RATE_IP_FLOOD past this many: a flood is quarantined (stored, nothing sent), never silently dropped. */
-export const IP_FLOOD_AT = 200;
+export const IP_FLOOD_AT = 30;
 export const RATE_IP_FLOOD = 6;
 
 /** Single tunable weight table. A weight of 0 records the signal without scoring it. */
@@ -160,7 +160,9 @@ export function pickClientIp(fah: string | null, xff: string | null, onFirebase:
     .filter(isIp);
   const fahIp = fah?.trim() ?? '';
   if (onFirebase && fahIp && isIp(fahIp) && parts.includes(fahIp)) return { ip: fahIp, source: 'x-fah-client-ip' };
-  if (onFirebase && parts.length >= 2) return { ip: parts[parts.length - 2], source: 'xff-penultimate' };
+  // Probe of 2026-10-12 (docs/spam-defense.md): on App Hosting the chain is
+  // "<client>, <google hop>, <google hop>", so the client is the third-last entry.
+  if (onFirebase && parts.length >= 3) return { ip: parts[parts.length - 3], source: 'xff-client-hop' };
   if (onFirebase) return { ip: null, source: null };
   if (parts[0]) return { ip: parts[0], source: 'xff-first' };
   return { ip: null, source: null };
@@ -168,7 +170,7 @@ export function pickClientIp(fah: string | null, xff: string | null, onFirebase:
 
 /** Only these sources are good enough to key rate limits on; `xff-first` is the local-dev / unknown-proxy fallback. */
 export function ipTrustedForRate(source: LeadRequestMeta['ipSource']): boolean {
-  return source === 'x-fah-client-ip' || source === 'xff-penultimate';
+  return source === 'x-fah-client-ip' || source === 'xff-client-hop';
 }
 
 // ─── Content helpers ─────────────────────────────────────────────────────────

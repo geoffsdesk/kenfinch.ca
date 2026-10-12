@@ -168,7 +168,7 @@ export interface SpamAssessment {
 
 export interface LeadRequestMeta {
   ip: string | null; // chosen per pickClientIp
-  ipSource: 'x-fah-client-ip' | 'xff-penultimate' | 'xff-first' | null;
+  ipSource: 'x-fah-client-ip' | 'xff-client-hop' | 'xff-first' | null;
   ipHash: string | null; // sha256(`${salt}:${ip}`).slice(0,32)
   xff: string | null; // raw x-forwarded-for
   fahIp: string | null; // raw x-fah-client-ip

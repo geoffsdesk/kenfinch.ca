@@ -108,23 +108,22 @@ test('gmailDotCount counts dots only for Gmail', () => {
 
 // ─── pickClientIp / registrable / urlHosts ──────────────────────────────────
 
-test('pickClientIp: x-fah-client-ip only when XFF corroborates it, then the penultimate XFF hop, on Firebase', () => {
-  assert.deepEqual(pickClientIp('203.0.113.9', 'spoofed, 203.0.113.9, 35.1.1.1', true), { ip: '203.0.113.9', source: 'x-fah-client-ip' });
-  assert.deepEqual(pickClientIp('203.0.113.9', '203.0.113.9, 35.1.1.1', true), { ip: '203.0.113.9', source: 'x-fah-client-ip' });
-  // A client-supplied x-fah-client-ip the LB did not strip is not in the XFF chain: ignored.
-  assert.deepEqual(pickClientIp('198.51.100.7', 'spoofed, 203.0.113.9, 35.1.1.1', true), { ip: '203.0.113.9', source: 'xff-penultimate' });
+test('pickClientIp: x-fah-client-ip only when XFF corroborates it, then the third-last XFF hop (client, google, google), on Firebase', () => {
+  assert.deepEqual(pickClientIp('203.0.113.9', 'spoofed, 203.0.113.9, 35.1.1.1, 192.178.13.1', true), { ip: '203.0.113.9', source: 'x-fah-client-ip' });
+  assert.deepEqual(pickClientIp('203.0.113.9', '203.0.113.9, 35.1.1.1, 192.178.13.1', true), { ip: '203.0.113.9', source: 'x-fah-client-ip' });
+  // Probe layout of 2026-10-12: "<client>, <google>, <google>" and no usable x-fah-client-ip.
+  assert.deepEqual(pickClientIp('198.51.100.7', '203.0.113.9, 35.1.1.1, 192.178.13.1', true), { ip: '203.0.113.9', source: 'xff-client-hop' });
+  assert.deepEqual(pickClientIp(null, 'spoofed, 203.0.113.9, 35.1.1.1, 192.178.13.1', true), { ip: '203.0.113.9', source: 'xff-client-hop' });
+  assert.deepEqual(pickClientIp(null, '2001:db8::1, 35.1.1.1, 192.178.13.1', true), { ip: '2001:db8::1', source: 'xff-client-hop' });
+  // Too short to locate the client hop: no IP rather than a guess.
   assert.deepEqual(pickClientIp('198.51.100.7', 'a, b', true), { ip: null, source: null });
-  assert.deepEqual(pickClientIp(null, 'spoofed, 203.0.113.9, 35.1.1.1', true), { ip: '203.0.113.9', source: 'xff-penultimate' });
-  assert.deepEqual(pickClientIp(null, '2001:db8::1, 35.1.1.1', true), { ip: '2001:db8::1', source: 'xff-penultimate' });
-  // A lone hop on Firebase may be the CDN itself, shared by everyone: not trusted.
+  assert.deepEqual(pickClientIp(null, '203.0.113.9, 35.1.1.1', true), { ip: null, source: null });
   assert.deepEqual(pickClientIp(null, '203.0.113.9', true), { ip: null, source: null });
   assert.deepEqual(pickClientIp(null, null, true), { ip: null, source: null });
-  // Off Firebase (local dev, unknown proxy) the first hop is recorded but never rate-limited on.
+  // Off Firebase (local dev): first hop.
   assert.deepEqual(pickClientIp(null, '203.0.113.9', false), { ip: '203.0.113.9', source: 'xff-first' });
-  assert.deepEqual(pickClientIp(null, null, false), { ip: null, source: null });
-  assert.deepEqual(pickClientIp('203.0.113.9', null, false), { ip: null, source: null });
   assert.equal(ipTrustedForRate('x-fah-client-ip'), true);
-  assert.equal(ipTrustedForRate('xff-penultimate'), true);
+  assert.equal(ipTrustedForRate('xff-client-hop'), true);
   assert.equal(ipTrustedForRate('xff-first'), false);
   assert.equal(ipTrustedForRate(null), false);
 });
@@ -356,19 +355,19 @@ test('prior spam from the same mailbox: Ken-marked or same-network = 6, automati
   expectScore(assessLead(contact(), ctx({ prior: [{ status: 'spam', spam: null, isTest: true }, { status: 'contacted', spam: null, isTest: false }] })), 0, 'clean', []);
 });
 
-test('rate counters: ip > 5 reviews (until the IP source is proven), a flood quarantines; email > 2 reviews and > 4 quarantines', () => {
+test('rate counters: ip > 5 reviews, > 30 in an hour quarantines as a flood; email > 2 reviews and > 4 quarantines', () => {
   assert.equal(IP_RATE_AT, 5);
-  assert.equal(IP_FLOOD_AT, 200);
-  assert.equal(RULES['rate:ip'], 3, 'rate:ip stays at review until the /api/health probe confirms the client IP source');
+  assert.equal(IP_FLOOD_AT, 30);
+  assert.equal(RULES['rate:ip'], 3, 'a busy shared network (office NAT, carrier NAT) is reviewed, not quarantined');
   const sixth = assessLead(contact(), ctx({ counters: { ip: 6, email: null } }));
   expectScore(sixth, 3, 'review', ['rate:ip']);
   assert.equal(sixth.reasons[0].detail, '6 in 60m');
   expectScore(assessLead(contact(), ctx({ counters: { ip: 5, email: null } })), 0, 'clean', []);
-  expectScore(assessLead(contact(), ctx({ counters: { ip: 200, email: null } })), 3, 'review', ['rate:ip']);
+  expectScore(assessLead(contact(), ctx({ counters: { ip: 30, email: null } })), 3, 'review', ['rate:ip']);
   // Past the flood mark the lead is quarantined (stored, nothing sent) rather than dropped.
-  const flood = assessLead(contact(), ctx({ counters: { ip: 201, email: null } }));
+  const flood = assessLead(contact(), ctx({ counters: { ip: 31, email: null } }));
   expectScore(flood, 6, 'spam', ['rate:ip']);
-  assert.equal(flood.reasons[0].detail, '201 in 60m (flood)');
+  assert.equal(flood.reasons[0].detail, '31 in 60m (flood)');
   expectScore(assessLead(contact(), ctx({ counters: { ip: null, email: 3 } })), 3, 'review', ['rate:email']);
   // > 4 from one mailbox is 6 only with corroboration: alone it is review, so junk sent under a
   // real address cannot blackhole its owner.
