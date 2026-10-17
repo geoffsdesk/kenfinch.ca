@@ -20,7 +20,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { issueFormTokenAction } from '@/app/actions/leads';
 
-export type GuardFormId = 'contact' | 'renewal' | 'buyer' | 'valuation' | 'popup';
+export type GuardFormId = 'contact' | 'renewal' | 'buyer' | 'valuation' | 'popup' | 'affordability';
 
 /** Longest a submit waits for a token still in flight before going without one. */
 export const TOKEN_WAIT_MS = 8000;

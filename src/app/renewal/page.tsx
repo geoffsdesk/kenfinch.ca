@@ -5,12 +5,13 @@ import { Footer } from '@/components/footer';
 import { RenewalForm } from '@/components/renewal-form';
 import { MortgageDisclosure } from '@/components/mortgage-disclosure';
 import { CONTACT, SITE_URL } from '@/lib/site';
+import { RENEWAL_NEVER_LIST } from '@/lib/never-lists';
 import { CalendarClock, Landmark, ShieldCheck } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Mortgage Renewal Check | Ken Finch, Oakville',
   description:
-    'Tell Ken Finch when your mortgage renews and he will shop the market for you 120 days out. Oakville mortgage agent, no obligation.',
+    'Tell Ken Finch when your mortgage renews and he will shop the market for you 120 days out. Oakville Mortgage Agent Level 1, no obligation.',
   alternates: { canonical: '/renewal' },
   openGraph: {
     title: 'When does your mortgage renew?',
@@ -39,7 +40,7 @@ export default function RenewalPage() {
                     <CalendarClock className="h-6 w-6 text-primary shrink-0" />
                     <div>
                       <p className="font-semibold">The 120-day window</p>
-                      <p className="text-sm text-muted-foreground">Lenders hold rates for up to 120 days. That is when a broker can shop your renewal properly, with no penalty.</p>
+                      <p className="text-sm text-muted-foreground">Lenders hold rates for up to 120 days. That is when Ken can shop your renewal properly, with no penalty.</p>
                     </div>
                   </li>
                   <li className="flex gap-3">
@@ -57,13 +58,32 @@ export default function RenewalPage() {
                     </div>
                   </li>
                 </ul>
+
+                {/* Ken's Never List for renewals */}
+                <div className="rounded-xl border bg-card p-5" id="never-list">
+                  <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-2">Ken&apos;s Never List, renewals</p>
+                  <p className="font-headline text-lg font-bold mb-3">Five things I would never do at my own renewal</p>
+                  <ol className="space-y-2">
+                    {RENEWAL_NEVER_LIST.map((item, i) => (
+                      <li key={item} className="flex gap-3 text-sm">
+                        <span className="font-headline text-xl font-bold leading-none text-primary tabular-nums">{i + 1}</span>
+                        <span className="text-muted-foreground">{item}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
                 <p className="text-sm text-muted-foreground">
                   Prefer to talk? Call or text Ken at <a href={CONTACT.phoneHref} className="font-semibold text-foreground">{CONTACT.phoneDisplay}</a>.
                 </p>
               </div>
-              <Suspense fallback={null}>
-                <RenewalForm />
-              </Suspense>
+
+              {/* Form first on phones (above the fold), right column on desktop. */}
+              <div id="renewal-form" className="scroll-mt-24 order-first lg:order-none">
+                <Suspense fallback={null}>
+                  <RenewalForm />
+                </Suspense>
+              </div>
             </div>
             <div className="max-w-6xl mx-auto mt-12">
               <MortgageDisclosure />

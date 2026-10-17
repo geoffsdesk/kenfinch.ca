@@ -31,7 +31,7 @@ test.describe('Spam defence', () => {
     await expect(page.getByText('Submission Failed')).toHaveCount(0);
   });
 
-  for (const path of ['/renewal', '/mortgage']) {
+  for (const path of ['/renewal', '/mortgage', '/afford']) {
     test(`${path} renders exactly one off-screen honeypot`, async ({ page }) => {
       await page.goto(path);
       const hp = page.locator('input[name="referral_code"]');
@@ -46,9 +46,12 @@ test.describe('Spam defence', () => {
     });
   }
 
-  test('/sell has no honeypot until the valuation stage-2 form mounts', async ({ page }) => {
+  test('/sell renders exactly one honeypot (the Never List capture) until the valuation gate mounts', async ({ page }) => {
     await page.goto('/sell');
     await expect(page.getByText(/home details|ai home valuat/i).first()).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('input[name="referral_code"]')).toHaveCount(0);
+    const hp = page.locator('input[name="referral_code"]');
+    await expect(hp).toHaveCount(1);
+    await expect(hp).toHaveAttribute('id', 'nl-referral');
+    await expect(hp).not.toBeInViewport();
   });
 });

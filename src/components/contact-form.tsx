@@ -79,6 +79,7 @@ export function ContactForm() {
                 name: values.name,
                 email: values.email,
                 phone: values.phone,
+                leadId: res.leadId,
             });
         }
 

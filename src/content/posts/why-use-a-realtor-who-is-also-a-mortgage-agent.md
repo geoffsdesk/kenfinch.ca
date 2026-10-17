@@ -1,12 +1,12 @@
 ---
-title: 'Why Buy With a Realtor Who Also Arranges Your Mortgage'
+title: 'Why Use a Realtor Who Is Also a Mortgage Agent'
 date: '2026-08-12'
 category: mortgage
 image: '/ken_with_client.jpg'
 excerpt: 'Financing conditions fall through, budgets turn out to be guesses, and closings get rescued at the last minute because the agent and the lender never talked. Here is what changes when one licensed advisor handles both.'
 ---
 
-Every real estate transaction has two halves: the home and the money. In the usual setup they are handled by two people who have never met, each of whom finds out what the other did after the fact. I spent twenty years as a real estate broker watching that gap cost buyers homes, and eventually I fixed it by becoming a licensed mortgage agent as well. Here is what that changes in practice.
+Every real estate transaction has two halves: the home and the money. In the usual setup they are handled by two people who have never met, each of whom finds out what the other did after the fact. I spent twenty years as a real estate broker watching that gap cost buyers homes, and eventually I fixed it by becoming a licensed Mortgage Agent Level 1 as well. Here is what that changes in practice.
 
 ## 1. Your budget is real before your first showing
 
@@ -26,7 +26,7 @@ If you are selling your current home and buying the next one, the timeline is a 
 
 ## 5. You get the whole lender market, not one bank
 
-Through Canada Express-Mortgage Inc. I place mortgages with over thirty lenders: the big banks, credit unions, and monoline lenders that often price more sharply than the branch down the street. One credit inquiry, one application, and the lender competes for you rather than the other way around. For self-employed buyers, new Canadians, and anyone with a bruised credit history, that breadth is the difference between an approval and a decline.
+As a Mortgage Agent Level 1 with Canada Express-Mortgage Inc. I place mortgages with dozens of lenders: the big banks, credit unions, and monoline lenders that often price more sharply than the branch down the street. One credit inquiry, one application, and the lender competes for you rather than the other way around. For self-employed buyers, new Canadians, and anyone with a bruised credit history, that breadth is the difference between an approval and a decline.
 
 ## What it costs you
 

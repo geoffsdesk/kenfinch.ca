@@ -24,7 +24,7 @@
 
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 
-export const FORM_IDS = ['contact', 'renewal', 'buyer', 'valuation', 'popup'] as const;
+export const FORM_IDS = ['contact', 'renewal', 'buyer', 'valuation', 'popup', 'affordability'] as const;
 export type FormId = (typeof FORM_IDS)[number];
 
 /** A token older than this is scored as stale (review), never as spam: long-open tabs are human. */

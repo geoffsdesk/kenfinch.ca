@@ -2,7 +2,7 @@
  * Marketing attribution captured in the browser and attached to every lead.
  *
  * Rules:
- *  - A visit carrying UTM params or an ad click id (gclid / fbclid / msclkid)
+ *  - A visit carrying UTM params or an ad click id (gclid / gbraid / wbraid / fbclid / msclkid)
  *    overwrites whatever was stored ("last paid touch wins").
  *  - An organic visit never overwrites a stored paid touch, but is recorded
  *    if nothing is stored yet (so organic leads still show a landing page
@@ -18,6 +18,9 @@ export interface Attribution {
   utm_term?: string;
   utm_content?: string;
   gclid?: string;
+  /** Google Ads click ids used instead of gclid on iOS / consent-restricted traffic (Demand Gen, YouTube). */
+  gbraid?: string;
+  wbraid?: string;
   fbclid?: string;
   msclkid?: string;
   landingPage?: string;
@@ -27,7 +30,7 @@ export interface Attribution {
 
 const KEY = 'kf_attribution';
 const TTL_MS = 30 * 24 * 3600 * 1000;
-const PARAMS: (keyof Attribution)[] = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'fbclid', 'msclkid'];
+const PARAMS: (keyof Attribution)[] = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid'];
 
 function read(): Attribution | null {
   try {
@@ -63,7 +66,7 @@ export function captureAttribution() {
 
   if (isPaidTouch || !existing) {
     // Infer source/medium from click ids when UTMs are absent.
-    if (fromUrl.gclid && !fromUrl.utm_source) {
+    if ((fromUrl.gclid || fromUrl.gbraid || fromUrl.wbraid) && !fromUrl.utm_source) {
       fromUrl.utm_source = 'google';
       fromUrl.utm_medium = 'cpc';
     }

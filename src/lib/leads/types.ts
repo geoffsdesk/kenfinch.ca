@@ -41,6 +41,8 @@ export const attributionSchema = z
     utm_term: z.string().max(200).optional(),
     utm_content: z.string().max(200).optional(),
     gclid: z.string().max(200).optional(),
+    gbraid: z.string().max(200).optional(),
+    wbraid: z.string().max(200).optional(),
     fbclid: z.string().max(200).optional(),
     msclkid: z.string().max(200).optional(),
     landingPage: z.string().max(300).optional(),
@@ -216,6 +218,8 @@ export interface LeadDoc {
   notify: {
     kenEmailAt: string | null;
     kenSmsAt: string | null;
+    /** Set by the hourly cron when the one-time "lead waiting 2 hours" nudge went to Ken. Absent on older docs. */
+    kenNudgeAt?: string | null;
     errors: string[];
   };
   request: LeadRequestMeta | null;

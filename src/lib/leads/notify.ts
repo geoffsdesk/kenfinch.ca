@@ -3,10 +3,12 @@
  * Twilio (optional; silently skipped when not configured).
  */
 
-import { CONTACT, MORTGAGE, SITE_URL } from '@/lib/site';
+import { CONTACT, MORTGAGE, REAL_ESTATE, SITE_URL } from '@/lib/site';
 import { TYPE_LABELS, STATUS_LABELS, buyerLabel, type LeadRecord } from './types';
 import { REASON_LABELS } from './spam';
 import { attributionLabel } from '@/lib/attribution';
+import { SELLER_NEVER_LIST } from '@/lib/never-lists';
+import { waitingLabel } from './nudge';
 
 /** Geoff is BCC'd on every lead notification so the pipeline is auditable. */
 export const OVERSIGHT_EMAIL = process.env.LEAD_OVERSIGHT_EMAIL || 'geoff.radian6@gmail.com';
@@ -27,7 +29,29 @@ export function esc(s: unknown) {
     .replace(/"/g, '&quot;');
 }
 
-function wrap(title: string, body: string) {
+/** RECO advertising line: brokerage name clearly and prominently. */
+export const RECO_LINE = `${CONTACT.name}, ${REAL_ESTATE.title}, ${REAL_ESTATE.brokerage}. ${REAL_ESTATE.disclaimer}`;
+/** FSRA (MBLAA) line: licensee name + approved title + licence, brokerage + licence. Ken is never a "mortgage broker". */
+export const FSRA_LINE = `${CONTACT.name}, ${MORTGAGE.title}, Licence #${MORTGAGE.agentLicence}. Mortgage services provided through ${MORTGAGE.brokerage}, FSRA Brokerage Licence #${MORTGAGE.brokerageLicence}.`;
+
+/** True when the lead is about a mortgage (buyer form, renewal, affordability, mortgage-flavoured lead magnets). */
+export function isMortgageLead(lead: LeadRecord): boolean {
+  if (lead.type === 'buyer') return true;
+  if (lead.source === 'renewal-form' || lead.source === 'affordability-form') return true;
+  const asset = String((lead.details as Record<string, unknown>).asset ?? '');
+  return lead.type === 'popup' && /afford|mortgage|renewal/i.test(asset);
+}
+
+/**
+ * Footer for emails to the sender: FSRA on mortgage, renewal and affordability
+ * leads, RECO on contact, valuation and lead-magnet leads, both on buyer leads.
+ */
+export function complianceFooter(lead: LeadRecord): string {
+  if (lead.type === 'buyer') return `${RECO_LINE} ${FSRA_LINE}`;
+  return isMortgageLead(lead) ? FSRA_LINE : RECO_LINE;
+}
+
+function wrap(title: string, body: string, footer: string = `${RECO_LINE} ${FSRA_LINE}`) {
   return `
   <div style="font-family:Inter,Arial,sans-serif;max-width:640px;margin:0 auto;color:#111">
     <div style="border-top:4px solid #d4af37;padding:20px 0 8px">
@@ -35,10 +59,7 @@ function wrap(title: string, body: string) {
       <h2 style="margin:6px 0 16px;font-size:22px">${esc(title)}</h2>
     </div>
     ${body}
-    <p style="margin-top:28px;font-size:11px;color:#777;line-height:1.5">
-      Ken Finch, Broker, Royal LePage Signature Realty, Brokerage. Ken Finch, ${esc(MORTGAGE.title)}, Licence #${esc(MORTGAGE.agentLicence)}.
-      Mortgage services provided through ${esc(MORTGAGE.brokerage)}, FSRA Brokerage Licence #${esc(MORTGAGE.brokerageLicence)}.
-    </p>
+    <p style="margin-top:28px;font-size:11px;color:#777;line-height:1.5">${esc(footer)}</p>
   </div>`;
 }
 
@@ -49,8 +70,26 @@ function rows(pairs: [string, unknown][]) {
     .join('')}</table>`;
 }
 
-export function dashboardUrl() {
-  return `${SITE_URL}/ken`;
+export function dashboardUrl(leadId?: string) {
+  return leadId ? `${SITE_URL}/ken?lead=${encodeURIComponent(leadId)}` : `${SITE_URL}/ken`;
+}
+
+/** Short human label for where a lead came from, e.g. "valuation-gated" vs "expert opinion". */
+export function sourceLabel(lead: LeadRecord): string {
+  switch (lead.source) {
+    case 'valuation-gated':
+      return 'valuation gate';
+    case 'valuation-expert-opinion':
+      return 'expert opinion';
+    case 'affordability-form':
+      return 'affordability';
+    case 'renewal-form':
+      return 'renewal';
+    case 'never-list':
+      return 'never list';
+    default:
+      return lead.source || 'site';
+  }
 }
 
 /** Subject lines are kept stable because the E2E suite searches for them. */
@@ -62,9 +101,9 @@ export function kenSubject(lead: LeadRecord): string {
     case 'contact':
       return `New Contact Form Submission from ${lead.name}${d.intent ? ` — ${d.intent}` : ''}`;
     case 'valuation':
-      return `Expert Opinion Request for: ${d.address ?? ''}`;
+      return lead.source === 'valuation-gated' ? `Valuation lead (gated estimate): ${d.address ?? ''}` : `Expert Opinion Request for: ${d.address ?? ''}`;
     default:
-      return `New email capture: ${lead.name} (${lead.email})`;
+      return d.asset === 'seller-never-list' ? `Never List request: ${lead.name} (${lead.email})` : `New email capture: ${lead.name} (${lead.email})`;
   }
 }
 
@@ -98,7 +137,13 @@ export function kenNotificationHtml(lead: LeadRecord, leadId: string): string {
     body = `${rows([['Interest', (d.intent as string) || 'Not specified']])}${d.message ? `<h3>Message</h3><p>${esc(d.message)}</p>` : ''}`;
   } else if (lead.type === 'valuation') {
     const prop = (d.property as Record<string, unknown>) || {};
+    const gated = lead.source === 'valuation-gated';
     body = `
+      <p style="background:${gated ? '#eef2ff' : '#f0fdf4'};border:1px solid ${gated ? '#c7d2fe' : '#bbf7d0'};padding:8px 12px;border-radius:6px;font-size:14px">
+        ${gated
+          ? '<strong>Gate lead.</strong> They unlocked the exact AI figure with their contact details. Reply with the three most recent comparable sales and whether the AI looks high or low (KEN-PLAYBOOK, "Gate lead comps template"). Target: within 1 hour, 9:00 to 20:00.'
+          : '<strong>Expert opinion requested.</strong> They want a full comparative market analysis.'}
+      </p>
       <h3>AI valuation</h3>${rows([
         ['Address', d.address],
         ['Estimated value', typeof d.estimate === 'number' ? `$${d.estimate.toLocaleString()}` : 'n/a'],
@@ -130,22 +175,52 @@ export function kenNotificationHtml(lead: LeadRecord, leadId: string): string {
   `);
 }
 
+/** Sender-facing signature. Ken's RECO title is Broker; on the mortgage side he is a Mortgage Agent Level 1, never a mortgage broker. */
+function signature(lead: LeadRecord): string {
+  const titles = isMortgageLead(lead)
+    ? lead.type === 'buyer'
+      ? `${esc(REAL_ESTATE.title)}, ${esc(REAL_ESTATE.brokerageShort)} &middot; ${esc(MORTGAGE.title)}, Licence #${esc(MORTGAGE.agentLicence)}`
+      : `${esc(MORTGAGE.title)}, Licence #${esc(MORTGAGE.agentLicence)} &middot; ${esc(MORTGAGE.brokerage)}`
+    : `${esc(REAL_ESTATE.title)}, ${esc(REAL_ESTATE.brokerage)}`;
+  return `<p style="font-size:15px;line-height:1.6">Ken Finch<br>${titles}<br>${CONTACT.phoneDisplay}</p>`;
+}
+
 export function leadConfirmationHtml(lead: LeadRecord): string {
   const first = lead.name.split(' ')[0] || 'there';
+  const d = lead.details as Record<string, unknown>;
+  const footer = complianceFooter(lead);
+
+  // Lead magnet: deliver the list in the email itself.
+  if (lead.type === 'popup' && d.asset === 'seller-never-list') {
+    return wrap(`Ken's Never List for Oakville sellers`, `
+      <p style="font-size:15px;line-height:1.6">Hi ${esc(first)}, here is the complete list from the video: the seven things I would never do selling my own house.</p>
+      <ol style="font-size:15px;line-height:1.7;padding-left:22px">${SELLER_NEVER_LIST.map((item) => `<li style="margin:6px 0">${esc(item)}</li>`).join('')}</ol>
+      <p style="font-size:15px;line-height:1.6">If you want to know what your own house would list for, the <a href="${SITE_URL}/sell#valuation-tool">free valuation tool</a> takes a minute, or reply to this email and I will tell you what I see on your street.</p>
+      ${signature(lead)}
+    `, footer);
+  }
+
   const what =
     lead.type === 'buyer'
       ? 'your pre-approval request'
       : lead.type === 'valuation'
-        ? 'your request for an expert opinion on your home value'
-        : lead.type === 'popup'
-          ? 'your request'
-          : 'your message';
+        ? lead.source === 'valuation-gated'
+          ? 'your home valuation request'
+          : 'your request for an expert opinion on your home value'
+        : lead.source === 'affordability-form'
+          ? 'your affordability report request'
+          : lead.source === 'renewal-form'
+            ? 'your renewal details'
+            : lead.type === 'popup'
+              ? 'your request'
+              : 'your message';
+  const gated = lead.type === 'valuation' && lead.source === 'valuation-gated';
   return wrap(`Got it, ${first}. Ken will be in touch.`, `
-    <p style="font-size:15px;line-height:1.6">Thanks for sending ${what} through KenFinch.ca. Ken reviews every request personally and will call or email you within one business day.</p>
+    <p style="font-size:15px;line-height:1.6">Thanks for sending ${what} through KenFinch.ca. Ken reviews every request personally and will ${gated ? 'send you the three most recent comparable sales near you, with his read on whether the AI estimate is high or low,' : 'call or email you'} within one business day.</p>
     <p style="font-size:15px;line-height:1.6">If it is urgent, call or text Ken directly at <a href="${CONTACT.phoneHref}">${CONTACT.phoneDisplay}</a>, or reply to this email.</p>
     ${lead.type === 'buyer' ? `<p style="font-size:15px;line-height:1.6">Want a head start? You can complete the secure mortgage application any time from the <a href="${SITE_URL}/mortgage">mortgage page</a>.</p>` : ''}
-    <p style="font-size:15px;line-height:1.6">Ken Finch<br>Real Estate Broker &middot; ${esc(MORTGAGE.title)}<br>${CONTACT.phoneDisplay}</p>
-  `);
+    ${signature(lead)}
+  `, footer);
 }
 
 export function checkinLinks(leadId: string, token: string) {
@@ -176,11 +251,34 @@ export function confirmationSmsText(lead: LeadRecord): string {
   return `Hi ${first}, thanks for reaching out via KenFinch.ca. Ken will call you within 1 business day. Urgent? Call/text ${CONTACT.phoneDisplay}. Reply STOP to opt out.`;
 }
 
+/** Ken's new-lead SMS: type and source (so a gate lead reads differently from an expert request) plus the /ken deep link. */
 export function kenSmsText(lead: LeadRecord): string {
-  const d = lead.details as Record<string, string | undefined>;
-  const bits = [lead.hot ? 'HOT' : null, TYPE_LABELS[lead.type], lead.name, lead.phone ?? lead.email, lead.summary].filter(Boolean);
-  const extra = lead.type === 'buyer' && d.timeline ? '' : '';
-  return `New lead (KenFinch.ca): ${bits.join(' | ')}${extra}. Dashboard: ${dashboardUrl()}`.slice(0, 320);
+  const bits = [lead.hot ? 'HOT' : null, `${TYPE_LABELS[lead.type]} (${sourceLabel(lead)})`, lead.name, lead.phone ?? lead.email, lead.summary].filter(Boolean);
+  const link = ` Open: ${dashboardUrl(lead.id)}`;
+  const head = `New lead (KenFinch.ca): ${bits.join(' | ')}.`;
+  return `${head.slice(0, Math.max(40, 320 - link.length))}${link}`;
+}
+
+/** One-time nudge when a lead has sat in New for 2 hours (email body). */
+export function nudgeHtml(lead: LeadRecord, now = new Date()): string {
+  return wrap(`Lead waiting ${waitingLabel(lead.createdAt, now)}: ${TYPE_LABELS[lead.type]} / ${sourceLabel(lead)}`, `
+    <p style="font-size:15px;line-height:1.6">${esc(lead.name)} (${esc(lead.phone ?? lead.email)}) came in ${esc(fmtToronto(lead.createdAt))} and is still marked New.</p>
+    ${rows([
+      ['Type', `${TYPE_LABELS[lead.type]} (${sourceLabel(lead)})`],
+      ['Summary', lead.summary],
+      ['Phone', lead.phone ?? 'Not provided'],
+      ['Email', lead.email],
+    ])}
+    <p style="margin-top:20px"><a href="${dashboardUrl(lead.id)}" style="background:#d4af37;color:#111;padding:10px 16px;border-radius:6px;text-decoration:none;font-weight:600">Open in /ken</a></p>
+    <p style="font-size:12px;color:#777">Target: first call or text within one hour between 9:00 and 20:00, otherwise by 9:30 the next morning (KEN-PLAYBOOK.md). Marking the lead Contacted stops the 48-hour check-in. This nudge is sent once per lead.</p>
+  `);
+}
+
+/** One-time nudge SMS to Ken. */
+export function nudgeSmsText(lead: LeadRecord, now = new Date()): string {
+  const head = `Lead waiting ${waitingLabel(lead.createdAt, now)}: ${TYPE_LABELS[lead.type]}/${sourceLabel(lead)} | ${lead.name} | ${lead.phone ?? lead.email}.`;
+  const link = ` Open /ken: ${dashboardUrl(lead.id)}`;
+  return `${head.slice(0, Math.max(40, 320 - link.length))}${link}`;
 }
 
 export function fmtToronto(iso: string, opts: Intl.DateTimeFormatOptions = { dateStyle: 'medium', timeStyle: 'short' }) {

@@ -25,6 +25,18 @@ const nextConfig: NextConfig = {
         destination: '/blog',
         permanent: true,
       },
+      /* Ken is a Mortgage Agent Level 1, never a "mortgage broker": the post was renamed. */
+      {
+        source: '/blog/why-use-a-realtor-who-is-also-a-mortgage-broker',
+        destination: '/blog/why-use-a-realtor-who-is-also-a-mortgage-agent',
+        permanent: true,
+      },
+      /* Affordability calculator lives at /afford (short URL for ads). */
+      {
+        source: '/mortgage/affordability',
+        destination: '/afford',
+        permanent: true,
+      },
     ];
   },
   typescript: {
@@ -59,6 +71,9 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL: process.env.NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL,
     NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL: process.env.NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL,
     NEXT_PUBLIC_GOOGLE_ADS_MORTGAGE_LABEL: process.env.NEXT_PUBLIC_GOOGLE_ADS_MORTGAGE_LABEL,
+    NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL: process.env.NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL,
+    NEXT_PUBLIC_GOOGLE_ADS_VALUATION_TOOL_LABEL: process.env.NEXT_PUBLIC_GOOGLE_ADS_VALUATION_TOOL_LABEL,
+    NEXT_PUBLIC_GOOGLE_ADS_FINMO_LABEL: process.env.NEXT_PUBLIC_GOOGLE_ADS_FINMO_LABEL,
     NEXT_PUBLIC_META_PIXEL_ID: process.env.NEXT_PUBLIC_META_PIXEL_ID,
     NEXT_PUBLIC_TIKTOK_PIXEL_ID: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID,
   }

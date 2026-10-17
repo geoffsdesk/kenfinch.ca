@@ -4,8 +4,9 @@
  * Multi-step buyer / mortgage pre-approval form.
  *
  * Step 1  Your plans        (goal, timeline, budget, areas, first-time)
- * Step 2  Your finances     (down payment, income band, employment, credit)
- * Step 3  Contact + consent
+ * Step 2  Contact + consent (so a visitor who stops here is still a lead)
+ * Step 3  Your finances     (optional: down payment, income band, employment, credit)
+ *         with a second button "Send without these, Ken will ask"
  * Done    Lead saved + Ken emailed -> "Continue your secure application"
  *         button that opens Express Mortgage (Finmo) with our lead ID.
  */
@@ -30,14 +31,15 @@ import { ArrowRight, ArrowLeft, Loader2, ShieldCheck, Phone, CheckCircle2, Lock,
 import { cn } from '@/lib/utils';
 
 // Client-side schema mirrors the server one (kept local so the form can
-// validate per-step without a round-trip).
+// validate per-step without a round-trip). Finances are optional here; the
+// server receives downPayment 'not-sure' when the visitor skips the step.
 const schema = z.object({
   goal: z.enum(['first-home', 'move-up', 'investment', 'refinance', 'not-sure'], { required_error: 'Pick the option closest to your plans.' }),
   timeline: z.enum(['0-3', '3-6', '6-12', 'exploring'], { required_error: 'When are you hoping to move?' }),
   priceRange: z.enum(['under-750k', '750k-1m', '1m-1.5m', '1.5m-2.5m', 'over-2.5m', 'not-sure'], { required_error: 'Pick a price range (a guess is fine).' }),
   areas: z.array(z.enum(SERVICE_AREAS)).min(1, 'Pick at least one area.'),
   firstTimeBuyer: z.enum(['yes', 'no'], { required_error: 'Let Ken know if this is your first home.' }),
-  downPayment: z.enum(['under-5', '5-10', '10-20', '20-plus', 'not-sure'], { required_error: 'Pick the closest option.' }),
+  downPayment: z.enum(['under-5', '5-10', '10-20', '20-plus', 'not-sure']).optional(),
   income: z.enum(['under-100k', '100k-150k', '150k-250k', 'over-250k', 'prefer-not']).optional(),
   employment: z.enum(['salaried', 'self-employed', 'contract', 'retired', 'other']).optional(),
   credit: z.enum(['excellent', 'good', 'fair', 'not-sure']).optional(),
@@ -52,13 +54,15 @@ const schema = z.object({
 
 type Values = z.infer<typeof schema>;
 
+const FINANCE_FIELDS = ['downPayment', 'income', 'employment', 'credit', 'preApproved'] as const;
+
 const STEP_FIELDS: (keyof Values)[][] = [
   ['goal', 'timeline', 'priceRange', 'areas', 'firstTimeBuyer'],
-  ['downPayment', 'income', 'employment', 'credit', 'preApproved'],
   ['firstName', 'lastName', 'email', 'phone', 'message', 'consent'],
+  [...FINANCE_FIELDS],
 ];
 
-const STEP_TITLES = ['Your plans', 'Your finances', 'Your details'];
+const STEP_TITLES = ['Your plans', 'Your details', 'Your finances (optional)'];
 
 const OPTIONS = {
   goal: [
@@ -120,7 +124,7 @@ const OPTIONS = {
 } as const;
 
 /** Pill-style single choice. */
-function ChoiceGroup({
+export function ChoiceGroup({
   value,
   onChange,
   options,
@@ -233,7 +237,14 @@ export function BuyerLeadForm({
     setSubmitting(true);
     setServerError(null);
     try {
-      const res = await submitLead({ ...values, type: 'buyer', source, ...(await guard.guardPayload()) });
+      const res = await submitLead({
+        ...values,
+        // The server schema requires a down payment band; a skipped finances step means "not sure".
+        downPayment: values.downPayment ?? 'not-sure',
+        type: 'buyer',
+        source,
+        ...(await guard.guardPayload()),
+      });
       if (!res.ok) {
         setServerError(res.error);
         return;
@@ -249,12 +260,18 @@ export function BuyerLeadForm({
     }
   }
 
+  /** "Send without these, Ken will ask": clear the finance answers and submit what we have. */
+  async function skipFinances() {
+    for (const f of FINANCE_FIELDS) form.setValue(f, undefined, { shouldValidate: false });
+    await form.handleSubmit(onSubmit)();
+  }
+
   const pad = compact ? 'p-5 sm:p-6' : 'p-6 sm:p-8';
 
   if (done) {
     const finmoUrl = finmoApplicationUrl(done.leadId);
     return (
-      <Card className={cn('border-0 shadow-xl', className)} data-testid="buyer-lead-success">
+      <Card className={cn('border-0 shadow-xl', className)} data-testid="buyer-lead-success" data-lead-id={done.leadId}>
         <CardContent className={cn(pad, 'space-y-6')}>
           <div className="text-center space-y-3">
             <div className="h-14 w-14 rounded-full bg-green-100 flex items-center justify-center mx-auto">
@@ -301,8 +318,8 @@ export function BuyerLeadForm({
           </div>
 
           <p className="text-[11px] leading-relaxed text-muted-foreground text-center">
-            Mortgage services provided through {MORTGAGE.brokerage}, FSRA Brokerage Licence #{MORTGAGE.brokerageLicence}.
-            A pre-approval is not a commitment to lend; final approval is subject to lender review.
+            {CONTACT.name}, {MORTGAGE.title}, Licence #{MORTGAGE.agentLicence}. Mortgage services provided through {MORTGAGE.brokerage},
+            FSRA Brokerage Licence #{MORTGAGE.brokerageLicence}. A pre-approval is not a commitment to lend; final approval is subject to lender review.
           </p>
         </CardContent>
       </Card>
@@ -380,51 +397,6 @@ export function BuyerLeadForm({
             )}
 
             {step === 1 && (
-              <div className="space-y-6 animate-fade-in-up">
-                <p className="text-sm text-muted-foreground -mt-2">
-                  Approximate answers are fine. This helps Ken estimate what you qualify for before you ever fill out a full application.
-                </p>
-                <FormField control={form.control} name="downPayment" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base">Down payment you have available</FormLabel>
-                    <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.downPayment} columns={3} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="income" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base">Household income <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
-                    <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.income} columns={3} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="employment" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-base">Employment <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
-                    <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.employment} columns={3} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <FormField control={form.control} name="credit" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base">Credit <span className="text-muted-foreground font-normal">(optional)</span></FormLabel>
-                      <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.credit} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-                  <FormField control={form.control} name="preApproved" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-base">Already pre-approved?</FormLabel>
-                      <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.preApproved} /></FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
               <div className="space-y-5 animate-fade-in-up">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <FormField control={form.control} name="firstName" render={({ field }) => (
@@ -484,11 +456,56 @@ export function BuyerLeadForm({
               </div>
             )}
 
+            {step === 2 && (
+              <div className="space-y-6 animate-fade-in-up">
+                <p className="text-sm text-muted-foreground -mt-2">
+                  Optional. Approximate answers help Ken estimate what you qualify for before he calls. Skip them and he will simply ask.
+                </p>
+                <FormField control={form.control} name="downPayment" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base">Down payment you have available</FormLabel>
+                    <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.downPayment} columns={3} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="income" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base">Household income</FormLabel>
+                    <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.income} columns={3} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <FormField control={form.control} name="employment" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base">Employment</FormLabel>
+                    <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.employment} columns={3} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <FormField control={form.control} name="credit" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Credit</FormLabel>
+                      <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.credit} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                  <FormField control={form.control} name="preApproved" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-base">Already pre-approved?</FormLabel>
+                      <FormControl><ChoiceGroup value={field.value} onChange={field.onChange} options={OPTIONS.preApproved} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
+                </div>
+              </div>
+            )}
+
             {serverError && (
               <p className="text-sm text-destructive font-medium" role="alert">{serverError}</p>
             )}
 
-            <div className="flex items-center justify-between gap-3 pt-2">
+            <div className="flex items-center justify-between gap-3 pt-2 flex-wrap">
               {step > 0 ? (
                 <Button type="button" variant="ghost" onClick={() => setStep((s) => s - 1)} disabled={submitting}>
                   <ArrowLeft className="mr-2 h-4 w-4" />
@@ -502,10 +519,15 @@ export function BuyerLeadForm({
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               ) : (
-                <Button type="submit" size="lg" className="px-8" disabled={submitting}>
-                  {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
-                  Get my pre-approval plan
-                </Button>
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
+                  <Button type="button" variant="outline" onClick={skipFinances} disabled={submitting} data-testid="buyer-skip-finances">
+                    Send without these, Ken will ask
+                  </Button>
+                  <Button type="submit" size="lg" className="px-8" disabled={submitting}>
+                    {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ShieldCheck className="mr-2 h-4 w-4" />}
+                    Get my pre-approval plan
+                  </Button>
+                </div>
               )}
             </div>
           </form>
@@ -514,7 +536,7 @@ export function BuyerLeadForm({
         <p className="mt-5 text-[11px] leading-relaxed text-muted-foreground text-center">
           <Lock className="inline h-3 w-3 mr-1 -mt-0.5" />
           No credit check. No obligation. Your information is never sold.
-          Mortgage services through {MORTGAGE.brokerage}, FSRA Lic. #{MORTGAGE.brokerageLicence}.
+          {CONTACT.name}, {MORTGAGE.title}, Licence #{MORTGAGE.agentLicence}. Mortgage services through {MORTGAGE.brokerage}, FSRA Lic. #{MORTGAGE.brokerageLicence}.
         </p>
       </CardContent>
     </Card>

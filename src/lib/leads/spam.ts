@@ -334,8 +334,11 @@ export function assessLead(input: LeadInput, ctx: AssessContext): SpamAssessment
   const vendorDomain = !FREEMAIL.has(emailDomain) && VENDOR_WORDS.some((w) => reg.split('.')[0].includes(w));
   if (vendorDomain) fire('email:vendor-domain', RULES['email:vendor-domain'], emailDomain);
 
+  // The /afford report form writes a structured, number-heavy summary as the message, so the
+  // digits rule is skipped for it (and intent:empty below is already contact-form only). The
+  // valuation gate (type valuation, no phone, no message) carries nothing these rules look at.
   let equalsPhone = false;
-  if (/^\d{7,}$/.test(messageDigits)) {
+  if (input.source !== 'affordability-form' && /^\d{7,}$/.test(messageDigits)) {
     fire('message:digits', RULES['message:digits'], `${messageDigits.length} digits`);
     equalsPhone = phoneDigits.length >= 10 && messageDigits.slice(-10) === phoneDigits.slice(-10);
     if (equalsPhone) fire('message:equals-phone');

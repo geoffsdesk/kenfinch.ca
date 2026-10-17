@@ -51,6 +51,45 @@ function ago(iso: string) {
   return `${Math.floor(h / 24)}d ago`;
 }
 
+/** "42m" / "3h 10m" / "2d": how long the lead waited before Ken first moved it out of New. */
+function responseTime(l: LeadRecord): string | null {
+  if (l.status === 'new' || l.status === 'spam' || !l.statusUpdatedAt || !l.createdAt) return null;
+  const ms = new Date(l.statusUpdatedAt).getTime() - new Date(l.createdAt).getTime();
+  if (!Number.isFinite(ms) || ms < 0) return null;
+  const m = Math.round(ms / 60000);
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60);
+  if (h < 48) return `${h}h ${m % 60}m`;
+  return `${Math.floor(h / 24)}d`;
+}
+
+/** Where a lead came from, shown next to its type: a gated valuation reads differently from an expert request. */
+function sourceTag(l: LeadRecord): string | null {
+  switch (l.source) {
+    case 'valuation-gated':
+      return 'gated estimate';
+    case 'valuation-expert-opinion':
+      return 'expert opinion';
+    case 'affordability-form':
+      return 'affordability';
+    case 'renewal-form':
+      return 'renewal';
+    case 'never-list':
+      return 'never list';
+    default:
+      return l.type === 'valuation' ? l.source : null;
+  }
+}
+
+/**
+ * Google Ads attributes a conversion to a click id, so the G1 count reconciliation compares Ads
+ * "Lead form submitted" conversions per day with accepted leads that carry one of these.
+ */
+function hasGoogleClick(l: LeadRecord) {
+  const a = l.attribution;
+  return Boolean(a?.gclid || a?.gbraid || a?.wbraid);
+}
+
 function needsAttention(l: LeadRecord) {
   if (l.status === 'won' || l.status === 'lost' || l.status === 'spam') return false;
   if (l.followUp?.checkinReply === 'no') return true;
@@ -125,6 +164,19 @@ export function LeadInbox({ password }: { password: string }) {
     void load();
   }, [load]);
 
+  // Deep link from Ken's SMS / nudge email: /ken?lead=<id> opens that lead.
+  useEffect(() => {
+    try {
+      const id = new URLSearchParams(window.location.search).get('lead');
+      if (id) {
+        setFilter('all');
+        setOpen(id);
+      }
+    } catch {
+      /* no window */
+    }
+  }, []);
+
   async function update(id: string, payload: Record<string, unknown>) {
     setBusy(id);
     try {
@@ -162,6 +214,8 @@ export function LeadInbox({ password }: { password: string }) {
       all: leads.length,
       closed: leads.filter((l) => ['won', 'lost'].includes(l.status)).length,
       spam: leads.filter((l) => l.status === 'spam').length,
+      // Accepted (not spam, not held) leads with a Google click id: the figure Ads conversions must match.
+      googleClick: leads.filter((l) => l.status !== 'spam' && !isReviewHeld(l) && hasGoogleClick(l)).length,
     }),
     [leads],
   );
@@ -203,6 +257,9 @@ export function LeadInbox({ password }: { password: string }) {
           </button>
         ))}
       </div>
+      <p className="text-xs text-muted-foreground mb-4" title="Google Ads reports conversions per day, never per transaction_id; the weekly reconciliation compares its Lead form submitted count with this figure by day">
+        Google click leads: <span className="font-semibold text-foreground">{counts.googleClick}</span> accepted leads carry a gclid, gbraid or wbraid (the Ads conversion reconciliation figure).
+      </p>
 
       {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
 
@@ -219,12 +276,22 @@ export function LeadInbox({ password }: { password: string }) {
               const attention = needsAttention(l);
               const isOpen = open === l.id;
               const stale = l.status === 'new' ? businessDaysSince(l.createdAt) : 0;
+              const source = sourceTag(l);
+              const responded = responseTime(l);
               return (
-                <div key={l.id} className={cn('p-4', attention && 'bg-red-50/60')}>
+                <div key={l.id} className={cn('p-4', attention && 'bg-red-50/60')} id={`lead-${l.id}`}>
                   <div className="flex items-start gap-3 flex-wrap">
                     <div className="flex-1 min-w-[220px]">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={cn('rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide', TYPE_COLORS[l.type])}>{TYPE_LABELS[l.type]}</span>
+                        <span className={cn('rounded-full px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide', TYPE_COLORS[l.type])}>
+                          {TYPE_LABELS[l.type]}
+                          {source && <span className="ml-1 font-normal normal-case tracking-normal opacity-80">· {source}</span>}
+                        </span>
+                        {responded && (
+                          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-800" title="Time from submission to the first status change">
+                            first response {responded}
+                          </span>
+                        )}
                         {l.hot && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700"><Flame className="h-3 w-3" /> HOT</span>}
                         {l.followUp?.checkinReply === 'no' && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-red-700"><XCircle className="h-3 w-3" /> Lead says not contacted</span>}
                         {l.followUp?.checkinReply === 'yes' && <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-green-700"><CheckCircle2 className="h-3 w-3" /> Lead confirmed contact</span>}
@@ -251,6 +318,11 @@ export function LeadInbox({ password }: { password: string }) {
                         {l.email && <a href={`mailto:${l.email}`} className="inline-flex items-center gap-1 text-primary hover:underline"><Mail className="h-3.5 w-3.5" />{l.email}</a>}
                         <span className="text-muted-foreground">{ago(l.createdAt)}</span>
                         <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{attributionLabel(l.attribution)}</span>
+                        {hasGoogleClick(l) && (
+                          <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs text-blue-800" title="Carries a gclid, gbraid or wbraid: Google Ads can attribute a conversion to this lead">
+                            Google click
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -365,6 +437,12 @@ function LeadDetail({
               {attributionLabel(lead.attribution)}
               {lead.attribution?.utm_term && <span className="text-muted-foreground"> (keyword: {lead.attribution.utm_term})</span>}
               {lead.attribution?.landingPage && <span className="text-muted-foreground"> landed on {lead.attribution.landingPage}</span>}
+            </dd>
+            <dt className="text-muted-foreground">Google click id</dt>
+            <dd>
+              {hasGoogleClick(lead)
+                ? [lead.attribution?.gclid && 'gclid', lead.attribution?.gbraid && 'gbraid', lead.attribution?.wbraid && 'wbraid'].filter(Boolean).join(', ') + ' (counts toward the Ads reconciliation)'
+                : 'none'}
             </dd>
             <dt className="text-muted-foreground">Spam check</dt>
             <dd>{spam ? `${spam.verdict} · score ${spam.score}${spam.releasedAt ? ' · released by Ken' : ''}` : 'not assessed'}</dd>

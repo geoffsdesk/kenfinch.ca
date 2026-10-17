@@ -2,7 +2,7 @@
 
 > Ken Finch is an Oakville, Ontario real estate broker with Royal LePage Signature Realty, Brokerage, and a licensed mortgage agent with Canada Express-Mortgage Inc. (FSRA Brokerage Licence #13241). He helps buyers across Oakville, Burlington, Mississauga, Milton and the Greater Toronto Area get pre-approved, find, and finance the right home, and helps sellers price and market their properties. Licensed in real estate since 2004.
 
-**Primary entity:** Ken Finch, Broker (Royal LePage Signature Realty, Brokerage) and Mortgage Agent (Canada Express-Mortgage Inc., FSRA #13241)
+**Primary entity:** Ken Finch, Broker (Royal LePage Signature Realty, Brokerage) and Mortgage Agent Level 1, FSRA licence M26000634 (Canada Express-Mortgage Inc., FSRA Brokerage Licence #13241)
 **Service area (real estate):** Oakville, Burlington, Mississauga, Milton, Toronto and the GTA. Oakville neighbourhoods: Old Oakville, Bronte, Glen Abbey, River Oaks, West Oak Trails, Eastlake, Morrison, Palermo, Uptown Core, Iroquois Ridge, Sixteen Hollow, College Park
 **Service area (mortgages):** Ontario, Canada
 **Phone:** (416) 520-5544
@@ -23,6 +23,7 @@
 - [Homepage](https://www.kenfinch.ca/): Buyer-focused overview and pre-approval form.
 - [Buy a Home](https://www.kenfinch.ca/buy): Buyer representation in Oakville and the GTA.
 - [Mortgage Pre-Approval](https://www.kenfinch.ca/mortgage): How pre-approval works, 2026 mortgage rules, FAQ, and the pre-approval form.
+- [How Much Home Can You Afford in Oakville?](https://www.kenfinch.ca/afford): Affordability calculator (GDS/TDS, stress test, minimum down payment, insurance premium) with an editable qualifying-rate assumption, three Oakville examples and a request for a personal report from Ken.
 - [Oakville Neighbourhood Buyer Guides](https://www.kenfinch.ca/neighborhoods): Profiles of every major Oakville neighbourhood for buyers.
 - [Guides & Blog](https://www.kenfinch.ca/blog): First-time buyer, mortgage, closing cost, neighbourhood comparison, market and selling guides.
 - [About Ken Finch](https://www.kenfinch.ca/about): Credentials, licensing, FAQ.
@@ -36,7 +37,7 @@
 - [Closing Costs When Buying a Home in Ontario (2026)](https://www.kenfinch.ca/blog/closing-costs-buying-home-ontario-2026)
 - [Oakville vs. Burlington vs. Mississauga: Where Should You Buy in 2026?](https://www.kenfinch.ca/blog/oakville-vs-burlington-vs-mississauga-buying-2026)
 - [New to Canada? How to Build Credit and Buy Your First Home in the GTA](https://www.kenfinch.ca/blog/new-to-canada-first-home-mortgage-guide)
-- [Why Buy With a Realtor Who Also Arranges Your Mortgage](https://www.kenfinch.ca/blog/why-use-a-realtor-who-is-also-a-mortgage-broker)
+- [Why Use a Realtor Who Is Also a Mortgage Agent](https://www.kenfinch.ca/blog/why-use-a-realtor-who-is-also-a-mortgage-agent)
 - [Is Now a Good Time to Buy a Home in Oakville?](https://www.kenfinch.ca/blog/is-now-a-good-time-to-buy-in-oakville-2026)
 - [Should I Sell My Home Before Buying My Next One?](https://www.kenfinch.ca/blog/sell-first-or-buy-first-oakville-2026)
 

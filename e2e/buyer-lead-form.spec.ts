@@ -4,8 +4,9 @@ import { waitForEmail, deleteTestEmail } from './utils/gmail-checker';
 /**
  * Buyer / mortgage pre-approval multi-step form.
  *
- * Step 1 plans -> Step 2 finances -> Step 3 contact + consent -> success
- * screen with the Express Mortgage (Finmo) hand-off link carrying externalId.
+ * Step 1 plans -> Step 2 contact + consent -> Step 3 finances (optional, with
+ * "Send without these, Ken will ask") -> success screen with the Express
+ * Mortgage (Finmo) hand-off link carrying externalId.
  */
 
 const TEST = {
@@ -14,6 +15,34 @@ const TEST = {
   email: 'e2e-buyer@kenfinch.ca',
   phone: '(905) 555-0300',
 };
+
+async function fillPlans(form: ReturnType<import('@playwright/test').Page['getByTestId']>) {
+  await form.getByRole('radio', { name: 'Buying my first home' }).click();
+  await form.getByRole('radio', { name: 'Within 3 months' }).click();
+  await form.getByRole('radio', { name: '$750K to $1M' }).click();
+  await form.getByRole('radio', { name: 'Yes, first home' }).click();
+  await form.getByRole('button', { name: /continue/i }).click();
+}
+
+async function fillContact(form: ReturnType<import('@playwright/test').Page['getByTestId']>) {
+  await form.getByPlaceholder('Jordan').fill(TEST.firstName);
+  await form.getByPlaceholder('Lee').fill(TEST.lastName);
+  await form.getByPlaceholder('you@example.com').fill(TEST.email);
+  await form.getByPlaceholder('(416) 555-0123').fill(TEST.phone);
+  await form.getByRole('checkbox').click();
+  await form.getByRole('button', { name: /continue/i }).click();
+}
+
+/**
+ * The Firestore lead id rides along to Finmo as externalId. A local dev server without Admin
+ * credentials stores nothing (lead id ""), so the link is checked against whatever id the page
+ * received rather than assuming one exists.
+ */
+async function expectExternalId(success: ReturnType<import('@playwright/test').Page['getByTestId']>, href: string | null) {
+  const leadId = (await success.getAttribute('data-lead-id')) ?? '';
+  if (leadId) expect(href).toContain(`externalId=${leadId}`);
+  else expect(href).not.toContain('externalId=');
+}
 
 test.describe('Buyer Pre-Approval Form', () => {
   test('renders step 1 and validates before advancing', async ({ page }) => {
@@ -27,6 +56,17 @@ test.describe('Buyer Pre-Approval Form', () => {
     await expect(form.getByText('Step 1 of 3')).toBeVisible();
   });
 
+  test('step 2 is contact + consent and validates before the optional finances step', async ({ page }) => {
+    await page.goto('/mortgage');
+    const form = page.getByTestId('buyer-lead-form');
+    await fillPlans(form);
+    await expect(form.getByText('Step 2 of 3')).toBeVisible();
+    await expect(form.getByText('Your details')).toBeVisible();
+    await form.getByRole('button', { name: /continue/i }).click();
+    await expect(form.getByText(/enter your first name/i)).toBeVisible();
+    await expect(form.getByText('Step 2 of 3')).toBeVisible();
+  });
+
   test('full flow submits and offers the Express Mortgage hand-off', async ({ page }) => {
     test.setTimeout(120_000);
     const skipEmailCheck = !process.env.GMAIL_CLIENT_ID;
@@ -35,25 +75,14 @@ test.describe('Buyer Pre-Approval Form', () => {
     await page.goto('/mortgage');
     const form = page.getByTestId('buyer-lead-form');
 
-    // Step 1
-    await form.getByRole('radio', { name: 'Buying my first home' }).click();
-    await form.getByRole('radio', { name: 'Within 3 months' }).click();
-    await form.getByRole('radio', { name: '$750K to $1M' }).click();
-    await form.getByRole('radio', { name: 'Yes, first home' }).click();
-    await form.getByRole('button', { name: /continue/i }).click();
+    await fillPlans(form);
     await expect(form.getByText('Step 2 of 3')).toBeVisible();
-
-    // Step 2
-    await form.getByRole('radio', { name: '10% to 20%' }).click();
-    await form.getByRole('button', { name: /continue/i }).click();
+    await fillContact(form);
     await expect(form.getByText('Step 3 of 3')).toBeVisible();
+    await expect(form.getByText(/Your finances \(optional\)/)).toBeVisible();
 
-    // Step 3
-    await form.getByPlaceholder('Jordan').fill(TEST.firstName);
-    await form.getByPlaceholder('Lee').fill(TEST.lastName);
-    await form.getByPlaceholder('you@example.com').fill(TEST.email);
-    await form.getByPlaceholder('(416) 555-0123').fill(TEST.phone);
-    await form.getByRole('checkbox').click();
+    // Step 3: finances (optional)
+    await form.getByRole('radio', { name: '10% to 20%' }).click();
     await form.getByRole('button', { name: /get my pre-approval plan/i }).click();
 
     const success = page.getByTestId('buyer-lead-success');
@@ -64,12 +93,31 @@ test.describe('Buyer Pre-Approval Form', () => {
     const href = await handoff.getAttribute('href');
     expect(href).toContain('cemi.mtg-app.com/signup');
     expect(href).toContain('brokerId=05293159-120d-4019-aa51-5ca60e1acc65');
-    expect(href).toContain('externalId=');
+    await expectExternalId(success, href);
+    await expect(success).toContainText(/Mortgage Agent Level 1/);
 
     if (!skipEmailCheck) {
       const emailResult = await waitForEmail(`New Buyer Lead: ${TEST.firstName} ${TEST.lastName}`, beforeSubmit);
       expect(emailResult.found, 'Buyer lead email was not received by Ken').toBe(true);
       if (emailResult.messageId) await deleteTestEmail(emailResult.messageId);
     }
+  });
+
+  test('"Send without these, Ken will ask" submits with the finances step skipped', async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.goto('/mortgage');
+    const form = page.getByTestId('buyer-lead-form');
+
+    await fillPlans(form);
+    await fillContact(form);
+    await expect(form.getByText('Step 3 of 3')).toBeVisible();
+
+    await form.getByTestId('buyer-skip-finances').click();
+
+    const success = page.getByTestId('buyer-lead-success');
+    await expect(success).toBeVisible({ timeout: 30_000 });
+    const href = await success.getByRole('link', { name: /continue to secure application/i }).getAttribute('href');
+    expect(href).toContain('cemi.mtg-app.com/signup');
+    await expectExternalId(success, href);
   });
 });

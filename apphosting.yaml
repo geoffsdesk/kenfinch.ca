@@ -43,6 +43,31 @@ env:
     secret: NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL
   - variable: NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL
     secret: NEXT_PUBLIC_GOOGLE_ADS_EXPERT_LABEL
+  # New conversion model (src/lib/analytics.ts). Referencing a secret that does not exist
+  # fails the App Hosting build, so these stay commented until Geoff has created each one:
+  #   1. In Google Ads create "Lead form submitted" (Primary), "Valuation tool used" (Secondary)
+  #      and "Finmo application click" (Secondary); copy each label.
+  #   2. firebase apphosting:secrets:set NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL      (Lead form submitted)
+  #      firebase apphosting:secrets:set NEXT_PUBLIC_GOOGLE_ADS_FINMO_LABEL     (Finmo application click)
+  #      Repoint NEXT_PUBLIC_GOOGLE_ADS_VALUATION_LABEL above to "Valuation tool used", or create
+  #      NEXT_PUBLIC_GOOGLE_ADS_VALUATION_TOOL_LABEL (optional; wins over VALUATION_LABEL when set).
+  #   3. Only after every secrets:set above succeeded: uncomment the matching entries below in the
+  #      same diff, commit, then trigger the rollout and CONFIRM it completed in the Firebase console
+  #      (App Hosting > Rollouts; auto-builds have silently failed before). App Hosting injects only
+  #      the variables declared here, so a secret that exists but stays commented is never injected
+  #      and the site keeps using the legacy labels. Verify with Tag Assistant on the rolled-out
+  #      build before restructuring Search (kenfinch-marketing campaign plan, section 8).
+  #      Until LEAD_LABEL is injected every lead form falls back to its legacy label, so nothing
+  #      stops firing in the meantime.
+  # - variable: NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL
+  #   secret: NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL
+  #   availability: [BUILD]
+  # - variable: NEXT_PUBLIC_GOOGLE_ADS_FINMO_LABEL
+  #   secret: NEXT_PUBLIC_GOOGLE_ADS_FINMO_LABEL
+  #   availability: [BUILD]
+  # - variable: NEXT_PUBLIC_GOOGLE_ADS_VALUATION_TOOL_LABEL
+  #   secret: NEXT_PUBLIC_GOOGLE_ADS_VALUATION_TOOL_LABEL
+  #   availability: [BUILD]
 
   # Server-side secrets
   # Email (all outbound mail goes through Resend, see src/lib/mail.ts)
@@ -57,17 +82,22 @@ env:
   - variable: CRON_SECRET
     secret: CRON_SECRET
 
-  # Optional SMS for the lead pipeline. Create each secret with
+  # Optional SMS for the lead pipeline (Ken's new-lead alert, the 2-hour nudge and the
+  # 48-hour check-in). Runtime-only secrets, read by src/lib/leads/notify.ts. Create each with
   #   firebase apphosting:secrets:set <NAME>
   # then uncomment. Without them, SMS steps are skipped and email still works.
   # - variable: TWILIO_ACCOUNT_SID
   #   secret: TWILIO_ACCOUNT_SID
+  #   availability: [RUNTIME]
   # - variable: TWILIO_AUTH_TOKEN
   #   secret: TWILIO_AUTH_TOKEN
+  #   availability: [RUNTIME]
   # - variable: TWILIO_PHONE_FROM
   #   secret: TWILIO_PHONE_FROM
+  #   availability: [RUNTIME]
   # - variable: KEN_MOBILE_NUMBER
   #   secret: KEN_MOBILE_NUMBER
+  #   availability: [RUNTIME]
 
   # Lead spam defence. Form tokens are signed with LEAD_FORM_SECRET (falls back to
   # CRON_SECRET). Create with: firebase apphosting:secrets:set LEAD_FORM_SECRET  (32+ random chars)

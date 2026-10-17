@@ -2,11 +2,12 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { HomeValuation } from '@/components/home-valuation';
-import { CheckCircle, Phone, ArrowRight, Star, Shield, Clock, TrendingUp } from 'lucide-react';
+import { NeverListCapture } from '@/components/never-list-capture';
+import { CheckCircle, Phone, ArrowRight, Star, Shield, Clock, ListChecks } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import type { Metadata } from 'next';
-import { CONTACT } from '@/lib/site';
+import { CONTACT, REAL_ESTATE } from '@/lib/site';
+import { SELLER_NEVER_LIST } from '@/lib/never-lists';
 
 export const metadata: Metadata = {
   title: 'Free Oakville Home Valuation',
@@ -19,6 +20,10 @@ export const metadata: Metadata = {
     url: 'https://www.kenfinch.ca/sell',
   },
 };
+
+const WHATSAPP_HREF = `https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(
+  "Hi Ken, I saw your video on KenFinch.ca. I'm thinking about selling. Please send me your complete list of things you'd never do when selling your own home.",
+)}`;
 
 export default function SellLandingPage() {
   return (
@@ -33,20 +38,23 @@ export default function SellLandingPage() {
               {/* Left — headline + trust signals */}
               <div className="flex flex-col justify-center space-y-6 animate-fade-in-up">
                 <div className="space-y-4">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
-                    <TrendingUp className="h-4 w-4" />
-                    Oakville Market Is Moving — Are You Ready?
-                  </div>
+                  <a href="#never-list" className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary hover:bg-primary/15">
+                    <ListChecks className="h-4 w-4" />
+                    Ken&apos;s Never List for Oakville sellers
+                  </a>
                   <h1 className="font-headline text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl xl:text-6xl/none">
                     Find Out What Your Home Is <span className="text-gradient">Really Worth</span>
                   </h1>
                   <p className="text-lg text-muted-foreground max-w-[520px]">
                     Get a free, instant AI-powered valuation for your Oakville home. No obligation, no pressure — just the data you need to make smart decisions.
                   </p>
+                  <p className="text-sm text-muted-foreground">
+                    {CONTACT.name}, {REAL_ESTATE.title}, {REAL_ESTATE.brokerage}
+                  </p>
                 </div>
 
-                {/* Trust signals */}
-                <div className="grid grid-cols-2 gap-4 pt-4">
+                {/* Trust signals (desktop only: on phones the form takes the first screen) */}
+                <div className="hidden lg:grid grid-cols-2 gap-4 pt-4">
                   {[
                     { icon: Clock, label: "Instant Results", desc: "AI-powered in seconds" },
                     { icon: Shield, label: "100% Free", desc: "No obligation ever" },
@@ -66,7 +74,7 @@ export default function SellLandingPage() {
                 </div>
 
                 {/* Social proof */}
-                <div className="flex items-center gap-3 pt-2">
+                <div className="hidden lg:flex items-center gap-3 pt-2">
                   <div className="flex -space-x-2">
                     {[1,2,3,4,5].map(i => (
                       <div key={i} className="h-8 w-8 rounded-full bg-primary/20 border-2 border-background flex items-center justify-center">
@@ -80,10 +88,33 @@ export default function SellLandingPage() {
                 </div>
               </div>
 
-              {/* Right — Valuation form */}
-              <div className="w-full" id="valuation-tool">
+              {/* Right — Valuation form (first on phones so it sits above the fold) */}
+              <div className="w-full order-first lg:order-none scroll-mt-24" id="valuation-tool">
                 <HomeValuation />
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Ken's Never List */}
+        <section className="py-12 md:py-16" id="never-list">
+          <div className="container px-4 md:px-6">
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-8">
+                <p className="text-sm font-semibold uppercase tracking-widest text-primary mb-2">Ken&apos;s Never List</p>
+                <h2 className="font-headline text-2xl font-bold sm:text-3xl">Seven things I would never do selling my own house</h2>
+                <p className="mt-3 text-muted-foreground">
+                  Twenty-two years of Oakville listings, boiled down to the mistakes that cost sellers the most.
+                </p>
+              </div>
+              <ol className="grid gap-4 sm:grid-cols-2">
+                {SELLER_NEVER_LIST.map((item, i) => (
+                  <li key={item} className="flex gap-4 rounded-xl border bg-card p-5">
+                    <span className="font-headline text-3xl font-bold leading-none text-primary tabular-nums">{i + 1}</span>
+                    <p className="text-sm leading-relaxed text-foreground/90">{item}</p>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </section>
@@ -137,19 +168,18 @@ export default function SellLandingPage() {
                 <track kind="captions" src="/ken-intro-720p.vtt" srcLang="en" label="English" default />
               </video>
             </div>
-            <div className="mt-8 text-center">
-              <a
-                href={`https://wa.me/${CONTACT.whatsappNumber}?text=${encodeURIComponent(
-                  "Hi Ken, I saw your video on KenFinch.ca. I'm thinking about selling. Please send me your complete list of things you'd never do when selling your own home."
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button size="lg" className="font-semibold text-base px-8 shadow-lg">
-                  Get Ken&apos;s Complete List
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </a>
+            <div className="mt-10">
+              <NeverListCapture
+                asset="seller-never-list"
+                secondary={
+                  <>
+                    Prefer WhatsApp?{' '}
+                    <a href={WHATSAPP_HREF} target="_blank" rel="noopener noreferrer" className="font-semibold text-primary hover:underline">
+                      Message Ken for the list
+                    </a>
+                  </>
+                }
+              />
             </div>
           </div>
         </section>
@@ -211,13 +241,16 @@ export default function SellLandingPage() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </a>
-              <a href="tel:+14165205544">
+              <a href={CONTACT.phoneHref}>
                 <Button size="lg" variant="secondary" className="font-semibold text-base px-8 shadow-lg">
                   <Phone className="mr-2 h-4 w-4" />
                   Call Ken Directly
                 </Button>
               </a>
             </div>
+            <p className="text-xs text-primary-foreground/70">
+              {CONTACT.name}, {REAL_ESTATE.title}, {REAL_ESTATE.brokerage}. {REAL_ESTATE.disclaimer}
+            </p>
           </div>
         </section>
       </main>

@@ -13,7 +13,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Mortgage Pre-Approval in Oakville & the GTA',
   description:
-    'Get a mortgage pre-approval from Ken Finch, licensed mortgage agent with Canada Express-Mortgage Inc. (FSRA #13241). 30+ lenders, first-time buyer programs, purchases, refinances and renewals across Ontario.',
+    'Get a mortgage pre-approval from Ken Finch, Mortgage Agent Level 1 with Canada Express-Mortgage Inc. (FSRA #13241). Dozens of lenders, first-time buyer programs, purchases, refinances and renewals across Ontario.',
   keywords: [
     'mortgage pre-approval Oakville',
     'mortgage agent Oakville',
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/mortgage' },
   openGraph: {
     title: 'Mortgage Pre-Approval | Ken Finch, Mortgage Agent Level 1, Licence #M26000634',
-    description: 'Real numbers from 30+ lenders before you shop. Licensed mortgage agent serving Oakville and all of Ontario.',
+    description: 'Real numbers from dozens of lenders before you shop. Mortgage Agent Level 1 serving Oakville and all of Ontario.',
     url: `${SITE_URL}/mortgage`,
   },
 };
@@ -50,11 +50,11 @@ const FAQS = [
   },
   {
     q: 'Is going through a mortgage agent more expensive than my bank?',
-    a: 'For standard residential mortgages, brokers are paid by the lender, so there is no fee to you. Because Ken can place your file with over thirty banks, credit unions and monoline lenders, you typically end up with a better rate and terms than a single bank offers.',
+    a: 'For standard residential mortgages, mortgage agents are typically paid by the lender, so there is no fee to you. Because Ken can place your file with dozens of banks, credit unions and monoline lenders, you see options a single bank cannot show you.',
   },
   {
-    q: 'Can Ken help if I am self-employed, new to Canada, or have bruised credit?',
-    a: 'Yes. Alternative and B-lenders exist for exactly these situations. Ken will tell you honestly what is possible now and what a six-month plan to a better rate looks like.',
+    q: 'Can Ken help if I am self-employed or new to Canada?',
+    a: 'Yes. Several lenders have programs for self-employed income and for newcomers with less than a year of Canadian credit. Ken will tell you honestly what is possible now and what a six-month plan looks like.',
   },
 ];
 
@@ -99,7 +99,7 @@ export default function MortgagePage() {
               <div className="space-y-6 animate-fade-in-up">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary">
                   <Landmark className="h-4 w-4" />
-                  Licensed mortgage agent &middot; 30+ lenders
+                  {MORTGAGE.title} &middot; dozens of lenders
                 </div>
                 <h1 className="font-headline text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl/none">
                   Get pre-approved <span className="text-gradient">before you shop.</span>
@@ -108,7 +108,12 @@ export default function MortgagePage() {
                   Know your real budget, lock a rate hold, and make offers listing agents take seriously. Ken Finch arranges
                   mortgages through {MORTGAGE.brokerage} and personally reviews every file.
                 </p>
-                <div className="grid grid-cols-2 gap-4 pt-2">
+                <p className="text-sm">
+                  <Link href="/afford" className="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline">
+                    Not sure what you can afford? Start with the two-minute check <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </p>
+                <div className="hidden lg:grid grid-cols-2 gap-4 pt-2">
                   {[
                     { icon: Shield, label: 'No fee to you', desc: 'Lender-paid on standard mortgages' },
                     { icon: Percent, label: 'Rate hold', desc: 'Typically 90 to 120 days' },
@@ -137,8 +142,10 @@ export default function MortgagePage() {
                 </div>
               </div>
 
-              <div id="apply" className="scroll-mt-24">
+              {/* Form first on phones (above the fold); the Finmo card above follows it by DOM order. */}
+              <div id="apply" className="scroll-mt-24 order-first lg:order-none">
                 <BuyerLeadForm source="mortgage-page" />
+                <MortgageDisclosure className="mt-4 px-1" />
               </div>
             </div>
           </div>
@@ -257,6 +264,12 @@ export default function MortgagePage() {
               <Link href="#apply">
                 <Button size="lg" variant="secondary" className="font-semibold shadow-lg text-base px-8">
                   Get pre-approved
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+              <Link href="/afford">
+                <Button size="lg" variant="secondary" className="font-semibold shadow-lg text-base px-8">
+                  See what you can afford
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>

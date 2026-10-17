@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { submitLead } from '@/lib/leads/client';
-import { trackContactFormSubmission } from '@/lib/analytics';
+import { trackRenewalLead } from '@/lib/analytics';
 import { useFormGuard } from '@/lib/leads/form-guard';
 import { HoneypotField } from '@/components/honeypot-field';
 import { CONTACT } from '@/lib/site';
@@ -92,7 +92,7 @@ export function RenewalForm() {
         ...(await guard.guardPayload()),
       });
       if (!res.ok) throw new Error(res.error);
-      if (res.track) trackContactFormSubmission({ name: values.name, email: values.email, phone: values.phone });
+      if (res.track) trackRenewalLead({ name: values.name, email: values.email, phone: values.phone, leadId: res.leadId });
       setDone({ month: monthLabel });
     } catch (e) {
       console.error(e);

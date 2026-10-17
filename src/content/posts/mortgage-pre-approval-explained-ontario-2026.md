@@ -6,7 +6,7 @@ image: '/hero_house.png'
 excerpt: 'What a mortgage pre-approval actually is, how lenders calculate what you can borrow, how the stress test works, what a rate hold does, and why a broker pre-approval beats a bank pre-qualification when you are buying in Oakville or the GTA.'
 ---
 
-Most buyers use the words pre-qualification and pre-approval interchangeably. Lenders do not, and the difference has cost more than one buyer a house. Here is how the process really works, from a mortgage broker who also represents buyers on the real estate side.
+Most buyers use the words pre-qualification and pre-approval interchangeably. Lenders do not, and the difference has cost more than one buyer a house. Here is how the process really works, from a Mortgage Agent Level 1 who also represents buyers on the real estate side.
 
 ## Pre-qualification vs. pre-approval
 

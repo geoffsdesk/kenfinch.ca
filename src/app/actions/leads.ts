@@ -45,7 +45,7 @@ function buildDoc(input: LeadInput, request: LeadRequestMeta | null, emailKey: s
     notes: [],
     nextFollowUpAt: null,
     followUp: { token: newToken(), confirmationSentAt: null, checkinDueAt, checkinSentAt: null, checkinReply: null, checkinRepliedAt: null },
-    notify: { kenEmailAt: null, kenSmsAt: null, errors: [] as string[] },
+    notify: { kenEmailAt: null, kenSmsAt: null, kenNudgeAt: null, errors: [] as string[] },
     request,
     client: input.client
       ? { webdriver: input.client.webdriver ?? null, interactions: input.client.interactions ?? null, msSinceMount: input.client.msSinceMount ?? null }
@@ -123,6 +123,8 @@ function isTestLead(input: LeadInput): boolean {
 }
 
 function formIdFor(input: LeadInput): FormId {
+  // The /afford report form issues an 'affordability' token whether it ends up a buyer or a contact lead.
+  if (input.source === 'affordability-form') return 'affordability';
   switch (input.type) {
     case 'buyer':
       return 'buyer';

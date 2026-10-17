@@ -10,6 +10,7 @@ import { CONTACT } from '@/lib/site';
 const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/buy', label: 'Buy' },
   { href: '/mortgage', label: 'Mortgages' },
+  { href: '/afford', label: 'Affordability' },
   { href: '/neighborhoods', label: 'Neighbourhoods' },
   { href: '/blog', label: 'Guides' },
   { href: '/about', label: 'About Ken' },

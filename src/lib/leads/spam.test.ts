@@ -435,6 +435,49 @@ test('thresholds, labels and the weight table stay in sync', () => {
   assert.equal(Object.keys(RULES).length, Object.keys(REASON_LABELS).length);
 });
 
+// ─── Valuation gate and affordability report shapes ──────────────────────────
+
+type ValuationInput = Extract<LeadInput, { type: 'valuation' }>;
+
+/** What home-valuation.tsx sends when a visitor unlocks the exact estimate: name + email, no phone, no message. */
+const GATE: ValuationInput = {
+  type: 'valuation',
+  name: 'Pat Morgan',
+  email: 'oakvillehome2026@gmail.com',
+  address: '123 Maple Street, Oakville, ON',
+  estimate: 1_250_000,
+  confidence: 0.72,
+  property: { 'Home type': 'Detached', 'Bedrooms (above grade)': 3, Bathrooms: 2, 'Square footage': '2,000 - 2,500' },
+  source: 'valuation-gated',
+  page: '/sell',
+};
+
+test('minimal gate submission (name + email, no phone, no message) is clean at normal speed and review-not-spam at token:fast', () => {
+  const human = { webdriver: false, interactions: 11, msSinceMount: 48_000 };
+  expectScore(assessLead(GATE, ctx({ token: tokenOk(48_000), client: human })), 0, 'clean', []);
+  expectScore(assessLead(GATE, ctx()), 0, 'clean', []);
+  expectScore(assessLead(GATE, ctx({ token: tokenOk(900), client: human })), 3, 'review', ['token:fast']);
+  expectScore(assessLead(GATE, ctx({ token: tokenOk(2_400), client: human })), 2, 'clean', ['token:fast']);
+  // The same person asking for the full expert opinion a moment later (second lead, counter 2) is still clean.
+  expectScore(assessLead({ ...GATE, source: 'valuation-expert-opinion', message: 'Requested a full expert opinion after the gated estimate.' }, ctx({ token: tokenOk(9_000), counters: { ip: null, email: 2 } })), 0, 'clean', []);
+});
+
+test('two-letter first name on a gate lead stays clean (name:short = 1 < REVIEW_AT)', () => {
+  expectScore(assessLead({ ...GATE, name: 'Jo' }, ctx({ token: tokenOk(30_000) })), 1, 'clean', ['name:short']);
+  assert.ok(RULES['name:short'] < REVIEW_AT);
+  // A two-letter first name with a surname is not short at all.
+  expectScore(assessLead({ ...GATE, name: 'Jo Li' }, ctx({ token: tokenOk(30_000) })), 0, 'clean', []);
+});
+
+test('affordability report summary never trips message:digits or intent:empty', () => {
+  const summary = 'Income $150,000/yr · Debts $500/mo · Down $100,000 · Tax $450/mo · Heat $150/mo · Qualifying rate 6.25% · 25 yr · Max ~$800,000 · Timeline: 3 to 6 months';
+  const report = contact({ name: 'Jordan Lee', email: 'oakvillemover@gmail.com', phone: undefined, intent: 'Affordability estimate', message: summary, source: 'affordability-form', page: '/afford' });
+  expectScore(assessLead(report, ctx({ token: tokenOk(60_000) })), 0, 'clean', []);
+  // Even a pathological digits-only summary is whitelisted for this form, while the contact form keeps the rule.
+  expectScore(assessLead({ ...report, message: '150000500100000' }, ctx({ token: tokenOk(60_000) })), 0, 'clean', []);
+  expectScore(assessLead(contact({ intent: 'Other question', message: '150000500100000' }), ctx({ token: tokenOk(60_000) })), 3, 'review', ['message:digits']);
+});
+
 test('assessment envelope', () => {
   const a = assessLead(contact(), ctx());
   assert.equal(a.version, 1);

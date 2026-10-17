@@ -6,14 +6,19 @@ import {
   sendMail,
   sendSms,
   smsConfigured,
+  kenMobile,
   checkinHtml,
   checkinSmsText,
   digestHtml,
+  nudgeHtml,
+  nudgeSmsText,
+  sourceLabel,
   KEN_EMAIL,
   OVERSIGHT_EMAIL,
   TORONTO_TZ,
 } from '@/lib/leads/notify';
-import { STATUS_LABELS, isTestSubmission, type LeadRecord } from '@/lib/leads/types';
+import { STATUS_LABELS, TYPE_LABELS, isTestSubmission, type LeadRecord } from '@/lib/leads/types';
+import { nudgeDue, waitingLabel } from '@/lib/leads/nudge';
 import { runCampaigns } from '@/lib/campaigns/runner';
 
 export const dynamic = 'force-dynamic';
@@ -26,6 +31,9 @@ export const maxDuration = 300;
  *    Twilio is configured) to leads still marked New, only during polite hours
  *    in Toronto. Ken cancels it by setting the status to Contacted in /ken.
  *  - Once per day after 08:00 Toronto, emails the lead digest to Geoff and Ken.
+ *  - Nudges Ken once (email + SMS when Twilio is configured) about any lead that
+ *    has sat in New for 2 hours, during polite hours. Never contacts the sender.
+ *    `?nudge=dry` lists what would be sent without sending or marking anything.
  *
  * Auth: `Authorization: Bearer <CRON_SECRET>` or `?key=<CRON_SECRET>`.
  */
@@ -156,6 +164,49 @@ async function runCheckins(leads: LeadRecord[], now: Date) {
   return { sent: results };
 }
 
+/**
+ * One-time "lead waiting 2 hours" nudge to Ken. Selection is pure (src/lib/leads/nudge.ts,
+ * unit-tested); this only sends and stamps `notify.kenNudgeAt`. Polite hours only, so a
+ * lead that arrives at 23:00 nudges at 09:00 (the playbook's "9:30 next morning" target).
+ */
+async function runNudges(leads: LeadRecord[], now: Date, dryRun = false) {
+  const due = nudgeDue(leads, now, isTestSubmission);
+  const describe = (l: LeadRecord) => ({ id: l.id, type: l.type, source: l.source, waiting: waitingLabel(l.createdAt, now) });
+  if (dryRun) return { dryRun: true, due: due.map(describe) };
+  const { hour } = torontoParts(now);
+  if (!(hour >= 9 && hour < 20)) return { skipped: 'outside 09:00-20:00 Toronto', due: due.length };
+
+  const sent: string[] = [];
+  for (const lead of due) {
+    const patch: Record<string, unknown> = {};
+    const errors: string[] = [];
+    try {
+      await sendMail({
+        to: KEN_EMAIL,
+        bcc: OVERSIGHT_EMAIL,
+        subject: `Lead waiting ${waitingLabel(lead.createdAt, now)}: ${TYPE_LABELS[lead.type]} / ${sourceLabel(lead)}, open /ken`,
+        html: nudgeHtml(lead, now),
+      });
+      patch['notify.kenNudgeAt'] = nowIso();
+      sent.push(lead.id);
+    } catch (err) {
+      errors.push(`nudge-email: ${(err as Error).message}`);
+    }
+    if (smsConfigured() && kenMobile()) {
+      try {
+        if (await sendSms(kenMobile(), nudgeSmsText(lead, now))) patch['notify.kenNudgeAt'] = nowIso();
+      } catch (err) {
+        errors.push(`nudge-sms: ${(err as Error).message}`);
+      }
+    }
+    if (errors.length) patch['notify.errors'] = [...(lead.notify?.errors ?? []), ...errors];
+    // Stamp even on failure so a broken mail provider cannot page Ken every hour for the same lead.
+    if (!patch['notify.kenNudgeAt']) patch['notify.kenNudgeAt'] = nowIso();
+    await patchLead(lead.id, patch);
+  }
+  return { sent };
+}
+
 async function runDigest(leads: LeadRecord[], now: Date, force = false) {
   const { date, hour } = torontoParts(now);
   const state = await getSystemState();
@@ -192,6 +243,7 @@ export async function GET(req: NextRequest) {
   try {
     const leads = await listLeads(500);
     const housekept = await housekeeping(leads, now);
+    const nudges = await runNudges(leads, now, req.nextUrl.searchParams.get('nudge') === 'dry');
     const checkins = await runCheckins(leads, now);
     const digest = await runDigest(leads, now, force);
     // Database campaign (reactivation sequence). Failures here must not block the lead jobs above.
@@ -203,7 +255,7 @@ export async function GET(req: NextRequest) {
       campaigns = { error: (err as Error).message };
     }
     await setSystemState({ lastRunAt: nowIso() });
-    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, ...housekept, checkins, digest, campaigns });
+    return NextResponse.json({ ok: true, at: now.toISOString(), leads: leads.length, ...housekept, nudges, checkins, digest, campaigns });
   } catch (err) {
     console.error('lead automation failed:', err);
     return NextResponse.json({ ok: false, error: (err as Error).message }, { status: 500 });

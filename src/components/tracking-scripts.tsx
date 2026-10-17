@@ -21,7 +21,9 @@ import { trackPageView } from '@/lib/analytics';
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_ID;
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '3459484767600231';
+// No fallback id: an unset secret renders no Meta pixel at all, so only the pixel Geoff
+// configured (NEXT_PUBLIC_META_PIXEL_ID) can ever receive events from this site.
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '';
 const TIKTOK_PIXEL_ID = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID;
 
 // Build the gtag config IDs — GA4 + optional Google Ads
