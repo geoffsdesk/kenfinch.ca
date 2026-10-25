@@ -39,6 +39,24 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  /* Baseline security headers for every response. CSP is limited to
+     frame-ancestors; the GA4 / Ads / Meta / TikTok pixels need an inventory
+     before a script policy can be enforced. */
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains'},
+          {key: 'X-Content-Type-Options', value: 'nosniff'},
+          {key: 'X-Frame-Options', value: 'SAMEORIGIN'},
+          {key: 'Content-Security-Policy', value: "frame-ancestors 'self'"},
+          {key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin'},
+          {key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()'},
+        ],
+      },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
